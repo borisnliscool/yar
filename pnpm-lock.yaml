@@ -202,6 +202,12 @@ importers:
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../config-eslint
+      autoprefixer:
+        specifier: ^10.4.17
+        version: 10.4.17(postcss@8.4.35)
+      postcss:
+        specifier: ^8.4.35
+        version: 8.4.35
       svelte:
         specifier: ^4.2.12
         version: 4.2.12
