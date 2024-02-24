@@ -19,7 +19,7 @@
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",
 		"@sveltejs/adapter-auto": "^3.1.0",
-		"@sveltejs/kit": "^2.0.6",
+		"@sveltejs/kit": "^2.4.3",
 		"@sveltejs/vite-plugin-svelte": "^3.0.1",
 		"@typescript-eslint/eslint-plugin": "^6.17.0",
 		"@typescript-eslint/parser": "^6.17.0",
@@ -35,6 +35,6 @@
 		"tailwindcss": "^3.4.1",
 		"tslib": "^2.6.2",
 		"typescript": "^5.3.3",
-		"vite": "^5.0.10"
+		"vite": "^5.0.12"
 	}
 }
