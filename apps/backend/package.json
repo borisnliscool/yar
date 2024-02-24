@@ -1,0 +1,30 @@
+{
+	"name": "backend",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "nodemon",
+		"build": "tsc"
+	},
+	"dependencies": {
+		"@repo/ui": "workspace:*"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^6.17.0",
+		"@typescript-eslint/parser": "^6.17.0",
+		"eslint": "^8.56.0",
+		"@repo/eslint-config": "workspace:*",
+		"prettier": "^3.1.1",
+		"prettier-plugin-svelte": "^3.1.2",
+		"typescript": "^5.3.3",
+		"nodemon": "^3.0.1",
+		"ts-node": "^10.9.1"
+	},
+	"nodemonConfig": {
+		"watch": [
+			"src"
+		],
+		"ext": "ts",
+		"exec": "ts-node ./src/index.ts"
+	}
+}

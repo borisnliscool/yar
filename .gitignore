@@ -5,11 +5,11 @@ node_modules
 .pnp
 .pnp.js
 
-# testing
-coverage
-
 # svelte
 .svelte-kit
+
+# backend
+dist
 
 # misc
 .DS_Store
