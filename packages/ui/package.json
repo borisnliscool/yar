@@ -14,7 +14,9 @@
 		"lint": "eslint ."
 	},
 	"devDependencies": {
+		"@iconify/svelte": "^3.1.6",
 		"@repo/eslint-config": "workspace:*",
-		"svelte": "^4.2.8"
+		"svelte": "^4.2.8",
+		"tailwindcss": "^3.4.1"
 	}
 }
