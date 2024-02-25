@@ -26,9 +26,9 @@ importers:
 
   apps/backend:
     dependencies:
-      '@repo/ui':
+      '@repo/types':
         specifier: workspace:*
-        version: link:../../packages/ui
+        version: link:../../packages/types
       compression:
         specifier: ^1.7.4
         version: 1.7.4
@@ -114,6 +114,9 @@ importers:
       '@iconify/svelte':
         specifier: ^3.1.6
         version: 3.1.6(svelte@4.2.12)
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -193,6 +196,8 @@ importers:
       eslint-plugin-svelte:
         specifier: ^2.35.1
         version: 2.35.1(eslint@8.57.0)(svelte@4.2.12)
+
+  packages/types: {}
 
   packages/ui:
     devDependencies:
