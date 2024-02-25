@@ -1,9 +1,6 @@
-import { Request, Response, Router } from 'express';
+import { Router } from 'express';
+import { router as authRouter } from './auth';
 
 export const router = Router();
 
-router.get('/', async (req: Request, res: Response) => {
-	return res.json({
-		ok: true,
-	});
-});
+router.use('/auth', authRouter);

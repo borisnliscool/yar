@@ -1,5 +1,6 @@
 import 'dotenv/config';
-import WebServerService from './services/webServerService';
 import './types';
+
+import WebServerService from './services/webServerService';
 
 WebServerService.start();

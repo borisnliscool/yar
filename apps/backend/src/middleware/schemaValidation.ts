@@ -1,0 +1,18 @@
+import { NextFunction, Request, Response } from 'express';
+import { merge } from 'lodash';
+import * as RT from 'runtypes';
+
+export const validateSchema = (record: RT.Record<any, any>) => {
+	return (req: Request, res: Response, next: NextFunction) => {
+		try {
+			req.body = record.check(req.body);
+			next();
+		} catch (err: any) {
+			res.statusCode = 400;
+			res.errorDetails = merge(res.errorDetails ?? {}, {
+				schemaValidation: err.details,
+			});
+			throw new Error('Invalid request body.');
+		}
+	};
+};
