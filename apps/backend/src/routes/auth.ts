@@ -1,6 +1,7 @@
 import { compareSync } from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import ms from 'ms';
+import * as OTPAuth from 'otpauth';
 import * as RT from 'runtypes';
 import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
@@ -12,6 +13,7 @@ export const router = Router();
 const LoginSchema = RT.Record({
 	username: RT.String,
 	password: RT.String,
+	totp_code: RT.String.optional(),
 });
 
 router.post(
@@ -29,12 +31,31 @@ router.post(
 			},
 		});
 
-		if (!user || !compareSync(user.password_hash, body.password)) {
+		const invalid = (message?: string) => {
 			res.statusCode = 401;
-			throw new Error('invalid credentials');
+			throw new Error(message ? message : 'invalid credentials');
+		};
+
+		if (!user || !compareSync(user.password_hash, body.password)) {
+			return invalid();
 		}
 
-		// todo 2fa
+		if (user.totp_secret) {
+			if (!body.totp_code) return invalid('totp code missing');
+
+			const totp = new OTPAuth.TOTP({
+				secret: user.totp_secret,
+			});
+
+			const isTokenValid = totp.validate({
+				token: body.totp_code,
+				window: 2,
+			});
+
+			if (!isTokenValid) {
+				return invalid('totp code invalid');
+			}
+		}
 
 		const refreshToken = JwtService.encodeToken(
 			{ type: 'refresh' },

@@ -19,6 +19,8 @@ model User {
     password_hash String
     totp_secret   String?
     created_at    DateTime @default(now())
+
+    videos Video[]
 }
 
 model Video {
@@ -28,4 +30,7 @@ model Video {
     title       String
     description String?
     source_url  String?
+
+    author    User   @relation(fields: [author_id], references: [id])
+    author_id String
 }
