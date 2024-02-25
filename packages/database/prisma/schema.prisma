@@ -27,9 +27,9 @@ model video {
     id          String   @id @unique @default(uuid())
     created_at  DateTime @default(now())
     updated_at  DateTime @updatedAt
-    title       String
-    description String?
-    source_url  String?
+    title       String   @db.VarChar(255)
+    description String?  @db.MediumText
+    source_url  String?  @db.VarChar(255)
 
     author    user   @relation(fields: [author_id], references: [id])
     author_id String
