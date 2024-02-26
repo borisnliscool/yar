@@ -17,3 +17,7 @@ body {
 		'Helvetica Neue',
 		sans-serif;
 }
+
+* {
+	@apply transition-colors duration-100;
+}
