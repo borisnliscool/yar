@@ -18,6 +18,10 @@
 
 <svelte:window on:storage={(event) => event.key == 'color-theme' && updateTheme()} />
 
-<main class="flex min-h-screen w-full flex-col" class:dark={$theme == 'dark'}>
-	<slot />
+<main class:dark={$theme == 'dark'}>
+	<div
+		class="white flex min-h-screen w-full flex-col bg-white text-black dark:bg-neutral-800 dark:text-white"
+	>
+		<slot />
+	</div>
 </main>
