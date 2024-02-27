@@ -15,6 +15,8 @@ router.get('/', async (req: Request, res: Response) => {
 		},
 	});
 
+	// todo: setting the thumbnail url for every video, maybe a media service?
+
 	await new Promise((r) => setTimeout(r, 1000));
 
 	return res.json({
