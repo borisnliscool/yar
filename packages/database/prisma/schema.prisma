@@ -20,6 +20,15 @@ model user {
     uploads video[]
 }
 
+model media {
+    id         String   @id @unique @default(uuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+    mime_type  String
+
+    video video[]
+}
+
 model video {
     id          String   @id @unique @default(uuid())
     created_at  DateTime @default(now())
@@ -30,4 +39,7 @@ model video {
 
     author    user   @relation(fields: [author_id], references: [id])
     author_id String
+
+    thumbnail    media?  @relation(fields: [thumbnail_id], references: [id])
+    thumbnail_id String?
 }

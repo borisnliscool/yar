@@ -1,1 +1,2 @@
-export { default as MyCounterButton } from './components/MyCounterButton.svelte';
+export * from './components/input';
+export * from './components/skeleton';

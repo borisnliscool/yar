@@ -1,0 +1,20 @@
+{
+	"name": "@repo/utils",
+	"version": "0.0.0",
+	"type": "module",
+	"module": "index.ts",
+	"main": "index.ts",
+	"exports": {
+		".": {
+			"types": "./index.ts",
+			"svelte": "./index.ts"
+		}
+	},
+	"dependencies": {
+		"typescript": "latest"
+	},
+	"devDependencies": {
+		"clsx": "^2.1.0",
+		"tailwind-merge": "^2.2.1"
+	}
+}

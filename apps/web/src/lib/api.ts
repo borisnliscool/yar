@@ -1,4 +1,5 @@
 import { PUBLIC_API_URL } from '$env/static/public';
+import type { RequestError } from '@repo/types';
 
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -22,17 +23,25 @@ export default class API {
 		return this.request(url, 'DELETE', undefined, headers);
 	}
 
-	private static request(url: string, method: HTTPMethod, body?: object, headers?: Headers) {
+	private static async request(url: string, method: HTTPMethod, body?: object, headers?: Headers) {
 		headers ??= new Headers();
 
 		if (!headers.has('Authentication') && this.authenticationToken)
 			headers.set('Authentication', `Bearer ${this.authenticationToken}`);
 
-		return this.fetch(this.buildUrl(url), {
+		const response = await this.fetch(this.buildUrl(url), {
 			method,
 			body: JSON.stringify(body),
 			headers
 		});
+
+		if (!response.ok) {
+			const data: RequestError = await response.json();
+			console.error('[API] Failed to perform request: ', data);
+			throw new Error(data.error.message);
+		}
+
+		return response;
 	}
 
 	private static buildUrl(path: string) {

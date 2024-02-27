@@ -10,6 +10,7 @@
 	"dependencies": {
 		"@repo/database": "workspace:*",
 		"@repo/types": "workspace:*",
+		"@repo/utils": "workspace:*",
 		"@types/bcrypt": "^5.0.2",
 		"@types/ms": "^0.7.34",
 		"bcrypt": "^5.1.1",
