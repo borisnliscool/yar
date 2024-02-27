@@ -14,7 +14,7 @@
 	</div>
 
 	<div class="flex w-full items-center justify-end gap-6">
-		<button on:click={() => ($theme = $theme == 'dark' ? 'light' : 'dark')}>
+		<button on:click={() => ($theme = $theme == 'dark' ? 'light' : 'dark')} class="text-xl">
 			{#if $theme == 'dark'}
 				<Icon icon="fa6-solid:sun" />
 			{:else}
