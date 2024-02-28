@@ -11,11 +11,11 @@ export default class API {
 		return this.request(url, 'GET', undefined, headers);
 	}
 
-	static post(url: string, body?: object, headers?: Headers) {
+	static post(url: string, body: object, headers?: Headers) {
 		return this.request(url, 'POST', body, headers);
 	}
 
-	static put(url: string, body?: object, headers?: Headers) {
+	static put(url: string, body: object, headers?: Headers) {
 		return this.request(url, 'PUT', body, headers);
 	}
 
@@ -28,6 +28,10 @@ export default class API {
 
 		if (!headers.has('Authentication') && this.authenticationToken)
 			headers.set('Authentication', `Bearer ${this.authenticationToken}`);
+
+		if ((method == 'POST' || method == 'PUT') && !headers.get('Content-Type')) {
+			headers.set('Content-Type', 'application/json');
+		}
 
 		const response = await this.fetch(this.buildUrl(url), {
 			method,
