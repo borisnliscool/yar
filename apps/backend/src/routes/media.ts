@@ -4,7 +4,7 @@ import FileService from '../services/fileService';
 
 export const router = Router();
 
-// todo permissions
+// todo permissions, request width
 
 router.get('/:id', async (req: Request, res: Response) => {
 	const media = await database.media.findFirst({

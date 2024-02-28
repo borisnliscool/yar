@@ -46,7 +46,8 @@
 		"prettier": "^3.2.5",
 		"prettier-plugin-svelte": "^3.2.1",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.3.3"
+		"typescript": "^5.3.3",
+		"yt-dlp-wrap": "^2.3.12"
 	},
 	"nodemonConfig": {
 		"watch": [

@@ -5,7 +5,9 @@ export default class FileService {
 	private static rootDir: string = path.join(process.cwd(), 'data');
 
 	static getDirectoryPath(directory: string): string {
-		return path.join(this.rootDir, directory);
+		const dirPath = path.join(this.rootDir, directory);
+		fs.mkdirSync(dirPath, { recursive: true });
+		return dirPath;
 	}
 
 	static readFile(directory: string, filePath: string): Buffer {
