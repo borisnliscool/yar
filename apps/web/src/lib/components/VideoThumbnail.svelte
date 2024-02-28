@@ -20,6 +20,12 @@
 				src={video.thumbnail.url}
 				alt={video.title}
 			/>
+		{:else}
+			<div
+				class="grid h-full w-full select-none place-items-center text-4xl font-semibold text-neutral-400 dark:text-neutral-500"
+			>
+				?
+			</div>
 		{/if}
 	</div>
 	<div>

@@ -28,6 +28,10 @@ model media {
     extension  String
     type       media_type
 
+    width    Int?
+    height   Int?
+    duration Int?
+
     video video[]
 }
 
