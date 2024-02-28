@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import * as RT from 'runtypes';
 import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
-import YtdlpService from '../services/ytdlpService';
+import VideoDownloadService from '../services/videoDownloadService';
 
 export const router = Router();
 
@@ -21,7 +21,7 @@ router.post(
 		const body = req.body as RT.Static<typeof VideoInfoSchema>;
 
 		// todo cache this
-		const videoInfo = await YtdlpService.getUrlInformation(body.url);
+		const videoInfo = await VideoDownloadService.getUrlInformation(body.url);
 
 		res.send(videoInfo);
 	}

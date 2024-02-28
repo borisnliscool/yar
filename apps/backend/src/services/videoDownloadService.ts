@@ -4,7 +4,7 @@ import YTDlpWrap from 'yt-dlp-wrap';
 import { YtdlpVideo } from '../types';
 import FileService from './fileService';
 
-export default class YtdlpService {
+export default class VideoDownloadService {
 	static #executableName = 'yt-dlp.exe';
 
 	static ytDlpPath = path.join(FileService.getDirectoryPath('utils'), this.#executableName);
