@@ -24,12 +24,19 @@ interface Video {
 	thumbnail?: Media;
 }
 
+type MediaType = 'IMAGE' | 'VIDEO';
+
 interface Media {
 	id: string;
 	created_at: Date;
 	updated_at: Date;
 	mime_type: string;
 	url?: string;
+	type: MediaType;
+
+	width?: number;
+	height?: number;
+	duration?: number;
 }
 
-export type { Media, RequestError, User, Video };
+export type { Media, MediaType, RequestError, User, Video };

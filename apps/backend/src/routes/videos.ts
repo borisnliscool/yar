@@ -41,6 +41,9 @@ router.get('/', async (req: Request, res: Response) => {
 				updated_at: dbVideo.thumbnail.updated_at,
 				mime_type: dbVideo.thumbnail.mime_type,
 				url: MediaService.getMediaUrl(dbVideo.thumbnail.id),
+				type: dbVideo.thumbnail.type,
+				height: dbVideo.thumbnail.height ?? undefined,
+				width: dbVideo.thumbnail.width ?? undefined,
 			};
 		}
 
