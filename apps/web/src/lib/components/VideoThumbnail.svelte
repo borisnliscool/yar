@@ -10,9 +10,16 @@
 </script>
 
 <div>
-	<div class="mb-1 aspect-video w-full rounded bg-gradient-to-br from-lime-500 to-blue-500">
+	<div
+		class="mb-1 aspect-video w-full overflow-hidden rounded-md bg-neutral-300 dark:bg-neutral-700"
+	>
 		{#if video.thumbnail?.url}
-			<img class="h-full w-full object-contain" src={video.thumbnail.url} alt={video.title} />
+			<img
+				crossorigin="anonymous"
+				class="h-full w-full object-contain"
+				src={video.thumbnail.url}
+				alt={video.title}
+			/>
 		{/if}
 	</div>
 	<div>

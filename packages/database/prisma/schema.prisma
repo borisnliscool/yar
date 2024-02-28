@@ -21,12 +21,19 @@ model user {
 }
 
 model media {
-    id         String   @id @unique @default(uuid())
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
+    id         String     @id @unique @default(uuid())
+    created_at DateTime   @default(now())
+    updated_at DateTime   @updatedAt
     mime_type  String
+    extension  String
+    type       media_type
 
     video video[]
+}
+
+enum media_type {
+    IMAGE
+    VIDEO
 }
 
 model video {
