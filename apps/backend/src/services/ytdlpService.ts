@@ -22,9 +22,40 @@ export default class YtdlpService {
 	static async getUrlInformation(url: string): Promise<YtdlpVideo> {
 		if (!this.ready) throw Error('ytdlp service was not ready');
 
-		const data = await this.ytDlpWrap.getVideoInfo([url]);
+		const data: YtdlpVideo = await this.ytDlpWrap.getVideoInfo([url]);
 		if (!data) throw Error('failed to fetch video info');
 
-		return data as YtdlpVideo;
+		return {
+			id: data.id,
+			title: data.title,
+			thumbnail: data.thumbnail,
+			webpage_url: data.webpage_url,
+			original_url: data.original_url,
+			url: data.url,
+			display_id: data.display_id,
+			fulltitle: data.fulltitle,
+			epoch: data.epoch,
+			ext: data.ext,
+			width: data.width,
+			height: data.height,
+			filename: data.filename,
+
+			formats: data.formats.map((format) => ({
+				ext: format.ext,
+				width: format.width,
+				height: format.height,
+				format_id: format.format_id,
+				format: format.format,
+				url: format.url,
+				aspect_ratio: format.aspect_ratio,
+				video_ext: format.video_ext,
+				audio_ext: format.audio_ext,
+			})),
+
+			thumbnails: data.thumbnails.map((thumbnail) => ({
+				id: thumbnail.id,
+				url: thumbnail.url,
+			})),
+		};
 	}
 }

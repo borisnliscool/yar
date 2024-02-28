@@ -44,8 +44,8 @@ type YtdlpVideo = Record<string, any> & {
 	formats: Array<YtdlpFormat>;
 
 	thumbnails: Array<{
-		url: string;
 		id: string;
+		url: string;
 	}>;
 };
 
