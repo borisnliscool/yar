@@ -18,7 +18,7 @@ export default class VideoDownloadService {
 		})();
 	}
 
-	static async getUrlInformation(url: string): Promise<YtdlpVideo> {
+	static async getVideoInformation(url: string): Promise<YtdlpVideo> {
 		if (!this.ready) throw Error('ytdlp service was not ready');
 
 		const data: YtdlpVideo = await this.ytdlp.getVideoInfo([url]);

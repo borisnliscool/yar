@@ -21,7 +21,7 @@ router.post(
 		const body = req.body as RT.Static<typeof VideoInfoSchema>;
 
 		// todo cache this
-		const videoInfo = await VideoDownloadService.getUrlInformation(body.url);
+		const videoInfo = await VideoDownloadService.getVideoInformation(body.url);
 
 		res.send(videoInfo);
 	}
