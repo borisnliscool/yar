@@ -5,16 +5,15 @@ import { YtdlpVideo } from '../types';
 import FileService from './fileService';
 
 export default class VideoDownloadService {
-	static #executableName = 'yt-dlp.exe';
-
-	static ytDlpPath = path.join(FileService.getDirectoryPath('utils'), this.#executableName);
-	static ytDlpWrap = new YTDlpWrap();
+	static ytdlp = new YTDlpWrap();
 	static ready = false;
 
 	static {
 		(async () => {
-			if (!existsSync(this.ytDlpPath)) await YTDlpWrap.downloadFromGithub(this.ytDlpPath);
-			this.ytDlpWrap.setBinaryPath(this.ytDlpPath);
+			const executablePath = path.join(FileService.getDirectoryPath('utils'), 'yt-dlp.exe');
+			if (!existsSync(executablePath)) await YTDlpWrap.downloadFromGithub(executablePath);
+
+			this.ytdlp.setBinaryPath(executablePath);
 			this.ready = true;
 		})();
 	}
@@ -22,7 +21,7 @@ export default class VideoDownloadService {
 	static async getUrlInformation(url: string): Promise<YtdlpVideo> {
 		if (!this.ready) throw Error('ytdlp service was not ready');
 
-		const data: YtdlpVideo = await this.ytDlpWrap.getVideoInfo([url]);
+		const data: YtdlpVideo = await this.ytdlp.getVideoInfo([url]);
 		if (!data) throw Error('failed to fetch video info');
 
 		return {
