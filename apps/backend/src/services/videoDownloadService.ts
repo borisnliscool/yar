@@ -1,7 +1,7 @@
+import { YtdlpVideo } from '@repo/types';
 import { existsSync } from 'fs';
 import path from 'path';
 import YTDlpWrap from 'yt-dlp-wrap';
-import { YtdlpVideo } from '../types';
 import FileService from './fileService';
 
 export default class VideoDownloadService {
@@ -38,6 +38,7 @@ export default class VideoDownloadService {
 			width: data.width,
 			height: data.height,
 			filename: data.filename,
+			filesize_approx: data.filesize_approx,
 
 			formats: data.formats.map((format) => ({
 				ext: format.ext,
@@ -49,6 +50,7 @@ export default class VideoDownloadService {
 				aspect_ratio: format.aspect_ratio,
 				video_ext: format.video_ext,
 				audio_ext: format.audio_ext,
+				filesize: format.filesize,
 			})),
 
 			thumbnails: data.thumbnails.map((thumbnail) => ({

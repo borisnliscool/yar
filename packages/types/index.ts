@@ -39,4 +39,41 @@ interface Media {
 	duration?: number;
 }
 
-export type { Media, MediaType, RequestError, User, Video };
+interface YtdlpFormat {
+	ext: string;
+	width?: number;
+	height?: number;
+	format_id: string;
+	format: string;
+	url: string;
+	aspect_ratio?: string;
+	video_ext: string;
+	audio_ext: string;
+	filesize?: number;
+}
+
+type YtdlpVideo = Record<string, any> & {
+	id: string;
+	title: string;
+	thumbnail: string;
+	webpage_url: string;
+	original_url: string;
+	url: string;
+	display_id: string;
+	fulltitle: string;
+	epoch: number;
+	ext: string;
+	width?: number;
+	height?: number;
+	filename: string;
+	filesize_approx?: number;
+
+	formats: Array<YtdlpFormat>;
+
+	thumbnails: Array<{
+		id: string;
+		url: string;
+	}>;
+};
+
+export type { Media, MediaType, RequestError, User, Video, YtdlpVideo };
