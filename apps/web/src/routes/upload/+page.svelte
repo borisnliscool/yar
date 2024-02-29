@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ProxiedImage from '$components/ProxiedImage.svelte';
 	import API from '$lib/api';
 	import type { YtdlpVideo } from '@repo/types';
 	import { Button, Input } from '@repo/ui';
@@ -54,9 +55,8 @@
 					loading..
 				{:then videoData}
 					{#if videoData}
-						<img
-							src={videoData.thumbnail}
-							alt="video thumbnail"
+						<ProxiedImage
+							url={videoData.thumbnail}
 							class="aspect-video w-full overflow-hidden rounded bg-neutral-400 object-contain dark:bg-neutral-700"
 						/>
 
@@ -95,6 +95,6 @@
 			</div>
 		</div>
 
-		<div class="h-full rounded border p-4">Progress logs</div>
+		<div class="h-full rounded border p-4 dark:border-neutral-500">Progress logs</div>
 	</div>
 </div>
