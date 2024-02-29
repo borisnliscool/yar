@@ -199,6 +199,9 @@ importers:
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
+      human-format:
+        specifier: ^1.2.0
+        version: 1.2.0
       postcss:
         specifier: ^8.4.35
         version: 8.4.35
@@ -2324,6 +2327,11 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: false
+
+  /human-format@1.2.0:
+    resolution: {integrity: sha512-GIjOefWusTiXEPezbuI59uc1G2SNMpym6w1wNfoWAG6QrTsWueuauR5We0xHHuzoJKIYTwwNtTEy0ahyji5KXw==}
+    engines: {node: '>=4'}
+    dev: true
 
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}

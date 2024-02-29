@@ -23,6 +23,7 @@ router.post(
 		// todo cache this
 		const videoInfo = await VideoDownloadService.getVideoInformation(body.url);
 
+		res.setHeader('Cache-Control', 'max-age=3600');
 		res.send(videoInfo);
 	}
 );

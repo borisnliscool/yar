@@ -39,6 +39,7 @@ export default class VideoDownloadService {
 			height: data.height,
 			filename: data.filename,
 			filesize_approx: data.filesize_approx,
+			duration: data.duration,
 
 			formats: data.formats.map((format) => ({
 				ext: format.ext,

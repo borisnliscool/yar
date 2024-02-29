@@ -67,6 +67,7 @@ type YtdlpVideo = Record<string, any> & {
 	height?: number;
 	filename: string;
 	filesize_approx?: number;
+	duration?: number;
 
 	formats: Array<YtdlpFormat>;
 
@@ -76,4 +77,4 @@ type YtdlpVideo = Record<string, any> & {
 	}>;
 };
 
-export type { Media, MediaType, RequestError, User, Video, YtdlpVideo };
+export type { Media, MediaType, RequestError, User, Video, YtdlpFormat, YtdlpVideo };
