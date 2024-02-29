@@ -3,7 +3,7 @@ import { tv, type VariantProps } from 'tailwind-variants';
 import Root from './button.svelte';
 
 const buttonVariants = tv({
-	base: 'focus-visible:ring-opacity-50 dark:focus-visible:ring-primary-500/50 flex items-center justify-center rounded-md focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50',
+	base: 'focus-visible:ring-opacity-50 dark:focus-visible:ring-primary-500/50 flex items-center justify-center rounded-md focus-visible:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 min-w-fit',
 	variants: {
 		variant: {
 			default:

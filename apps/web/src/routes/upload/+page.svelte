@@ -1,30 +1,40 @@
 <script lang="ts">
+	import API from '$lib/api';
+	import type { YtdlpVideo } from '@repo/types';
 	import { Button, Input } from '@repo/ui';
+	import { instant } from '@repo/utils';
 
+	let videoInfo: Promise<YtdlpVideo>;
 	let input = '';
 
-	const search = () => {
-		console.log('search');
-	};
+	const search = instant(async () => {
+		const url = new URL(input);
+
+		videoInfo = new Promise(async (resolve, reject) => {
+			try {
+				const response = await API.post('/upload/info', {
+					url: url
+				});
+
+				resolve(await response.json());
+			} catch (error) {
+				reject(error);
+			}
+		});
+	});
 </script>
 
 <div class="mx-auto w-full max-w-2xl py-4">
-	<p>Testing</p>
-	<Input bind:value={input} on:paste={search} />
-
-	<div class="mt-2 flex flex-wrap items-center gap-1">
-		<Button>Hello world</Button>
-		<Button variant="secondary">Hello world</Button>
-		<Button variant="success">Hello world</Button>
-		<Button variant="destructive">Hello world</Button>
-		<Button variant="link">Hello world</Button>
-		<Button variant="ghost">Hello world</Button>
-		<Button variant="outline">Hello world</Button>
+	<div class="flex items-center gap-2">
+		<Input placeholder="Video URL" bind:value={input} on:paste={search} />
+		<Button on:click={search}>Search</Button>
 	</div>
 
-	<div class="mt-2 flex flex-wrap items-center gap-1">
-		<Button size="sm">Hello world</Button>
-		<Button size="default">Hello world</Button>
-		<Button size="lg">Hello world</Button>
-	</div>
+	{#await videoInfo}
+		loading..
+	{:then data}
+		<pre>{JSON.stringify(data, null, 4)}</pre>
+	{:catch error}
+		failed! {error}
+	{/await}
 </div>
