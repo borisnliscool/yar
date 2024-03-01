@@ -39,8 +39,6 @@ export default class API {
 		const headers = options?.headers ?? new Headers();
 
 		if (!headers.has('Authorization') && !options?.noAuth) {
-			console.log('getting auth!!!');
-
 			this.authorizationToken ??= await this.getAuthorizationToken();
 			headers.set('Authorization', `Bearer ${this.authorizationToken}`);
 		}

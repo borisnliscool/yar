@@ -68,21 +68,20 @@ router.post(
 			{ expiresIn: ms('1d'), subject: user.id }
 		);
 
-		res.cookie('refreshToken', refreshToken, {
-			httpOnly: true,
-			maxAge: ms('1w'),
-		});
+		// res.cookie('refreshToken', refreshToken, {
+		// 	httpOnly: true,
+		// 	maxAge: ms('1w'),
+		// });
 
 		return res.json({
 			accessToken,
+			refreshToken,
 		});
 	}
 );
 
 router.post('/refresh', async (req: Request, res: Response) => {
 	const suppliedRefreshToken = req.cookies['refreshToken'];
-	console.log(req.cookies);
-
 	if (!suppliedRefreshToken) throw new Error('refresh cookie missing');
 
 	const decodedToken = JwtService.decodeToken(suppliedRefreshToken);
