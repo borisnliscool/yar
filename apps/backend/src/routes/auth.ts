@@ -36,7 +36,7 @@ router.post(
 			throw new Error(message ? message : 'invalid credentials');
 		};
 
-		if (!user || !compareSync(user.password_hash, body.password)) {
+		if (!user || !compareSync(body.password, user.password_hash)) {
 			return invalid();
 		}
 
@@ -62,6 +62,7 @@ router.post(
 			{ expiresIn: ms('1w'), subject: user.id }
 		);
 
+		// todo 1 day access token might be a bit long?
 		const accessToken = JwtService.encodeToken(
 			{ type: 'access' },
 			{ expiresIn: ms('1d'), subject: user.id }
@@ -80,6 +81,10 @@ router.post(
 
 router.post('/refresh', async (req: Request, res: Response) => {
 	const suppliedRefreshToken = req.cookies['refreshToken'];
+	console.log(req.cookies);
+
+	if (!suppliedRefreshToken) throw new Error('refresh cookie missing');
+
 	const decodedToken = JwtService.decodeToken(suppliedRefreshToken);
 
 	if (!decodedToken) {

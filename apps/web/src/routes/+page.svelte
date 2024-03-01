@@ -8,7 +8,7 @@
 
 	let videoPromise: Promise<{ videos: Video[] }>;
 
-	onMount(() => {
+	onMount(async () => {
 		videoPromise = new Promise(async (resolve) => {
 			const response = await API.get('/videos');
 			const data: { videos: Video[] } = await response.json();

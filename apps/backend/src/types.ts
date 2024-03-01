@@ -1,6 +1,10 @@
+import { user } from '@repo/database';
+
 declare global {
 	namespace Express {
-		interface Request {}
+		interface Request {
+			user?: user;
+		}
 
 		interface Response {
 			errorDetails?: object;
