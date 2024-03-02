@@ -68,11 +68,6 @@ router.post(
 			{ expiresIn: ms('1d'), subject: user.id }
 		);
 
-		// res.cookie('refreshToken', refreshToken, {
-		// 	httpOnly: true,
-		// 	maxAge: ms('1w'),
-		// });
-
 		return res.json({
 			accessToken,
 			refreshToken,
@@ -81,8 +76,6 @@ router.post(
 );
 
 router.post('/refresh', async (req: Request, res: Response) => {
-	console.log(req.cookies, req.signedCookies);
-
 	const suppliedRefreshToken = req.cookies['refreshToken'];
 	if (!suppliedRefreshToken) throw new Error('refresh cookie missing');
 
