@@ -35,7 +35,15 @@ export default class API {
 		return data.accessToken;
 	}
 
-	private static async request(url: string, method: HTTPMethod, body?: object, options?: Options) {
+	private static async request(
+		url: string,
+		method: HTTPMethod,
+		body?: object,
+		options?: Options,
+		attempt: number = 0
+	): Promise<Response> {
+		if (attempt > 2) throw new Error('[API] Failed to perform request, exceeded max attempts');
+
 		const headers = options?.headers ?? new Headers();
 
 		if (!headers.has('Authorization') && !options?.noAuth) {
@@ -54,7 +62,10 @@ export default class API {
 			credentials: 'include'
 		});
 
-		// todo check if the token expired, if so request a new one and try again
+		if (response.status == 403) {
+			this.authorizationToken = await this.getAuthorizationToken();
+			return this.request(url, method, body, options, attempt + 1);
+		}
 
 		if (!response.ok) {
 			const data: RequestError = await response.json();

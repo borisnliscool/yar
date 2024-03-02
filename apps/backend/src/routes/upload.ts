@@ -2,9 +2,12 @@ import { Request, Response, Router } from 'express';
 import * as RT from 'runtypes';
 import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
+import AuthenticationService from '../services/authenticationService';
 import VideoDownloadService from '../services/videoDownloadService';
 
 export const router = Router();
+
+router.use(AuthenticationService.isAuthenticated);
 
 const VideoInfoSchema = RT.Record({
 	url: RT.String,

@@ -1,15 +1,16 @@
 import { Request, Response, Router } from 'express';
+import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
 import FileService from '../services/fileService';
 
 export const router = Router();
 
-// todo permissions, request width
+// todo request width query param
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:mediaId', AuthenticationService.media, async (req: Request, res: Response) => {
 	const media = await database.media.findFirst({
 		where: {
-			id: req.params.id,
+			id: req.params.mediaId,
 		},
 	});
 

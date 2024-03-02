@@ -8,6 +8,9 @@ import { validateSchema } from '../middleware/schemaValidation';
 import { database } from '../services/databaseService';
 import JwtService from '../services/jwtService';
 
+const REFRESH_TOKEN_EXPIRY = ms('1w') / 1000;
+const ACCESS_TOKEN_EXPIRY = ms('10s') / 1000;
+
 export const router = Router();
 
 const LoginSchema = RT.Record({
@@ -57,16 +60,15 @@ router.post(
 			}
 		}
 
-		const refreshToken = JwtService.encodeToken(
-			{ type: 'refresh' },
-			{ expiresIn: ms('1w'), subject: user.id }
-		);
+		const refreshToken = JwtService.encodeToken({}, 'refresh', {
+			expiresIn: REFRESH_TOKEN_EXPIRY,
+			subject: user.id,
+		});
 
-		// todo 1 day access token might be a bit long?
-		const accessToken = JwtService.encodeToken(
-			{ type: 'access' },
-			{ expiresIn: ms('1d'), subject: user.id }
-		);
+		const accessToken = JwtService.encodeToken({}, 'access', {
+			expiresIn: ACCESS_TOKEN_EXPIRY,
+			subject: user.id,
+		});
 
 		return res.json({
 			accessToken,
@@ -82,19 +84,19 @@ router.post('/refresh', async (req: Request, res: Response) => {
 	try {
 		const decodedToken = JwtService.decodeToken(suppliedRefreshToken);
 
-		const refreshToken = JwtService.encodeToken(
-			{ type: 'refresh' },
-			{ expiresIn: ms('1w'), subject: String(decodedToken.sub) }
-		);
+		const refreshToken = JwtService.encodeToken({}, 'refresh', {
+			expiresIn: REFRESH_TOKEN_EXPIRY,
+			subject: String(decodedToken.sub),
+		});
 
-		const accessToken = JwtService.encodeToken(
-			{ type: 'access' },
-			{ expiresIn: ms('1d'), subject: String(decodedToken.sub) }
-		);
+		const accessToken = JwtService.encodeToken({}, 'access', {
+			expiresIn: ACCESS_TOKEN_EXPIRY,
+			subject: String(decodedToken.sub),
+		});
 
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
-			maxAge: ms('1w'),
+			maxAge: REFRESH_TOKEN_EXPIRY,
 		});
 
 		return res.json({

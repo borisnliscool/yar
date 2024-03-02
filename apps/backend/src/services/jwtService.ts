@@ -1,4 +1,5 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
+import ms from 'ms';
 import KeyService from './keyService';
 
 export default class JwtService {
@@ -7,9 +8,10 @@ export default class JwtService {
 
 	static encodeToken(
 		payload: Record<string, any>,
-		options: SignOptions = { expiresIn: '1d' }
+		type: 'refresh' | 'access' | 'media',
+		options: SignOptions = { expiresIn: ms('1d') }
 	): string {
-		return jwt.sign(payload, this.privateKey, {
+		return jwt.sign({ ...payload, type }, this.privateKey, {
 			...options,
 			algorithm: 'RS256',
 		});

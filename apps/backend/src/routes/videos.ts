@@ -1,9 +1,12 @@
 import { Video } from '@repo/types';
 import { Request, Response, Router } from 'express';
+import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
 import MediaService from '../services/mediaService';
 
 export const router = Router();
+
+router.use(AuthenticationService.isAuthenticated);
 
 router.get('/', async (req: Request, res: Response) => {
 	const { skip, count } = req.query;
