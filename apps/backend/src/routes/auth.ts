@@ -81,32 +81,35 @@ router.post(
 );
 
 router.post('/refresh', async (req: Request, res: Response) => {
+	console.log(req.cookies, req.signedCookies);
+
 	const suppliedRefreshToken = req.cookies['refreshToken'];
 	if (!suppliedRefreshToken) throw new Error('refresh cookie missing');
 
-	const decodedToken = JwtService.decodeToken(suppliedRefreshToken);
+	try {
+		const decodedToken = JwtService.decodeToken(suppliedRefreshToken);
 
-	if (!decodedToken) {
+		const refreshToken = JwtService.encodeToken(
+			{ type: 'refresh' },
+			{ expiresIn: ms('1w'), subject: String(decodedToken.sub) }
+		);
+
+		const accessToken = JwtService.encodeToken(
+			{ type: 'access' },
+			{ expiresIn: ms('1d'), subject: String(decodedToken.sub) }
+		);
+
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			maxAge: ms('1w'),
+		});
+
+		return res.json({
+			accessToken,
+		});
+	} catch (error) {
+		console.error(error);
 		res.statusCode = 401;
-		throw new Error('invalid credentials');
+		throw new Error('failed to verify refresh token');
 	}
-
-	const refreshToken = JwtService.encodeToken(
-		{ type: 'refresh' },
-		{ expiresIn: ms('1w'), subject: String(decodedToken.sub) }
-	);
-
-	const accessToken = JwtService.encodeToken(
-		{ type: 'access' },
-		{ expiresIn: ms('1d'), subject: String(decodedToken.sub) }
-	);
-
-	res.cookie('refreshToken', refreshToken, {
-		httpOnly: true,
-		maxAge: ms('1w'),
-	});
-
-	return res.json({
-		accessToken,
-	});
 });

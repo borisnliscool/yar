@@ -50,7 +50,8 @@ export default class API {
 		const response = await this.fetch(this.buildUrl(url), {
 			method,
 			body: JSON.stringify(body),
-			headers
+			headers,
+			credentials: 'include'
 		});
 
 		// todo check if the token expired, if so request a new one and try again

@@ -20,7 +20,12 @@ export default class WebServerService {
 	private static applyMiddlewares() {
 		this.app.use(express.json());
 		this.app.use(helmet());
-		this.app.use(cors());
+		this.app.use(
+			cors({
+				origin: ['http://localhost:5173'], // todo this only works in development
+				credentials: true,
+			})
+		);
 		this.app.use(
 			morgan('dev', {
 				stream: LoggerService.createLoggerStream('webserver'),
