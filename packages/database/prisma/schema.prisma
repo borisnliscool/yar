@@ -16,6 +16,7 @@ model user {
     password_hash String
     totp_secret   String?
     created_at    DateTime @default(now())
+    roles         String   @default("ROLE_USER")
 
     uploads video[]
 }

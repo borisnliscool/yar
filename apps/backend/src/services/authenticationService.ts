@@ -60,4 +60,15 @@ export default class AuthenticationService {
 
 		return next();
 	}
+
+	static async hasRoles(roles: string | string[]) {
+		return (req: Request, res: Response, next: NextFunction) => {
+			roles = typeof roles == 'string' ? [roles] : roles;
+			if (!req.user || !req.user.roles.split(',').some((role) => roles.includes(role))) {
+				res.statusCode = 403;
+				throw new Error('insufficient permissions');
+			}
+			return next();
+		};
+	}
 }
