@@ -1,8 +1,9 @@
 import { Request, Response, Router } from 'express';
+import AuthenticationService from '../services/authenticationService';
 
 export const router = Router();
 
-// todo auth
+router.use(AuthenticationService.isAuthenticated);
 
 router.get('/image/:url', async (req: Request, res: Response) => {
 	const url = atob(req.params.url);

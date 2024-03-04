@@ -20,7 +20,7 @@
 
 <main class:dark={$theme == 'dark'}>
 	<div
-		class="white flex min-h-screen w-full flex-col bg-white text-black dark:bg-neutral-800 dark:text-white"
+		class="white flex min-h-screen w-full flex-col bg-white text-black dark:bg-neutral-900 dark:text-white"
 	>
 		<slot />
 	</div>
