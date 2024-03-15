@@ -3,7 +3,7 @@
 	import API from '$lib/api';
 	import VideoThumbnail from '$lib/components/VideoThumbnail.svelte';
 	import type { Video } from '@repo/types';
-	import { Skeleton } from '@repo/ui';
+	import { Button, Skeleton } from '@repo/ui';
 	import { onMount } from 'svelte';
 
 	let videoPromise: Promise<{ videos: Video[] }>;
@@ -27,7 +27,9 @@
 	{:then response}
 		{#if response}
 			{#each response.videos as video}
-				<VideoThumbnail {video} />
+				<Button class="h-fit p-0" variant="ghost" href="/watch/{video.id}">
+					<VideoThumbnail {video} />
+				</Button>
 			{/each}
 		{/if}
 	{:catch error}
