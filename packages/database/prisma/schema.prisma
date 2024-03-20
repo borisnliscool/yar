@@ -33,7 +33,8 @@ model media {
     height   Int?
     duration Int?
 
-    video video[]
+    video     video[] @relation("video_media")
+    thumbnail video[] @relation("video_thumbnail")
 }
 
 enum media_type {
@@ -52,6 +53,9 @@ model video {
     author    user   @relation(fields: [author_id], references: [id])
     author_id String
 
-    thumbnail    media?  @relation(fields: [thumbnail_id], references: [id])
+    thumbnail    media?  @relation("video_thumbnail", fields: [thumbnail_id], references: [id])
     thumbnail_id String?
+
+    media   media  @relation("video_media", fields: [mediaId], references: [id])
+    mediaId String
 }

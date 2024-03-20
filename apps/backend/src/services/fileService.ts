@@ -35,4 +35,16 @@ export default class FileService {
 
 		return fs.writeFileSync(fullFilePath, contents, options);
 	}
+
+	static stat(directory: string, filePath: string) {
+		return fs.statSync(path.join(this.getDirectoryPath(directory), filePath));
+	}
+
+	static createReadStream(
+		directory: string,
+		filePath: string,
+		options?: { start: number; end: number }
+	) {
+		return fs.createReadStream(path.join(this.getDirectoryPath(directory), filePath), options);
+	}
 }

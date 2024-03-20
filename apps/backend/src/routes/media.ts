@@ -6,6 +6,7 @@ import FileService from '../services/fileService';
 export const router = Router();
 
 // todo request width query param
+//  maybe don't serve videos
 
 router.get('/:mediaId', AuthenticationService.media, async (req: Request, res: Response) => {
 	const media = await database.media.findFirst({

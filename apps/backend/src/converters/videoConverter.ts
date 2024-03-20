@@ -1,7 +1,7 @@
 import { media, user, video } from '@repo/database';
 import { Video } from '@repo/types';
 import Converter from '../classes/converter';
-import MediaService from '../services/mediaService';
+import MediaConverter from './mediaConverter';
 
 type db_video = video & { author: user; thumbnail: media | null };
 
@@ -19,18 +19,7 @@ class VideoConverter implements Converter<db_video, Video> {
 			},
 		};
 
-		if (input.thumbnail) {
-			video.thumbnail = {
-				id: input.thumbnail.id,
-				created_at: input.thumbnail.created_at,
-				updated_at: input.thumbnail.updated_at,
-				mime_type: input.thumbnail.mime_type,
-				url: MediaService.getMediaUrl(input.thumbnail.id),
-				type: input.thumbnail.type,
-				height: input.thumbnail.height ?? undefined,
-				width: input.thumbnail.width ?? undefined,
-			};
-		}
+		if (input.thumbnail) video.thumbnail = MediaConverter.convert(input.thumbnail);
 
 		return video;
 	}
