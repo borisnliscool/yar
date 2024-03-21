@@ -3,7 +3,7 @@ import { Video } from '@repo/types';
 import Converter from '../classes/converter';
 import MediaConverter from './mediaConverter';
 
-type db_video = video & { author: user; thumbnail: media | null };
+type db_video = video & { author: user; thumbnail: media | null; media: media };
 
 class VideoConverter implements Converter<db_video, Video> {
 	convert(input: db_video): Video {
@@ -17,6 +17,7 @@ class VideoConverter implements Converter<db_video, Video> {
 				username: input.author.username,
 				created_at: input.author.created_at,
 			},
+			media: MediaConverter.convert(input.media),
 		};
 
 		if (input.thumbnail) video.thumbnail = MediaConverter.convert(input.thumbnail);

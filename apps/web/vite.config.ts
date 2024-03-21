@@ -7,5 +7,14 @@ export default defineConfig({
 		commonjsOptions: {
 			include: [/@repo-ui/, /node_modules/]
 		}
+	},
+	server: {
+		proxy: {
+			'/api': {
+				target: 'http://localhost:3000',
+				changeOrigin: true,
+				rewrite: (path) => path.replace(/^\/api/, '')
+			}
+		}
 	}
 });

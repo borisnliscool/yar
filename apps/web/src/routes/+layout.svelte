@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { theme, type ColorTheme } from '$lib/stores/theme';
 	import '@fontsource-variable/inter';
-	import { onMount } from 'svelte';
 	import '../app.scss';
+
+	import { theme, type ColorTheme } from '$lib/stores/theme';
+	import { onMount } from 'svelte';
 
 	const updateTheme = () => {
 		const localStoragePref = localStorage.getItem('color-theme') as ColorTheme | undefined;
 		const systemPref: ColorTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
 			? 'dark'
 			: 'light';
-
 		theme.set(localStoragePref ?? systemPref);
 	};
 

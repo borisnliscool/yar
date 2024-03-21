@@ -76,7 +76,7 @@ export default class API {
 		return response;
 	}
 
-	private static buildUrl(path: string) {
+	static buildUrl(path: string) {
 		return PUBLIC_API_URL + (path.startsWith('/') ? '' : '/') + path;
 	}
 }
