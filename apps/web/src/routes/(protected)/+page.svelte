@@ -22,12 +22,12 @@
 <div class="grid grid-cols-1 gap-4 p-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
 	{#await videoPromise}
 		{#each Array(12) as _}
-			<Skeleton class="aspect-video" />
+			<Skeleton class="aspect-video w-full" />
 		{/each}
 	{:then response}
 		{#if response}
 			{#each response.videos as video}
-				<Button class="h-fit p-0" variant="ghost" href="/watch/{video.id}">
+				<Button class="h-fit w-full p-0" variant="ghost" href="/watch/{video.id}">
 					<VideoThumbnail {video} />
 				</Button>
 			{/each}

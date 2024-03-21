@@ -9,7 +9,7 @@
 	export let video: Video;
 </script>
 
-<div>
+<div class="w-full">
 	<div
 		class="mb-1 aspect-video w-full overflow-hidden rounded-md bg-neutral-300 dark:bg-neutral-700"
 	>
