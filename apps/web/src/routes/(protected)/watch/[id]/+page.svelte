@@ -8,11 +8,13 @@
 	import VideoSidebar from './VideoSidebar.svelte';
 
 	let videoPromise: Promise<Video>;
+	let loadedVideo: Video;
 
 	const loadVideo = (videoId: string) => {
 		videoPromise = new Promise<Video>(async (resolve) => {
 			const response = await API.get('/videos/' + videoId);
 			const data: Video = await response.json();
+			loadedVideo = data;
 			return resolve(data);
 		});
 	};
@@ -58,6 +60,6 @@
 	</div>
 
 	<div class="col-span-full h-full xl:col-span-2">
-		<VideoSidebar />
+		<VideoSidebar hiddenVideos={[loadedVideo]} />
 	</div>
 </div>

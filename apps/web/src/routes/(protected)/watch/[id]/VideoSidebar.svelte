@@ -5,10 +5,19 @@
 	import { Skeleton } from '@repo/ui';
 	import { onMount } from 'svelte';
 
-	let videosPromise: Promise<{ videos: Video[] }>;
+	export let hiddenVideos: Video[];
+
+	let videosPromise: Promise<Video[]>;
 
 	onMount(() => {
-		videosPromise = API.get('/videos?random=1').then((response) => response.json());
+		videosPromise = new Promise<Video[]>(async (resolve) => {
+			const response = await API.get('/videos?random=1');
+			const data: { videos: Video[] } = await response.json();
+
+			return resolve(
+				data.videos.filter((video) => hiddenVideos.findIndex((v) => v.id === video.id) === -1)
+			);
+		});
 	});
 </script>
 
@@ -26,7 +35,7 @@
 		{/each}
 	{:then videos}
 		{#if videos}
-			{#each videos.videos as video}
+			{#each videos as video}
 				<a href="/watch/{video.id}">
 					<VideoThumbnailSidebar {video} />
 				</a>
