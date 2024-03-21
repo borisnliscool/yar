@@ -38,6 +38,7 @@
 					<video
 						src={video.media.url}
 						controls
+						autoplay
 						class="aspect-video h-full w-full bg-black object-contain shadow xl:rounded-lg"
 					/>
 
