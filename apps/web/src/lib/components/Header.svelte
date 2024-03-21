@@ -7,7 +7,9 @@
 <header
 	class="sticky top-0 grid h-16 w-full grid-cols-5 place-items-center border-b px-8 dark:border-b-neutral-700 dark:bg-neutral-800"
 >
-	<div></div>
+	<div class="w-full text-xl font-black">
+		<a href="/">YAR</a>
+	</div>
 
 	<div class="col-span-3 w-full min-w-[20rem] max-w-[30rem]">
 		<Input type="search" class="w-full rounded-full px-4" placeholder="Search query" />

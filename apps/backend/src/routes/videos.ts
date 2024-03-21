@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express';
+import { shuffle } from 'lodash';
 import VideoConverter from '../converters/videoConverter';
 import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
@@ -21,7 +22,7 @@ router.get('/', AuthenticationService.isAuthenticated, async (req: Request, res:
 	const videos = databaseVideos.map(VideoConverter.convert);
 
 	return res.json({
-		videos,
+		videos: shuffle(videos),
 	});
 });
 
