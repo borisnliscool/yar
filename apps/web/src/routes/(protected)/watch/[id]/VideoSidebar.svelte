@@ -15,7 +15,7 @@
 			const data: { videos: Video[] } = await response.json();
 
 			return resolve(
-				data.videos.filter((video) => hiddenVideos.findIndex((v) => v.id === video.id) === -1)
+				data.videos.filter((video) => hiddenVideos.findIndex((v) => v?.id === video.id) === -1)
 			);
 		});
 	});
