@@ -33,7 +33,7 @@
 			<Skeleton class="aspect-video w-full" />
 		{:then video}
 			{#if video}
-				<div class="flex w-full flex-col gap-8">
+				<div class="flex w-full flex-col xl:gap-4">
 					<!-- svelte-ignore a11y-media-has-caption -->
 					<video
 						src={video.media.url}
@@ -41,8 +41,12 @@
 						class="aspect-video h-full w-full bg-black object-contain shadow xl:rounded-lg"
 					/>
 
-					<h1 class="w-full text-2xl font-semibold">{video.title}</h1>
-					<p></p>
+					<div class="flex flex-col gap-4 p-4 xl:p-0">
+						<h1 class="w-full text-2xl font-semibold">{video.title}</h1>
+						{#if video.description}
+							<p>{video.description}</p>
+						{/if}
+					</div>
 				</div>
 			{:else}
 				<p>Video not found</p>
@@ -52,7 +56,7 @@
 		{/await}
 	</div>
 
-	<div class="col-span-full h-full min-h-48 xl:col-span-2">
+	<div class="col-span-full h-full xl:col-span-2">
 		<VideoSidebar />
 	</div>
 </div>

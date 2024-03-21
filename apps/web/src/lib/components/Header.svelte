@@ -5,7 +5,7 @@
 </script>
 
 <header
-	class="sticky top-0 grid h-16 w-full grid-cols-5 place-items-center border-b px-8 dark:border-b-neutral-700 dark:bg-neutral-800"
+	class="sticky top-0 grid h-16 w-full grid-cols-5 place-items-center border-b bg-white/95 px-8 backdrop-blur-lg dark:border-b-neutral-700 dark:bg-neutral-800/95"
 >
 	<div class="w-full text-xl font-black">
 		<a href="/">YAR</a>

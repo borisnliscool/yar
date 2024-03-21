@@ -118,3 +118,8 @@ router.post('/refresh', async (req: Request, res: Response) => {
 		throw new Error('failed to verify refresh token');
 	}
 });
+
+router.post('/logout', async (req: Request, res: Response) => {
+	res.clearCookie('refreshToken');
+	return res.sendStatus(200);
+});
