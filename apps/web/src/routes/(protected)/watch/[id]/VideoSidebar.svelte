@@ -33,6 +33,6 @@
 			{/each}
 		{/if}
 	{:catch error}
-		<!-- promise was rejected -->
+		<p class="text-red-500">{error}</p>
 	{/await}
 </div>

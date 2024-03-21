@@ -45,6 +45,7 @@ export default class API {
 		if (attempt > 2) throw new Error('[API] Failed to perform request, exceeded max attempts');
 
 		const headers = options?.headers ?? new Headers();
+		headers.set('withCredentials', 'true');
 
 		if (!headers.has('Authorization') && !options?.noAuth) {
 			this.authorizationToken ??= await this.getAuthorizationToken();

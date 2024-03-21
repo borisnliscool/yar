@@ -7,30 +7,48 @@
 	import { onMount } from 'svelte';
 	import VideoSidebar from './VideoSidebar.svelte';
 
-	let sourcePromise: Promise<string>;
+	let videoPromise: Promise<Video>;
+
+	const loadVideo = (videoId: string) => {
+		videoPromise = new Promise<Video>(async (resolve) => {
+			const response = await API.get('/videos/' + videoId);
+			const data: Video = await response.json();
+			return resolve(data);
+		});
+	};
+
+	$: loadVideo($page.params.id);
 
 	onMount(() => {
 		const { id: videoId } = $page.params;
-
-		sourcePromise = new Promise<string>(async (resolve, reject) => {
-			const response = await API.get('/videos/' + videoId);
-			const data: Video = await response.json();
-			return resolve(data.media.url!);
-		});
+		loadVideo(videoId);
 	});
 </script>
 
 <Header />
 
-<div class="mx-auto grid w-full grid-cols-3 gap-4 p-4 xl:grid-cols-7 xl:gap-8 xl:p-8">
-	<div class="col-span-5 grid aspect-video place-items-center overflow-hidden rounded-lg shadow">
-		{#await sourcePromise}
-			<Skeleton class="h-full w-full" />
-		{:then value}
-			<!-- svelte-ignore a11y-media-has-caption -->
-			<video autoplay src={value} controls class="h-full w-full bg-black" />
+<div class="mx-auto grid w-full grid-cols-3 gap-4 overflow-hidden xl:grid-cols-7 xl:gap-4 xl:p-6">
+	<div class="col-span-5 grid place-items-center">
+		{#await videoPromise}
+			<Skeleton class="aspect-video w-full" />
+		{:then video}
+			{#if video}
+				<div class="flex w-full flex-col gap-8">
+					<!-- svelte-ignore a11y-media-has-caption -->
+					<video
+						src={video.media.url}
+						controls
+						class="aspect-video h-full w-full bg-black object-contain shadow xl:rounded-lg"
+					/>
+
+					<h1 class="w-full text-2xl font-semibold">{video.title}</h1>
+					<p></p>
+				</div>
+			{:else}
+				<p>Video not found</p>
+			{/if}
 		{:catch error}
-			{error}
+			<p class="text-red-500">{error}</p>
 		{/await}
 	</div>
 

@@ -70,9 +70,16 @@ router.post(
 			subject: user.id,
 		});
 
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			maxAge: REFRESH_TOKEN_EXPIRY,
+			path: '/',
+			expires: new Date(Date.now() + REFRESH_TOKEN_EXPIRY * 1000),
+			secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+		});
+
 		return res.json({
 			accessToken,
-			refreshToken,
 		});
 	}
 );
@@ -97,6 +104,9 @@ router.post('/refresh', async (req: Request, res: Response) => {
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
 			maxAge: REFRESH_TOKEN_EXPIRY,
+			path: '/',
+			expires: new Date(Date.now() + REFRESH_TOKEN_EXPIRY * 1000),
+			secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
 		});
 
 		return res.json({

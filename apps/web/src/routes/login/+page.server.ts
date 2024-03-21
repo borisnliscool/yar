@@ -26,7 +26,7 @@ export const actions: Actions = {
 		cookies.set('refreshToken', data.refreshToken, {
 			path: '/',
 			httpOnly: true,
-			maxAge: ms('1w')
+			maxAge: ms('1w') / 1000
 		});
 
 		return {
