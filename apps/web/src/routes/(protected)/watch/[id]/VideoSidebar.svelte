@@ -11,9 +11,8 @@
 
 	onMount(() => {
 		videosPromise = new Promise<Video[]>(async (resolve) => {
-			const response = await API.get('/videos?random=1');
+			const response = await API.get('/videos');
 			const data: { videos: Video[] } = await response.json();
-
 			return resolve(
 				data.videos.filter((video) => hiddenVideos.findIndex((v) => v?.id === video.id) === -1)
 			);
@@ -23,7 +22,7 @@
 
 <div class="flex w-full flex-col gap-2 p-2 xl:p-0">
 	{#await videosPromise}
-		{#each Array(5) as _}
+		{#each Array(6) as _}
 			<div class="grid grid-cols-7 gap-4">
 				<Skeleton class="col-span-3 aspect-video h-full" />
 
