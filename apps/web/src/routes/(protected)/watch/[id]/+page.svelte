@@ -59,7 +59,9 @@
 		{/await}
 	</div>
 
-	<div class="col-span-full h-full xl:col-span-2">
-		<VideoSidebar hiddenVideos={[loadedVideo]} />
-	</div>
+	{#key $page.params.id}
+		<div class="col-span-full h-full xl:col-span-2">
+			<VideoSidebar hiddenVideos={[loadedVideo]} />
+		</div>
+	{/key}
 </div>
