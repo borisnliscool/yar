@@ -89,8 +89,6 @@ router.post(
 				},
 			});
 
-			console.log(videoDetails);
-
 			const thumbnailId = crypto.randomUUID();
 			const thumbnailExtension = videoDetails.thumbnail.split('.').at(-1)!;
 
