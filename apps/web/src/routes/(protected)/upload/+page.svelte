@@ -83,11 +83,11 @@
 			for (const data of decoded) {
 				try {
 					const json = JSON.parse(data);
-					uploadLog = [...uploadLog, json];
 
-					if ('percent' in json) {
-						uploadPercent = Math.max(uploadPercent, json.percent);
-					}
+					if ('video' in json) continue;
+					if ('percent' in json) uploadPercent = Math.max(uploadPercent, json.percent);
+
+					uploadLog = [...uploadLog, json];
 				} catch (error) {
 					console.log('error decoding json:', data);
 					console.error(error);
@@ -104,14 +104,8 @@
 >
 	<Header />
 
-	<div class="grid h-full min-h-[calc(100vh-4rem)] grid-cols-5 gap-4 p-4">
-		<!-- <div class="h-full w-full rounded-lg bg-white p-4 shadow dark:bg-neutral-800">
-			Download Queue
-		</div> -->
-
-		<div
-			class="col-span-5 grid h-full grid-cols-2 gap-4 rounded-lg bg-white p-4 shadow dark:bg-neutral-800"
-		>
+	<div class="grid h-full min-h-[calc(100vh-4rem)] gap-4 p-4">
+		<div class="grid h-full grid-cols-2 gap-4 rounded-lg bg-white p-4 shadow dark:bg-neutral-800">
 			<div class="flex h-full flex-col gap-4">
 				{#if uploading}
 					<div class="relative z-0 h-16 w-full rounded border border-green-500">
@@ -195,7 +189,7 @@
 
 				<div class="h-full overflow-y-auto font-mono">
 					{#each uploadLog as log}
-						<pre>{JSON.stringify(log, null, 4)}</pre>
+						<p>{JSON.stringify(log)}</p>
 					{/each}
 				</div>
 			</div>
