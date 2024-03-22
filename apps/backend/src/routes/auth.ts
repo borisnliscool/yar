@@ -72,9 +72,8 @@ router.post(
 
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
-			maxAge: REFRESH_TOKEN_EXPIRY,
+			maxAge: REFRESH_TOKEN_EXPIRY * 1000,
 			path: '/',
-			expires: new Date(Date.now() + REFRESH_TOKEN_EXPIRY * 1000),
 			secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
 		});
 
@@ -103,9 +102,8 @@ router.post('/refresh', async (req: Request, res: Response) => {
 
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
-			maxAge: REFRESH_TOKEN_EXPIRY,
+			maxAge: REFRESH_TOKEN_EXPIRY * 1000,
 			path: '/',
-			expires: new Date(Date.now() + REFRESH_TOKEN_EXPIRY * 1000),
 			secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
 		});
 
