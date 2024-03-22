@@ -1,18 +1,31 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { theme } from '$lib/stores/theme';
 	import Icon from '@iconify/svelte';
 	import { Input } from '@repo/ui';
+
+	let searchValue = '';
+
+	const input = (event: KeyboardEvent) => {
+		if (event.key == 'Enter') return goto('/search/' + searchValue);
+	};
 </script>
 
 <header
-	class="sticky top-0 grid h-16 max-h-16 min-h-16 w-full grid-cols-5 place-items-center border-b bg-white/95 px-8 shadow-lg backdrop-blur-lg dark:border-b-neutral-700 dark:bg-neutral-800/95"
+	class="sticky top-0 grid h-16 max-h-16 min-h-16 w-full grid-cols-5 place-items-center border-b bg-white/95 px-8 shadow-sm backdrop-blur-lg dark:border-b-neutral-700 dark:bg-neutral-800/95"
 >
 	<div class="w-full text-xl font-black">
 		<a href="/">YAR</a>
 	</div>
 
 	<div class="col-span-3 w-full min-w-[20rem] max-w-[30rem]">
-		<Input type="search" class="w-full rounded-full px-4" placeholder="Search query" />
+		<Input
+			type="search"
+			class="w-full rounded-full px-4"
+			placeholder="Search for videos"
+			bind:value={searchValue}
+			on:keyup={input}
+		/>
 	</div>
 
 	<div class="flex w-full items-center justify-end gap-6">

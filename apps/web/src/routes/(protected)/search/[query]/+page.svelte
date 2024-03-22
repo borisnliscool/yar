@@ -1,26 +1,29 @@
 <script lang="ts">
-	import VideoThumbnailSidebar from '$components/videoCarts/VideoThumbnailSidebar.svelte';
+	import { page } from '$app/stores';
+	import Header from '$components/Header.svelte';
+	import VideoThumbnailSearch from '$components/videoCarts/VideoThumbnailSearch.svelte';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
 	import { Skeleton } from '@repo/ui';
 	import { onMount } from 'svelte';
 
-	export let hiddenVideos: Video[];
-
 	let videosPromise: Promise<Video[]>;
 
-	onMount(() => {
+	const loadVideos = (searchQuery: string) => {
 		videosPromise = new Promise<Video[]>(async (resolve) => {
-			const response = await API.get('/videos');
+			const response = await API.get('/videos/search?query=' + encodeURIComponent(searchQuery));
 			const data: { videos: Video[] } = await response.json();
-			return resolve(
-				data.videos.filter((video) => hiddenVideos.findIndex((v) => v?.id === video.id) === -1)
-			);
+			return resolve(data.videos);
 		});
-	});
+	};
+
+	$: loadVideos($page.params.query);
+	onMount(() => loadVideos($page.params.query));
 </script>
 
-<div class="flex w-full flex-col gap-2 p-2 xl:p-0">
+<Header />
+
+<div class="mx-auto flex w-full max-w-4xl flex-col gap-4 p-6 xl:p-10">
 	{#await videosPromise}
 		{#each Array(6) as _}
 			<div class="grid grid-cols-7 gap-4">
@@ -36,9 +39,11 @@
 		{#if videos}
 			{#each videos as video}
 				<a href="/watch/{video.id}">
-					<VideoThumbnailSidebar {video} />
+					<VideoThumbnailSearch {video} />
 				</a>
 			{/each}
+		{:else}
+			<p>No videos found</p>
 		{/if}
 	{:catch error}
 		<p class="text-red-500">{error}</p>

@@ -27,6 +27,30 @@ router.get('/', AuthenticationService.isAuthenticated, async (req: Request, res:
 });
 
 router.get(
+	'/search',
+	AuthenticationService.isAuthenticated,
+	async (req: Request, res: Response) => {
+		const { query } = req.query;
+		if (!query) return res.json({ videos: [] });
+
+		const videos = await database.video.findMany({
+			where: {
+				title: {
+					contains: query as string,
+				},
+			},
+			include: {
+				author: true,
+				thumbnail: true,
+				media: true,
+			},
+		});
+
+		return res.json({ videos: videos.map(VideoConverter.convert) });
+	}
+);
+
+router.get(
 	'/:videoId',
 	AuthenticationService.isAuthenticated,
 	async (req: Request, res: Response) => {

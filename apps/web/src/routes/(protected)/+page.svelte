@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Header from '$components/Header.svelte';
+	import VideoThumbnail from '$components/videoCarts/VideoThumbnailMain.svelte';
 	import API from '$lib/api';
-	import VideoThumbnail from '$lib/components/VideoThumbnail.svelte';
 	import type { Video } from '@repo/types';
 	import { Button, Skeleton } from '@repo/ui';
 	import { onMount } from 'svelte';
