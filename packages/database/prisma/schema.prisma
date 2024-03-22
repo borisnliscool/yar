@@ -49,6 +49,7 @@ model video {
     title       String   @db.VarChar(255)
     description String?  @db.MediumText
     source_url  String?  @db.VarChar(255)
+    tags        String   @db.VarChar(255)
 
     author    user   @relation(fields: [author_id], references: [id])
     author_id String

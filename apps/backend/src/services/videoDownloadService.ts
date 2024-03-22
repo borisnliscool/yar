@@ -65,4 +65,10 @@ export default class VideoDownloadService {
 		if (!this.ready) throw Error('ytdlp service was not ready');
 		return this.ytdlp.execStream(['-f', 'best', url]);
 	}
+
+	static async thumbnail(url: string) {
+		const response = await fetch(url);
+		if (!response.ok) throw Error('failed to perform request');
+		return Buffer.from(await response.arrayBuffer());
+	}
 }

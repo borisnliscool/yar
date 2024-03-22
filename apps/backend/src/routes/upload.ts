@@ -39,6 +39,7 @@ router.post(
 const VideoUploadUrlSchema = RT.Record({
 	url: RT.String,
 	ext: RT.String.optional(),
+	input: RT.String,
 	title: RT.String,
 	tags: RT.Array(RT.String),
 });
@@ -52,9 +53,9 @@ router.post(
 
 		const body = req.body as RT.Static<typeof VideoUploadUrlSchema>;
 
-		const extension =
-			body.ext ?? (await VideoDownloadService.getVideoInformation(body.url)).ext;
+		const videoDetails = await VideoDownloadService.getVideoInformation(body.input);
 		const stream = await VideoDownloadService.download(body.url);
+		const extension = body.ext ?? videoDetails.ext;
 
 		const id = crypto.randomUUID();
 		const fileName = id + '.' + extension;
@@ -88,7 +89,25 @@ router.post(
 				},
 			});
 
-			// todo video tags & thumbnail
+			console.log(videoDetails);
+
+			const thumbnailId = crypto.randomUUID();
+			const thumbnailExtension = videoDetails.thumbnail.split('.').at(-1)!;
+
+			FileService.writeFile(
+				'media',
+				thumbnailId + '.' + thumbnailExtension,
+				await VideoDownloadService.thumbnail(videoDetails.thumbnail)
+			);
+
+			const thumbnailMedia = await database.media.create({
+				data: {
+					id: thumbnailId,
+					extension: thumbnailExtension,
+					type: 'IMAGE',
+					mime_type: 'image/' + thumbnailExtension,
+				},
+			});
 
 			const video = await database.video.create({
 				data: {
@@ -96,6 +115,8 @@ router.post(
 					author_id: req.user!.id,
 					mediaId: media.id,
 					source_url: body.url,
+					tags: body.tags.join(','),
+					thumbnail_id: thumbnailMedia.id,
 				},
 				include: {
 					media: true,

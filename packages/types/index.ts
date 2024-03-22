@@ -23,6 +23,7 @@ interface Video {
 	author: User;
 	thumbnail?: Media;
 	media: Media;
+	tags: string[];
 }
 
 type MediaType = 'IMAGE' | 'VIDEO';

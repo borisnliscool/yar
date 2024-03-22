@@ -18,6 +18,7 @@ class VideoConverter implements Converter<db_video, Video> {
 				created_at: input.author.created_at,
 			},
 			media: MediaConverter.convert(input.media),
+			tags: input.tags.split(','),
 		};
 
 		if (input.thumbnail) video.thumbnail = MediaConverter.convert(input.thumbnail);

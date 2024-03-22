@@ -60,6 +60,7 @@
 		uploadPercent = 0;
 
 		const response = await API.post('/upload/url', {
+			input,
 			url: selectedFormat?.url ?? input,
 			ext: selectedFormat?.ext,
 			title,
@@ -87,16 +88,6 @@
 					if ('percent' in json) {
 						uploadPercent = Math.max(uploadPercent, json.percent);
 					}
-
-					// if ('success' in json) {
-					// 	if (!json.success) {
-					// 		console.log(json);
-					// 		break;
-					// 	}
-
-					// 	const video = json.video as Video;
-					// 	console.log(video);
-					// }
 				} catch (error) {
 					console.log('error decoding json:', data);
 					console.error(error);
