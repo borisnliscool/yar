@@ -36,14 +36,18 @@
 			</div>
 		{/each}
 	{:then videos}
-		{#if videos}
+		{#if videos && videos.length > 0}
 			{#each videos as video}
 				<a href="/watch/{video.id}">
 					<VideoThumbnailSearch {video} />
 				</a>
 			{/each}
 		{:else}
-			<p>No videos found</p>
+			<div class="grid h-48 place-items-center">
+				<div class="flex items-center justify-center text-red-500">
+					<p>No results found for &quot;{$page.params.query}&quot;</p>
+				</div>
+			</div>
 		{/if}
 	{:catch error}
 		<p class="text-red-500">{error}</p>
