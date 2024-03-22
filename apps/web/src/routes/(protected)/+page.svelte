@@ -31,6 +31,14 @@
 					<VideoThumbnail {video} />
 				</Button>
 			{/each}
+
+			{#if response.videos.length === 0}
+				<div class="col-span-full grid h-48 place-items-center">
+					<div class="flex items-center justify-center text-red-500">
+						<p>No videos found</p>
+					</div>
+				</div>
+			{/if}
 		{/if}
 	{:catch error}
 		<div class="col-span-full grid h-48 place-items-center">

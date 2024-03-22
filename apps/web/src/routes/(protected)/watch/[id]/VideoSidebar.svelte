@@ -20,7 +20,7 @@
 	});
 </script>
 
-<div class="flex w-full flex-col gap-2 p-2 xl:p-0">
+<div class="grid w-full grid-cols-1 gap-2 gap-x-6 p-2 lg:grid-cols-2 xl:grid-cols-1 xl:p-0">
 	{#await videosPromise}
 		{#each Array(6) as _}
 			<div class="grid grid-cols-7 gap-4">

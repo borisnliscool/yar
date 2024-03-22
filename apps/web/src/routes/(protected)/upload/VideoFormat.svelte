@@ -4,10 +4,18 @@
 	import { Button } from '@repo/ui';
 	import { cn } from '@repo/utils';
 	import humanFormat from 'human-format';
+	import { createEventDispatcher } from 'svelte';
 	import { scale } from 'svelte/transition';
 
 	export let format: YtdlpFormat;
 	export let selected = false;
+
+	const dispatcher = createEventDispatcher();
+
+	const click = () => {
+		selected = !selected;
+		dispatcher('click', selected);
+	};
 </script>
 
 <Button
@@ -18,7 +26,7 @@
 			'!border-green-500 !bg-green-500/10': selected
 		}
 	)}
-	on:click={() => (selected = !selected)}
+	on:click={click}
 >
 	{#if selected}
 		<div class="relative grid aspect-square w-5 place-items-center text-lg" in:scale>

@@ -9,7 +9,7 @@ import { database } from '../services/databaseService';
 import JwtService from '../services/jwtService';
 
 const REFRESH_TOKEN_EXPIRY = ms('1w') / 1000;
-const ACCESS_TOKEN_EXPIRY = ms('10m') / 1000;
+const ACCESS_TOKEN_EXPIRY = ms('30m') / 1000;
 
 export const router = Router();
 

@@ -60,4 +60,9 @@ export default class VideoDownloadService {
 			})),
 		};
 	}
+
+	static async download(url: string) {
+		if (!this.ready) throw Error('ytdlp service was not ready');
+		return this.ytdlp.execStream(['-f', 'best', url]);
+	}
 }
