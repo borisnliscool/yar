@@ -99,6 +99,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Upload{uploading ? 'ing' : ''} {uploading ? `${uploadPercent}% ` : ''}- YAR</title>
+</svelte:head>
+
 <div
 	class="flex h-full min-h-screen flex-col bg-neutral-100 text-black dark:bg-neutral-900 dark:text-white"
 >

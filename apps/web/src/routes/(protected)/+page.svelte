@@ -17,6 +17,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>YAR</title>
+</svelte:head>
+
 <Header />
 
 <div class="grid grid-cols-1 gap-4 p-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">

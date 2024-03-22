@@ -27,6 +27,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{loadedVideo ? loadedVideo?.title : 'Loading...'} - YAR</title>
+</svelte:head>
+
 <Header />
 
 <div class="mx-auto grid w-full grid-cols-3 gap-4 overflow-hidden xl:grid-cols-7 xl:gap-4 xl:p-6">

@@ -6,6 +6,10 @@
 	onMount(() => API.post('/auth/logout').then(() => goto('/login')));
 </script>
 
+<svelte:head>
+	<title>Logout - YAR</title>
+</svelte:head>
+
 <div class="grid h-screen w-full place-items-center">
 	<p>
 		Logging you out, if you are not redirected please click <a

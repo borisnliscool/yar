@@ -20,6 +20,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Login - YAR</title>
+</svelte:head>
+
 <div
 	class="grid h-screen w-full place-items-center bg-neutral-50 dark:bg-neutral-900 dark:text-white"
 >
