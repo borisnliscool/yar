@@ -30,8 +30,14 @@
 		<h1 class="text-center text-xl font-semibold">Please login</h1>
 
 		<div class="flex flex-col gap-2">
-			<Input placeholder="username" name="username" bind:value={formData.username} />
 			<Input
+				class="dark:border-neutral-700"
+				placeholder="username"
+				name="username"
+				bind:value={formData.username}
+			/>
+			<Input
+				class="dark:border-neutral-700"
 				placeholder="password"
 				name="password"
 				type="password"

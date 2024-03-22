@@ -28,17 +28,25 @@
 		/>
 	</div>
 
-	<div class="flex w-full items-center justify-end gap-6">
-		<button on:click={() => ($theme = $theme == 'dark' ? 'light' : 'dark')} class="text-xl">
+	<div class="flex w-full items-center justify-end gap-4">
+		<button on:click={() => ($theme = $theme == 'dark' ? 'light' : 'dark')} class="text-lg">
 			{#if $theme == 'dark'}
 				<Icon icon="fa6-solid:sun" />
 			{:else}
 				<Icon icon="fa6-solid:moon" />
 			{/if}
 		</button>
-		<a href="/upload" class="grid aspect-square h-10 place-items-center text-2xl">
+
+		<a href="/upload" class="grid aspect-square h-10 place-items-center text-xl">
 			<Icon icon="ri:video-upload-line" />
 		</a>
-		<img class="h-8" src="https://api.dicebear.com/6.x/identicon/svg?seed=123" alt="profile" />
+
+		<a
+			href="/logout"
+			data-sveltekit-preload-data="off"
+			class="text-sm text-black hover:underline dark:text-white"
+		>
+			Logout
+		</a>
 	</div>
 </header>
