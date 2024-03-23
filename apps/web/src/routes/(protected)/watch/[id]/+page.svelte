@@ -34,7 +34,7 @@
 <Header />
 
 <div class="mx-auto grid w-full grid-cols-3 gap-4 overflow-hidden xl:grid-cols-7 xl:gap-4 xl:p-6">
-	<div class="col-span-5 grid place-items-center">
+	<div class="col-span-5">
 		{#await videoPromise}
 			<Skeleton class="aspect-video w-full" />
 		{:then video}

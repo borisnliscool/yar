@@ -28,8 +28,11 @@
 		/>
 	</div>
 
-	<div class="flex w-full items-center justify-end gap-4">
-		<button on:click={() => ($theme = $theme == 'dark' ? 'light' : 'dark')} class="text-lg">
+	<div class="flex w-full items-center justify-end">
+		<button
+			on:click={() => ($theme = $theme == 'dark' ? 'light' : 'dark')}
+			class="grid aspect-square h-10 place-items-center text-lg"
+		>
 			{#if $theme == 'dark'}
 				<Icon icon="fa6-solid:sun" />
 			{:else}
@@ -37,14 +40,21 @@
 			{/if}
 		</button>
 
-		<a href="/upload" class="grid aspect-square h-10 place-items-center text-xl">
+		<a href="/upload" class="grid aspect-square h-10 place-items-center text-2xl">
 			<Icon icon="ri:video-upload-line" />
+		</a>
+
+		<a
+			href="/settings"
+			class="grid aspect-square h-10 place-items-center text-lg text-black hover:underline dark:text-white"
+		>
+			<Icon icon="fa6-solid:gear" />
 		</a>
 
 		<a
 			href="/logout"
 			data-sveltekit-preload-data="off"
-			class="text-sm text-black hover:underline dark:text-white"
+			class="py-2 pl-4 text-sm text-black hover:underline dark:text-white"
 		>
 			Logout
 		</a>
