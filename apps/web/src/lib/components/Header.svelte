@@ -31,7 +31,7 @@
 	<div class="flex w-full items-center justify-end">
 		<button
 			on:click={() => ($theme = $theme == 'dark' ? 'light' : 'dark')}
-			class="grid aspect-square h-10 place-items-center text-lg"
+			class="grid h-10 w-12 place-items-center text-lg"
 		>
 			{#if $theme == 'dark'}
 				<Icon icon="fa6-solid:sun" />
@@ -40,13 +40,13 @@
 			{/if}
 		</button>
 
-		<a href="/upload" class="grid aspect-square h-10 place-items-center text-2xl">
+		<a href="/upload" class="grid h-10 w-12 place-items-center text-2xl">
 			<Icon icon="ri:video-upload-line" />
 		</a>
 
 		<a
 			href="/settings"
-			class="grid aspect-square h-10 place-items-center text-lg text-black hover:underline dark:text-white"
+			class="grid h-10 w-12 place-items-center text-lg text-black hover:underline dark:text-white"
 		>
 			<Icon icon="fa6-solid:gear" />
 		</a>
