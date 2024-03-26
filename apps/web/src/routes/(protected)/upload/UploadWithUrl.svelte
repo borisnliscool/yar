@@ -179,7 +179,9 @@
 		</div>
 	</div>
 
-	<div class="flex h-full max-h-screen flex-col gap-2 rounded border p-4 dark:border-neutral-500">
+	<div
+		class="flex h-full max-h-screen flex-col gap-2 rounded border bg-neutral-50 p-4 dark:border-neutral-500 dark:bg-neutral-900"
+	>
 		<div class="text-md">Progress logs</div>
 
 		<div class="h-full overflow-y-auto font-mono">
