@@ -17,7 +17,7 @@
 >
 	<Header />
 
-	<div class="flex flex-col gap-4 p-4">
+	<div class="flex flex-col gap-4 p-6">
 		<div class="flex items-center gap-2 rounded-lg">
 			<Button
 				class={cn(
@@ -41,7 +41,7 @@
 			</Button>
 		</div>
 
-		<div class="relative grid h-full min-h-[calc(100vh-9.75rem)] gap-4">
+		<div class="relative grid h-full min-h-[calc(100vh-10.5rem)] gap-4">
 			<div
 				class="absolute h-full w-full opacity-0 transition-all"
 				class:opacity-100={currentPage === 'uploadWithUrl'}
