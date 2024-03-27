@@ -42,13 +42,18 @@
 		</div>
 
 		<div class="relative grid h-full min-h-[calc(100vh-9.75rem)] gap-4">
-			{#if currentPage === 'uploadWithUrl'}
+			<div
+				class="absolute h-full w-full opacity-0 transition-all"
+				class:opacity-100={currentPage === 'uploadWithUrl'}
+			>
 				<UploadWithUrl />
-			{/if}
-
-			{#if currentPage === 'uploadFile'}
+			</div>
+			<div
+				class="absolute h-full w-full opacity-0 transition-all"
+				class:opacity-100={currentPage === 'uploadFile'}
+			>
 				<UploadFile />
-			{/if}
+			</div>
 		</div>
 	</div>
 </div>
