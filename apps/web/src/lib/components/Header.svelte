@@ -7,7 +7,11 @@
 	let searchValue = '';
 
 	const input = (event: KeyboardEvent) => {
-		if (event.key == 'Enter') return goto('/search/' + searchValue);
+		if (event.key == 'Enter') {
+			const search = searchValue.trim();
+			if (!search) return;
+			return goto('/search/' + searchValue);
+		}
 	};
 </script>
 
