@@ -43,14 +43,16 @@
 
 		<div class="relative grid h-full min-h-[calc(100vh-10.5rem)] gap-4">
 			<div
-				class="absolute h-full w-full opacity-0 transition-all"
+				class="absolute -z-10 h-full w-full overflow-y-auto rounded-lg bg-white p-4 opacity-0 shadow transition-all dark:bg-neutral-800"
 				class:opacity-100={currentPage === 'uploadWithUrl'}
+				class:z-10={currentPage === 'uploadWithUrl'}
 			>
 				<UploadWithUrl />
 			</div>
 			<div
-				class="absolute h-full w-full opacity-0 transition-all"
+				class="absolute -z-10 h-full w-full overflow-y-auto rounded-lg bg-white p-4 opacity-0 shadow transition-all dark:bg-neutral-800"
 				class:opacity-100={currentPage === 'uploadFile'}
+				class:z-10={currentPage === 'uploadFile'}
 			>
 				<UploadFile />
 			</div>

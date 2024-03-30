@@ -102,7 +102,7 @@
 	<title>Upload{uploading ? 'ing' : ''} {uploading ? `${uploadPercent}% ` : ''}- YAR</title>
 </svelte:head>
 
-<div class="grid h-full grid-cols-2 gap-4 rounded-lg bg-white p-4 shadow dark:bg-neutral-800">
+<div class="grid min-h-full grid-cols-2 gap-4">
 	<div class="flex h-full flex-col gap-4">
 		{#if uploading}
 			<div class="relative z-0 h-16 w-full rounded border border-green-500">
