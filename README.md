@@ -9,3 +9,5 @@ This repository contains a [Turbo Repo](https://turbo.build/repo) with the follo
 -   [`backend`](./apps/backend): the backend server using express
 -   [`web`](./apps/web): frontend [svelte-kit](https://kit.svelte.dev/) application
 -   [`ui`](./packages/ui): a svelte component library shared with frontend applications
+-   [`types`](./packages/types): typescript definitions for backend and frontend applications
+-   [`utils`](./packages/utils): helper functions for backend and frontend applications
