@@ -5,6 +5,7 @@ type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 type Options = {
 	headers?: Headers;
 	noAuth?: boolean;
+	raw?: boolean;
 };
 
 export default class API {
@@ -15,11 +16,11 @@ export default class API {
 		return this.request(url, 'GET', undefined, options);
 	}
 
-	static post(url: string, body?: object, options?: Options) {
+	static post(url: string, body?: object | string, options?: Options) {
 		return this.request(url, 'POST', body, options);
 	}
 
-	static put(url: string, body?: object, options?: Options) {
+	static put(url: string, body?: object | string, options?: Options) {
 		return this.request(url, 'PUT', body, options);
 	}
 
@@ -38,7 +39,7 @@ export default class API {
 	private static async request(
 		url: string,
 		method: HTTPMethod,
-		body?: object,
+		body?: object | string,
 		options?: Options,
 		attempt: number = 0
 	): Promise<Response> {
@@ -58,7 +59,7 @@ export default class API {
 
 		const response = await this.fetch(this.buildUrl(url), {
 			method,
-			body: JSON.stringify(body),
+			body: (options?.raw ? body : JSON.stringify(body)) as any, // I don't like this any type
 			headers,
 			credentials: 'include'
 		});

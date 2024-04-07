@@ -35,6 +35,7 @@ interface Media {
 	mime_type: string;
 	url?: string;
 	type: MediaType;
+	processing: boolean;
 
 	width?: number;
 	height?: number;

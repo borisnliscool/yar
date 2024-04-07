@@ -12,6 +12,8 @@ class MediaConverter implements Converter<media, Media> {
 			mime_type: input.mime_type,
 			url: MediaService.getMediaUrl(input.id),
 			type: input.type,
+			processing: input.processing,
+			duration: input.duration ?? undefined,
 			height: input.height ?? undefined,
 			width: input.width ?? undefined,
 		};

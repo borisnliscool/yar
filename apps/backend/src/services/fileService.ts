@@ -40,6 +40,11 @@ export default class FileService {
 		return fs.appendFileSync(fullFilePath, contents, options);
 	}
 
+	static deleteFile(directory: string, filePath: string) {
+		const fullFilePath = path.join(this.getDirectoryPath(directory), filePath);
+		return fs.unlinkSync(fullFilePath);
+	}
+
 	static stat(directory: string, filePath: string) {
 		return fs.statSync(path.join(this.getDirectoryPath(directory), filePath));
 	}

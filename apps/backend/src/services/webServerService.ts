@@ -8,6 +8,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import requestIp from 'request-ip';
 
+import BodyParsers from '../middleware/bodyParsers';
 import { errorHandler } from '../middleware/errors';
 import { notFoundHandler } from '../middleware/notFound';
 import { router } from '../routes';
@@ -18,7 +19,7 @@ export default class WebServerService {
 	private static logger = LoggerService.createLogger('webserver');
 
 	private static applyMiddlewares() {
-		this.app.use(express.json());
+		this.app.use(BodyParsers.json);
 		this.app.use(helmet());
 		this.app.use(
 			cors({

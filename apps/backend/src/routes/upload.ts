@@ -2,7 +2,9 @@ import { Request, Response, Router } from 'express';
 import { merge } from 'lodash';
 import crypto from 'node:crypto';
 import * as RT from 'runtypes';
+import mediaConverter from '../converters/mediaConverter';
 import videoConverter from '../converters/videoConverter';
+import BodyParsers from '../middleware/bodyParsers';
 import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
 import AuthenticationService from '../services/authenticationService';
@@ -132,3 +134,134 @@ router.post(
 		});
 	}
 );
+
+const VideoUploadFileSchema = RT.Record({
+	ext: RT.String,
+	title: RT.String,
+	tags: RT.Array(RT.String),
+});
+
+router.post(
+	'/file',
+	validateSchema(VideoUploadFileSchema),
+	rateLimit({ window: 60 * 60, max: 5 }),
+	async (req: Request, res: Response) => {
+		const body = req.body as RT.Static<typeof VideoUploadFileSchema>;
+		const id = crypto.randomUUID();
+		const fileName = id + '.' + body.ext;
+
+		const media = await database.media.create({
+			data: {
+				id,
+				extension: body.ext,
+				type: 'VIDEO',
+				mime_type: 'video/' + body.ext,
+				processing: true,
+			},
+		});
+
+		FileService.writeFile('media', fileName, '');
+
+		return res.json(mediaConverter.convert(media));
+	}
+);
+
+router.post('/file/:mediaId/part', BodyParsers.raw, async (req: Request, res: Response) => {
+	const media = await database.media.findUnique({
+		where: {
+			id: req.params.mediaId,
+		},
+	});
+
+	if (!media) {
+		throw new Error('media not found');
+	}
+
+	if (!media.processing) {
+		throw new Error('media not processing');
+	}
+
+	const fileName = `${media.id}.${media.extension}`;
+	FileService.appendFile('media', fileName, req.body);
+
+	return res.json({
+		success: true,
+	});
+});
+
+router.post(
+	'/file/:mediaId/complete',
+	validateSchema(VideoUploadFileSchema),
+	async (req: Request, res: Response) => {
+		const body = req.body as RT.Static<typeof VideoUploadFileSchema>;
+
+		const media = await database.media.findUnique({
+			where: {
+				id: req.params.mediaId,
+			},
+		});
+
+		if (!media) {
+			throw new Error('media not found');
+		}
+
+		if (!media.processing) {
+			throw new Error('media not processing');
+		}
+
+		media.processing = false;
+
+		await database.media.update({
+			where: {
+				id: media.id,
+			},
+			data: media,
+		});
+
+		const video = await database.video.create({
+			data: {
+				title: body.title,
+				author_id: req.user!.id,
+				mediaId: media.id,
+				tags: body.tags.join(','),
+			},
+			include: {
+				media: true,
+				thumbnail: true,
+				author: true,
+			},
+		});
+
+		// todo get thumbnail from body, or generate one from the video
+
+		return res.json(videoConverter.convert(video));
+	}
+);
+
+router.post('/file/:mediaId/cancel', async (req: Request, res: Response) => {
+	const media = await database.media.findUnique({
+		where: {
+			id: req.params.mediaId,
+		},
+	});
+
+	if (!media) {
+		throw new Error('media not found');
+	}
+
+	if (!media.processing) {
+		throw new Error('media not processing');
+	}
+
+	await database.media.delete({
+		where: {
+			id: media.id,
+		},
+	});
+
+	FileService.deleteFile('media', `${media.id}.${media.extension}`);
+
+	return res.json({
+		success: true,
+	});
+});

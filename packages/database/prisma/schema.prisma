@@ -28,6 +28,7 @@ model media {
     mime_type  String
     extension  String
     type       media_type
+    processing Boolean    @default(false)
 
     width    Int?
     height   Int?
