@@ -18,7 +18,7 @@
 </script>
 
 <svelte:head>
-	<title>YAR</title>
+	<title>YAR - Home</title>
 </svelte:head>
 
 <Header />
