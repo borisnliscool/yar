@@ -18,8 +18,15 @@
 <header
 	class="sticky top-0 grid h-16 max-h-16 min-h-16 w-full grid-cols-5 place-items-center border-b bg-white/95 px-8 shadow-sm backdrop-blur-lg dark:border-b-neutral-700 dark:bg-neutral-800/95"
 >
-	<div class="w-full text-xl font-black">
-		<a href="/">YAR</a>
+	<div class="text-md w-full">
+		<a href="/" class="flex items-center gap-4">
+			<picture>
+				<source srcset="/logo.webp" type="image/webp" />
+				<img class="max-h-8" src="/logo.png" alt="Youtube Archive Logo" loading="eager" />
+			</picture>
+
+			<p>Youtube Archive</p>
+		</a>
 	</div>
 
 	<div class="col-span-3 w-full min-w-[20rem] max-w-[30rem]">
