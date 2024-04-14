@@ -1,4 +1,4 @@
-import { PUBLIC_API_URL } from '$env/static/public';
+import env from '$env/static/public';
 import type { RequestError } from '@repo/types';
 
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -79,6 +79,6 @@ export default class API {
 	}
 
 	static buildUrl(path: string) {
-		return PUBLIC_API_URL + (path.startsWith('/') ? '' : '/') + path;
+		return env.PUBLIC_API_URL + (path.startsWith('/') ? '' : '/') + path;
 	}
 }
