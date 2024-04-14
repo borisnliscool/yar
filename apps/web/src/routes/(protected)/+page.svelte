@@ -25,6 +25,7 @@
 
 <div class="grid grid-cols-1 gap-4 p-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
 	{#await videoPromise}
+		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 		{#each Array(12) as _}
 			<Skeleton class="aspect-video w-full" />
 		{/each}

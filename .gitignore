@@ -30,3 +30,5 @@ yarn-error.log*
 .turbo
 
 .env
+out
+data

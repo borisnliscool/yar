@@ -69,6 +69,7 @@
 		const reader = response.body?.getReader();
 		if (!reader) return;
 
+		//eslint-disable-next-line no-constant-condition
 		while (true) {
 			const data = await reader.read();
 			if (data.done) break;

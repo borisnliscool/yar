@@ -59,7 +59,7 @@ export default class API {
 
 		const response = await this.fetch(this.buildUrl(url), {
 			method,
-			body: (options?.raw ? body : JSON.stringify(body)) as any, // I don't like this any type
+			body: (options?.raw ? body : JSON.stringify(body)) as BodyInit, // I don't like this any type
 			headers,
 			credentials: 'include'
 		});

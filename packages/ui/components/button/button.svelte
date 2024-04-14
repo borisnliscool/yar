@@ -4,6 +4,7 @@
 	import { buttonVariants, type ButtonEvents, type ButtonProps } from '.';
 
 	type $$Props = ButtonProps;
+	//eslint-disable-next-line @typescript-eslint/no-unused-vars
 	type $$Events = ButtonEvents;
 
 	let className: $$Props['class'] = undefined;

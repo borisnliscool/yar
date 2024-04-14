@@ -28,4 +28,7 @@ module.exports = {
 			},
 		},
 	],
+	rules: {
+		'no-async-promise-executor': 'off',
+	},
 };

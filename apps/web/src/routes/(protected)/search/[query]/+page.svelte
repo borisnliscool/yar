@@ -25,6 +25,7 @@
 
 <div class="mx-auto flex w-full max-w-4xl flex-col gap-4 p-6 xl:p-10">
 	{#await videosPromise}
+		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 		{#each Array(6) as _}
 			<div class="grid grid-cols-7 gap-4">
 				<Skeleton class="col-span-3 aspect-video h-full" />
