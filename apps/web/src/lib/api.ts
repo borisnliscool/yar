@@ -1,4 +1,4 @@
-import env from '$env/static/public';
+import { env } from '$env/dynamic/public';
 import type { RequestError } from '@repo/types';
 
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
