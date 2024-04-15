@@ -4,7 +4,7 @@
 
 ### Development
 
-This repository contains a [Turbo Repo](https://turbo.build/repo) with the following applications:
+This repository contains a [turbo repo](https://turbo.build/repo) with the following applications:
 
 -   [`backend`](./apps/backend): the backend server using express
 -   [`web`](./apps/web): frontend [svelte-kit](https://kit.svelte.dev/) application
