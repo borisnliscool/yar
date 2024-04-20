@@ -12,7 +12,7 @@ WORKDIR /app
 RUN pnpm add -g turbo
 
 COPY . .
-RUN turbo prune backend --docker
+RUN turbo prune web --docker
 
 
 FROM base AS installer
@@ -30,7 +30,7 @@ RUN pnpm add -g turbo
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 
-RUN turbo run build --filter=backend...
+RUN turbo run build --filter=web...
 
 
 FROM base AS runner
@@ -43,4 +43,4 @@ USER nodejs
 
 COPY --from=installer /app .
 
-CMD node apps/backend/dist/index.js
+CMD node apps/web/build/index.js

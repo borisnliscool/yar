@@ -20,5 +20,16 @@ services:
     ports:
       - "3000:3000"
 
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    ports:
+      - "80:3000"
+
 volumes:
   db_data:

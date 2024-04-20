@@ -9,6 +9,12 @@
 		"build": "tsc",
 		"dev": "tsc -w"
 	},
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"svelte": "./src/index.ts"
+		}
+	},
 	"devDependencies": {
 		"@repo/typescript-config": "*",
 		"@types/node": "^20.12.7",
