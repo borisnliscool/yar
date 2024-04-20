@@ -5,12 +5,19 @@
 		"@prisma/client": "latest"
 	},
 	"devDependencies": {
+		"@repo/typescript-config": "*",
+		"typescript": "^5.4.5",
 		"prisma": "latest"
 	},
 	"scripts": {
+		"build": "tsc",
+		"dev": "tsc -w",
 		"db:generate": "prisma generate",
 		"db:push": "prisma db push --skip-generate"
 	},
-	"main": "./index.ts",
-	"types": "./index.ts"
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist/**"
+	]
 }
