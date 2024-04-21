@@ -3,7 +3,7 @@ services:
     image: mariadb
     restart: always
     env_file:
-      - .env
+      - .env.dev
     volumes:
       - db_data:/var/lib/mysql
     ports:
