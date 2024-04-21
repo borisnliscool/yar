@@ -9,6 +9,6 @@ export default class MediaService {
 			'media'
 		);
 
-		return `http://localhost:5173/api/media/${mediaId}?token=${token}`; // todo hosted url here
+		return `${process.env.DOMAIN}/api/media/${mediaId}?token=${token}`;
 	}
 }

@@ -23,7 +23,7 @@ export default class WebServerService {
 		this.app.use(helmet());
 		this.app.use(
 			cors({
-				origin: ['http://localhost:5173'], // todo this only works in development
+				origin: [process.env.DOMAIN],
 				credentials: true,
 			})
 		);

@@ -3,13 +3,15 @@
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^lint", "^db:generate", "^build"],
-			"outputs": [".svelte-kit/**", "dist", "build"]
+			"outputs": [".svelte-kit/**", "dist", "build"],
+			"dotEnv": [".env"]
 		},
 		"lint": {},
 		"dev": {
 			"dependsOn": ["^db:generate"],
 			"cache": false,
-			"persistent": true
+			"persistent": true,
+			"dotEnv": [".env.dev"]
 		},
 		"db:generate": {
 			"cache": false

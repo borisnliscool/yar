@@ -27,6 +27,8 @@ services:
       - .env
     depends_on:
       - database
+    volumes:
+      - ./apps/backend/data:/app/data
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
