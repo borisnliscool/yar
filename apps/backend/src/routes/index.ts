@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 
 import { router as authRouter } from './auth';
 import { router as mediaRouter } from './media';
@@ -15,3 +15,10 @@ router.use('/proxy', proxyRouter);
 router.use('/upload', uploadRouter);
 router.use('/videos', videoRouter);
 router.use('/users', userRouter);
+
+router.get('/', async (_: Request, res: Response) => {
+	return res.json({
+		status: 'ok',
+		uptime: process.uptime(),
+	});
+});

@@ -31,6 +31,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
       - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.routers.backend.middlewares=strip-api-prefix"
+      - "traefik.http.middlewares.strip-api-prefix.stripprefix.prefixes=/api"
       - "traefik.http.services.backend.loadbalancer.server.port=3000"
 
   web:
