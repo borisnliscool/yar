@@ -6,8 +6,8 @@
 
 This repository contains a [turbo repo](https://turbo.build/repo) with the following applications:
 
--   [`backend`](./apps/backend): the backend server using express
--   [`web`](./apps/web): frontend [svelte-kit](https://kit.svelte.dev/) application
--   [`ui`](./packages/ui): a svelte component library shared with frontend applications
--   [`types`](./packages/types): typescript definitions for backend and frontend applications
--   [`utils`](./packages/utils): helper functions for backend and frontend applications
+-   [`apps/backend`](./apps/backend): the backend server using express
+-   [`apps/web`](./apps/web): frontend [svelte-kit](https://kit.svelte.dev/) application
+-   [`packages/ui`](./packages/ui): a svelte component library shared with frontend applications
+-   [`packages/types`](./packages/types): typescript definitions for backend and frontend applications
+-   [`packages/utils`](./packages/utils): helper functions for backend and frontend applications
