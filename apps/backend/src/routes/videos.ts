@@ -77,7 +77,6 @@ const VideoUpdateSchema = RT.Record({
 
 router.put('/:videoId', validateSchema(VideoUpdateSchema), async (req: Request, res: Response) => {
 	const body = req.body as RT.Static<typeof VideoUpdateSchema>;
-	console.log(body);
 
 	const video = await database.video.findUnique({
 		where: {
