@@ -148,15 +148,6 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 		const file = thumbnail as Express.Multer.File;
 
 		if (video.thumbnail) {
-			// await database.video.update({
-			// 	where: {
-			// 		id: video.thumbnail.id,
-			// 	},
-			// 	data: {
-			// 		thumbnail: undefined,
-			// 	},
-			// });
-
 			await database.media.delete({
 				where: {
 					id: video.thumbnail?.id,
@@ -167,6 +158,7 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 		const thumbnailId = crypto.randomUUID();
 		const thumbnailExtension = file.originalname.split('.').at(-1)!;
 
+		// TODO: converting the file
 		FileService.writeFile('media', thumbnailId + '.' + thumbnailExtension, file.buffer);
 
 		const thumbnailMedia = await database.media.create({
