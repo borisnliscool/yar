@@ -11,13 +11,13 @@
 
 	let thumbnailInput: HTMLInputElement;
 	let saving = false;
+	let thumbnails: FileList | null = null;
 
 	const loadVideo = (videoId: string) => {
 		videoPromise = new Promise<Video>(async (resolve) => {
 			const response = await API.get('/videos/' + videoId);
 			const data: Video = await response.json();
 			loadedVideo = data;
-			console.log(loadedVideo);
 			return resolve(data);
 		});
 	};
@@ -25,9 +25,9 @@
 	const save = async () => {
 		saving = true;
 		try {
-			if (thumbnailInput.files && thumbnailInput.files.length > 0) {
+			if (thumbnails && thumbnails.length) {
 				const data = new FormData();
-				data.append('thumbnail', thumbnailInput.files[0]);
+				data.append('thumbnail', thumbnails[0]);
 
 				await API.put('/videos/' + loadedVideo.id + '/thumbnail', data, {
 					raw: true
@@ -62,14 +62,27 @@
 			{#await videoPromise}
 				<Skeleton class="aspect-video w-full" />
 			{:then _}
-				<input type="file" accept="image/*" class="hidden" bind:this={thumbnailInput} />
+				<input
+					type="file"
+					accept="image/*"
+					class="hidden"
+					bind:this={thumbnailInput}
+					bind:files={thumbnails}
+				/>
 
 				<Button
 					variant="ghost"
 					on:click={() => thumbnailInput.click()}
 					class="mb-1 aspect-video h-auto w-full overflow-hidden rounded-md bg-neutral-300 p-0 dark:bg-neutral-700"
 				>
-					{#if loadedVideo.thumbnail?.url}
+					{#if thumbnails && thumbnails.length > 0}
+						<img
+							crossorigin="anonymous"
+							class="h-full w-full object-contain"
+							src={URL.createObjectURL(thumbnails[0])}
+							alt={loadedVideo.title}
+						/>
+					{:else if loadedVideo.thumbnail?.url}
 						<img
 							crossorigin="anonymous"
 							class="h-full w-full object-contain"
@@ -84,6 +97,19 @@
 						</div>
 					{/if}
 				</Button>
+
+				{#if thumbnails && thumbnails.length > 0}
+					<Button
+						class="ml-auto w-fit"
+						size="sm"
+						variant="outline"
+						on:click={() => {
+							thumbnails = null;
+						}}
+					>
+						Clear thumbnail
+					</Button>
+				{/if}
 
 				<div>
 					<p class="mb-0.5 text-sm text-neutral-400">Title</p>
