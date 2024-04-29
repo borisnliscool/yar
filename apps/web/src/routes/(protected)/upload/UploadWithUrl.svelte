@@ -7,9 +7,9 @@
 	import humanFormat from 'human-format';
 	import VideoFormat from './VideoFormat.svelte';
 
+	import VideoTags from '$components/VideoTags.svelte';
 	import dayjs from 'dayjs';
 	import duration from 'dayjs/plugin/duration';
-	import VideoTags from './VideoTags.svelte';
 
 	dayjs.extend(duration);
 

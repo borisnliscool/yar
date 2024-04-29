@@ -12,6 +12,7 @@ class VideoConverter implements Converter<db_video, Video> {
 			created_at: input.created_at,
 			updated_at: input.updated_at,
 			title: input.title,
+			description: input.description ?? undefined,
 			author: {
 				id: input.author.id,
 				username: input.author.username,

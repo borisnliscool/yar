@@ -1,9 +1,9 @@
 <script lang="ts">
+	import VideoTags from '$components/VideoTags.svelte';
 	import API from '$lib/api';
 	import Icon from '@iconify/svelte';
 	import type { Media } from '@repo/types';
 	import { Button, Input } from '@repo/ui';
-	import VideoTags from './VideoTags.svelte';
 
 	let files: FileList | undefined;
 	let title = '';
