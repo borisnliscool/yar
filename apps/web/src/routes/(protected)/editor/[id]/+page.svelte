@@ -103,9 +103,7 @@
 						class="ml-auto w-fit"
 						size="sm"
 						variant="outline"
-						on:click={() => {
-							thumbnails = null;
-						}}
+						on:click={() => (thumbnails = null)}
 					>
 						Clear thumbnail
 					</Button>
