@@ -15,11 +15,11 @@ export default class API {
 		return this.request(url, 'GET', undefined, options);
 	}
 
-	static post(url: string, body?: object | string, options?: Options) {
+	static post(url: string, body?: object | string | FormData, options?: Options) {
 		return this.request(url, 'POST', body, options);
 	}
 
-	static put(url: string, body?: object | string, options?: Options) {
+	static put(url: string, body?: object | string | FormData, options?: Options) {
 		return this.request(url, 'PUT', body, options);
 	}
 
@@ -52,7 +52,7 @@ export default class API {
 			headers.set('Authorization', `Bearer ${this.authorizationToken}`);
 		}
 
-		if ((method == 'POST' || method == 'PUT') && !headers.get('Content-Type')) {
+		if ((method == 'POST' || method == 'PUT') && !headers.get('Content-Type') && !options?.raw) {
 			headers.set('Content-Type', 'application/json');
 		}
 
