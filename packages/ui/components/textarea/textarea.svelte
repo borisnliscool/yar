@@ -34,9 +34,3 @@
 	on:input
 	{...$$restProps}
 />
-
-<style lang="scss">
-	input[type='search']::-webkit-search-cancel-button {
-		@apply hidden;
-	}
-</style>
