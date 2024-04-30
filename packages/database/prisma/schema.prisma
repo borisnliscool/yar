@@ -59,5 +59,5 @@ model video {
     thumbnail_id String?
 
     media   media  @relation("video_media", fields: [mediaId], references: [id])
-    mediaId String
+    mediaId String // This should be _id but I'm to lazy to change it
 }

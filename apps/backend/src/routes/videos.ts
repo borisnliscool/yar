@@ -8,6 +8,7 @@ import { validateSchema } from '../middleware/schemaValidation';
 import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
 import FileService from '../services/fileService';
+import MediaService from '../services/mediaService';
 
 export const router = Router();
 
@@ -144,41 +145,84 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 	}
 
 	const thumbnail = req.files && Object.values(req.files)[0];
-	if (thumbnail) {
-		const file = thumbnail as Express.Multer.File;
+	if (!thumbnail) {
+		throw new Error('thumbnail not found');
+	}
 
-		if (video.thumbnail) {
-			await database.media.delete({
-				where: {
-					id: video.thumbnail?.id,
-				},
-			});
-		}
+	const file = thumbnail as Express.Multer.File;
 
-		const thumbnailId = crypto.randomUUID();
-		const thumbnailExtension = file.originalname.split('.').at(-1)!;
-
-		// TODO: converting the file
-		FileService.writeFile('media', thumbnailId + '.' + thumbnailExtension, file.buffer);
-
-		const thumbnailMedia = await database.media.create({
-			data: {
-				id: thumbnailId,
-				extension: thumbnailExtension,
-				type: 'IMAGE',
-				mime_type: file.mimetype,
-			},
-		});
-
-		await database.video.update({
+	if (video.thumbnail) {
+		MediaService.deleteMediaFile(video.thumbnail);
+		await database.media.delete({
 			where: {
-				id: video.id,
-			},
-			data: {
-				thumbnail_id: thumbnailMedia.id,
+				id: video.thumbnail?.id,
 			},
 		});
 	}
 
+	const thumbnailId = crypto.randomUUID();
+	const thumbnailExtension = file.originalname.split('.').at(-1)!;
+
+	// TODO: converting the file to the correct format, like webp or png
+	FileService.writeFile('media', thumbnailId + '.' + thumbnailExtension, file.buffer);
+
+	const thumbnailMedia = await database.media.create({
+		data: {
+			id: thumbnailId,
+			extension: thumbnailExtension,
+			type: 'IMAGE',
+			mime_type: file.mimetype,
+		},
+	});
+
+	await database.video.update({
+		where: {
+			id: video.id,
+		},
+		data: {
+			thumbnail_id: thumbnailMedia.id,
+		},
+	});
+
 	return res.json(VideoConverter.convert(video));
+});
+
+router.delete('/:videoId', async (req: Request, res: Response) => {
+	const video = await database.video.findUnique({
+		where: {
+			id: req.params.videoId,
+		},
+		include: {
+			author: true,
+			thumbnail: true,
+			media: true,
+		},
+	});
+
+	if (!video) {
+		res.statusCode = 404;
+		throw new Error('video not found');
+	}
+
+	if (video.author.id !== req.user!.id) {
+		res.statusCode = 403;
+		throw new Error('unauthorized');
+	}
+
+	await database.video.delete({
+		where: {
+			id: video.id,
+		},
+		include: {
+			media: true,
+			thumbnail: true,
+		},
+	});
+
+	MediaService.deleteMediaFile(video.media);
+	if (video.thumbnail) MediaService.deleteMediaFile(video.thumbnail);
+
+	return res.json({
+		success: true,
+	});
 });

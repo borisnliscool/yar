@@ -1,5 +1,6 @@
 <script lang="ts">
 	import VideoTags from '$components/VideoTags.svelte';
+	import { notifications } from '$components/notifications';
 	import API from '$lib/api';
 	import Icon from '@iconify/svelte';
 	import type { Media } from '@repo/types';
@@ -40,9 +41,12 @@
 			}
 
 			await API.post(`/upload/file/${media.id}/complete`, videoBody);
+
+			notifications.success('Video uploaded');
 		} catch (err) {
 			console.error(err);
 			await API.post(`/upload/file/${media.id}/cancel`);
+			notifications.error('Failed to upload video');
 		}
 	};
 </script>

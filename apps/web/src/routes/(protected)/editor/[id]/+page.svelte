@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Header from '$components/Header.svelte';
 	import VideoTags from '$components/VideoTags.svelte';
@@ -11,7 +12,7 @@
 	let loadedVideo: Video;
 
 	let thumbnailInput: HTMLInputElement;
-	let saving = false;
+	let isBusy = false;
 	let thumbnails: FileList | null = null;
 
 	const loadVideo = (videoId: string) => {
@@ -24,7 +25,7 @@
 	};
 
 	const save = async () => {
-		saving = true;
+		isBusy = true;
 		try {
 			if (thumbnails && thumbnails.length) {
 				const data = new FormData();
@@ -33,6 +34,8 @@
 				await API.put('/videos/' + loadedVideo.id + '/thumbnail', data, {
 					raw: true
 				});
+
+				thumbnails = null;
 			}
 
 			videoPromise = (
@@ -49,7 +52,22 @@
 		} catch (err) {
 			console.error(err);
 		}
-		saving = false;
+		isBusy = false;
+	};
+
+	const deleteVideo = async () => {
+		// TODO: better confirmation modal
+		if (!confirm('Are you sure you want to delete this video?')) return;
+
+		isBusy = true;
+		try {
+			await API.delete('/videos/' + loadedVideo.id);
+			notifications.success('Video deleted');
+			goto('/');
+		} catch (err) {
+			console.error(err);
+		}
+		isBusy = false;
 	};
 
 	$: loadVideo($page.params.id);
@@ -62,80 +80,94 @@
 <Header />
 
 <div class="grid place-items-center">
-	<div class="mx-auto flex w-full max-w-2xl flex-col gap-4 py-8">
+	<div class="flex w-full flex-col items-center gap-4 py-8">
 		{#key videoPromise}
 			{#await videoPromise}
-				<Skeleton class="aspect-video w-full" />
+				<div class="w-full max-w-2xl">
+					<Skeleton class="aspect-video w-full" />
+				</div>
 			{:then _}
-				<input
-					type="file"
-					accept="image/*"
-					class="hidden"
-					bind:this={thumbnailInput}
-					bind:files={thumbnails}
-				/>
-
-				<Button
-					variant="ghost"
-					on:click={() => thumbnailInput.click()}
-					class="mb-1 aspect-video h-auto w-full overflow-hidden rounded-md bg-neutral-300 p-0 dark:bg-neutral-700"
-				>
-					{#if thumbnails && thumbnails.length > 0}
-						<img
-							crossorigin="anonymous"
-							class="h-full w-full object-contain"
-							src={URL.createObjectURL(thumbnails[0])}
-							alt={loadedVideo.title}
-						/>
-					{:else if loadedVideo.thumbnail?.url}
-						<img
-							crossorigin="anonymous"
-							class="h-full w-full object-contain"
-							src={loadedVideo.thumbnail.url}
-							alt={loadedVideo.title}
-						/>
-					{:else}
-						<div
-							class="grid h-full w-full select-none place-items-center text-4xl font-semibold text-neutral-400 dark:text-neutral-500"
-						>
-							?
-						</div>
-					{/if}
-				</Button>
-
-				{#if thumbnails && thumbnails.length > 0}
-					<Button
-						class="ml-auto w-fit"
-						size="sm"
-						variant="outline"
-						on:click={() => (thumbnails = null)}
-					>
-						Clear thumbnail
-					</Button>
-				{/if}
-
-				<div>
-					<p class="mb-0.5 text-sm text-neutral-400">Title</p>
-					<Input bind:value={loadedVideo.title} placeholder="Title" />
-				</div>
-
-				<div>
-					<p class="mb-0.5 text-sm text-neutral-400">Description</p>
-					<Textarea
-						bind:value={loadedVideo.description}
-						class="h-full min-h-24"
-						placeholder="Description"
+				<div class="flex w-full max-w-2xl flex-col gap-4">
+					<input
+						type="file"
+						accept="image/*"
+						class="hidden"
+						bind:this={thumbnailInput}
+						bind:files={thumbnails}
 					/>
+
+					<Button
+						variant="ghost"
+						on:click={() => thumbnailInput.click()}
+						class="mb-1 aspect-video h-auto w-full overflow-hidden rounded-md bg-neutral-300 p-0 dark:bg-neutral-700"
+					>
+						{#if thumbnails && thumbnails.length > 0}
+							<img
+								crossorigin="anonymous"
+								class="h-full w-full object-contain"
+								src={URL.createObjectURL(thumbnails[0])}
+								alt={loadedVideo.title}
+							/>
+						{:else if loadedVideo.thumbnail?.url}
+							<img
+								crossorigin="anonymous"
+								class="h-full w-full object-contain"
+								src={loadedVideo.thumbnail.url}
+								alt={loadedVideo.title}
+							/>
+						{:else}
+							<div
+								class="grid h-full w-full select-none place-items-center text-4xl font-semibold text-neutral-400 dark:text-neutral-500"
+							>
+								?
+							</div>
+						{/if}
+					</Button>
+
+					{#if thumbnails && thumbnails.length > 0}
+						<Button
+							class="ml-auto w-fit"
+							size="sm"
+							variant="outline"
+							on:click={() => (thumbnails = null)}
+						>
+							Clear thumbnail
+						</Button>
+					{/if}
+
+					<div>
+						<p class="mb-0.5 text-sm text-neutral-400">Title</p>
+						<Input bind:value={loadedVideo.title} placeholder="Title" />
+					</div>
+
+					<div>
+						<p class="mb-0.5 text-sm text-neutral-400">Description</p>
+						<Textarea
+							bind:value={loadedVideo.description}
+							class="h-full min-h-24"
+							placeholder="Description"
+						/>
+					</div>
+
+					<div>
+						<p class="mb-0.5 text-sm text-neutral-400">Video Tags</p>
+						<VideoTags bind:tags={loadedVideo.tags} />
+					</div>
 				</div>
 
-				<div>
-					<p class="mb-0.5 text-sm text-neutral-400">Video Tags</p>
-					<VideoTags bind:tags={loadedVideo.tags} />
-				</div>
+				<div class="sticky bottom-0 w-full">
+					<div
+						class="grid place-items-center bg-white/25 py-2 backdrop-blur-md dark:bg-neutral-900/25"
+					>
+						<div class="flex w-full max-w-2xl items-center justify-end gap-2">
+							<Button class="w-fit px-6 py-1.5" variant="destructive" on:click={deleteVideo}>
+								Delete
+							</Button>
 
-				<Button class="sticky bottom-0 ml-auto w-fit px-6 py-1.5" disabled={saving} on:click={save}>
-					Save
-				</Button>
+							<Button class="w-fit px-6 py-1.5" disabled={isBusy} on:click={save}>Save</Button>
+						</div>
+					</div>
+				</div>
 			{/await}
 		{/key}
 	</div>
