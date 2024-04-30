@@ -40,9 +40,23 @@ router.get('/search', async (req: Request, res: Response) => {
 
 	const videos = await database.video.findMany({
 		where: {
-			title: {
-				contains: query as string,
-			},
+			OR: [
+				{
+					title: {
+						contains: query as string,
+					},
+				},
+				{
+					description: {
+						contains: query as string,
+					},
+				},
+				{
+					tags: {
+						contains: query as string,
+					},
+				},
+			],
 		},
 		include: {
 			author: true,
