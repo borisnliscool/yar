@@ -2,6 +2,7 @@
 	import '@fontsource-variable/inter';
 	import '../app.scss';
 
+	import NotificationsContainer from '$components/notifications/NotificationsContainer.svelte';
 	import { theme, type ColorTheme } from '$lib/stores/theme';
 	import { onMount } from 'svelte';
 
@@ -17,6 +18,8 @@
 </script>
 
 <svelte:window on:storage={(event) => event.key == 'color-theme' && updateTheme()} />
+
+<NotificationsContainer />
 
 <main class:dark={$theme == 'dark'}>
 	<div

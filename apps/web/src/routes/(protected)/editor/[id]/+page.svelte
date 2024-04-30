@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import Header from '$components/Header.svelte';
 	import VideoTags from '$components/VideoTags.svelte';
+	import { notifications } from '$components/notifications';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
 	import { Button, Input, Skeleton, Textarea } from '@repo/ui';
@@ -41,6 +42,10 @@
 					tags: loadedVideo.tags
 				})
 			).json();
+
+			videoPromise
+				.then(() => notifications.success('Video saved'))
+				.catch(() => notifications.error('Failed to save video'));
 		} catch (err) {
 			console.error(err);
 		}
