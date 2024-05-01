@@ -1,5 +1,5 @@
 <script lang="ts">
-	import VideoThumbnailSidebar from '$components/videoCarts/VideoThumbnailSidebar.svelte';
+	import VideoThumbnailSidebar from '$components/videoCards/VideoThumbnailSidebar.svelte';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
 	import { Skeleton } from '@repo/ui';

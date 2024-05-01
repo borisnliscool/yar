@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Header from '$components/Header.svelte';
-	import VideoThumbnailSearch from '$components/videoCarts/VideoThumbnailSearch.svelte';
+	import VideoThumbnailSearch from '$components/videoCards/VideoThumbnailSearch.svelte';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
 	import { Skeleton } from '@repo/ui';

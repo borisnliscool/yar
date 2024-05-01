@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Header from '$components/Header.svelte';
-	import VideoThumbnail from '$components/videoCarts/VideoThumbnailMain.svelte';
+	import VideoThumbnail from '$components/videoCards/VideoThumbnailMain.svelte';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
 	import { Button, Skeleton } from '@repo/ui';
