@@ -74,6 +74,8 @@
 				<Skeleton class="h-10 w-full max-w-lg" />
 				<Skeleton class="h-10 w-full max-w-lg" />
 				<Skeleton class="h-10 w-full max-w-lg" />
+
+				<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 			{:then _}
 				{#if user}
 					<div class="flex w-full max-w-lg flex-col gap-4">

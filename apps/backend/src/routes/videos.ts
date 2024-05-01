@@ -15,11 +15,15 @@ export const router = Router();
 router.use(AuthenticationService.isAuthenticated);
 
 router.get('/', async (req: Request, res: Response) => {
-	const { skip, count } = req.query;
+	const total = await database.video.count();
+
+	const { page: _page, count: _count } = req.query;
+	const count = Math.min(+(_count ?? 20), 100);
+	const page = Math.min(Math.max(+(_page ?? 0), 0), Math.ceil(total / count) - 1);
 
 	const databaseVideos = await database.video.findMany({
-		take: Math.min(count ? +count : 20, 100),
-		skip: skip ? +skip : 0,
+		take: count,
+		skip: count * page,
 		include: {
 			author: true,
 			thumbnail: true,
@@ -31,6 +35,8 @@ router.get('/', async (req: Request, res: Response) => {
 
 	return res.json({
 		videos: shuffle(videos),
+		page: page,
+		total: total,
 	});
 });
 

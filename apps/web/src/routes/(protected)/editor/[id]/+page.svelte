@@ -86,6 +86,7 @@
 				<div class="w-full max-w-2xl">
 					<Skeleton class="aspect-video w-full" />
 				</div>
+				<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 			{:then _}
 				<div class="flex w-full max-w-2xl flex-col gap-4">
 					<input

@@ -16,7 +16,7 @@
 </script>
 
 <header
-	class="sticky top-0 grid h-16 max-h-16 min-h-16 w-full grid-cols-5 place-items-center border-b bg-white/95 px-8 shadow-sm backdrop-blur-lg dark:border-b-neutral-700 dark:bg-neutral-800/95"
+	class="sticky top-0 z-[100] grid h-16 max-h-16 min-h-16 w-full grid-cols-5 place-items-center border-b bg-white/95 px-8 shadow-sm backdrop-blur-lg dark:border-b-neutral-700 dark:bg-neutral-800/95"
 >
 	<div class="text-md w-full">
 		<a href="/" class="group flex items-center gap-4">

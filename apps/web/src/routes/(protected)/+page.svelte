@@ -1,20 +1,37 @@
 <script lang="ts">
 	import Header from '$components/Header.svelte';
+	import InfiniteList from '$components/InfiniteList.svelte';
 	import VideoThumbnail from '$components/videoCards/VideoThumbnailMain.svelte';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
 	import { Button, Skeleton } from '@repo/ui';
 	import { onMount } from 'svelte';
 
-	let videoPromise: Promise<{ videos: Video[] }>;
+	const count = 12;
 
-	onMount(async () => {
+	let page = 0;
+	let total: number;
+	let videos: Video[] = [];
+	let videoPromise: Promise<{ videos: Video[] }> | null = null;
+
+	const loadVideos = async () => {
+		if (total && videos.length >= total) return;
+
 		videoPromise = new Promise(async (resolve) => {
-			const response = await API.get('/videos');
-			const data: { videos: Video[] } = await response.json();
+			console.log(page);
+			const response = await API.get(`/videos?page=${page}&count=${count}`);
+			const data: { videos: Video[]; total: number } = await response.json();
+			videos = [...videos, ...data.videos];
+			total = data.total;
 			resolve(data);
 		});
-	});
+		page++;
+
+		await videoPromise;
+		videoPromise = null;
+	};
+
+	onMount(loadVideos);
 </script>
 
 <svelte:head>
@@ -24,26 +41,25 @@
 <Header />
 
 <div class="grid grid-cols-1 gap-4 p-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+	<InfiniteList items={videos} on:loadmore={loadVideos} let:item>
+		<Button class="h-fit w-full p-0" variant="ghost" href="/watch/{item.id}">
+			<VideoThumbnail video={item} />
+		</Button>
+	</InfiniteList>
+
 	{#await videoPromise}
 		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
-		{#each Array(12) as _}
+		{#each Array(videos.length % count) as _}
 			<Skeleton class="aspect-video w-full" />
 		{/each}
-	{:then response}
-		{#if response}
-			{#each response.videos as video}
-				<Button class="h-fit w-full p-0" variant="ghost" href="/watch/{video.id}">
-					<VideoThumbnail {video} />
-				</Button>
-			{/each}
-
-			{#if response.videos.length === 0}
-				<div class="col-span-full grid h-48 place-items-center">
-					<div class="flex items-center justify-center text-red-500">
-						<p>No videos found</p>
-					</div>
+		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
+	{:then _}
+		{#if videos.length === 0}
+			<div class="col-span-full grid h-48 place-items-center">
+				<div class="flex items-center justify-center text-red-500">
+					<p>No videos found</p>
 				</div>
-			{/if}
+			</div>
 		{/if}
 	{:catch error}
 		<div class="col-span-full grid h-48 place-items-center">
