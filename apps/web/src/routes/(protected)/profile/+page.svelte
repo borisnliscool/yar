@@ -11,6 +11,11 @@
 	let userPromise: Promise<User>;
 	let isBusy = false;
 
+	let passwordUpdate = {
+		oldPassword: '',
+		newPassword: ''
+	};
+
 	const loadUser = () => {
 		userPromise = (async () => {
 			try {
@@ -29,10 +34,20 @@
 	const save = async () => {
 		isBusy = true;
 		try {
-			await API.put('/users/me', {
+			const data: Record<string, string | undefined> = {
 				username: user?.username
-			});
+			};
+
+			if (passwordUpdate.oldPassword && passwordUpdate.newPassword) {
+				data.oldPassword = passwordUpdate.oldPassword;
+				data.newPassword = passwordUpdate.newPassword;
+			}
+
+			await API.put('/users/me', data);
 			notifications.success('User saved');
+
+			passwordUpdate.oldPassword = '';
+			passwordUpdate.newPassword = '';
 
 			await loadUser();
 		} catch (error) {
@@ -57,10 +72,32 @@
 		{#key userPromise}
 			{#await userPromise}
 				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
 			{:then _}
 				{#if user}
 					<div class="flex w-full max-w-lg flex-col gap-4">
-						<Input bind:value={user.username} placeholder="Username" />
+						<div class="flex flex-col gap-2">
+							<p>User details</p>
+
+							<Input bind:value={user.username} placeholder="Username" />
+						</div>
+
+						<div class="flex flex-col gap-2">
+							<p>Change Password</p>
+
+							<Input
+								bind:value={passwordUpdate.oldPassword}
+								type="password"
+								placeholder="Old password"
+							/>
+
+							<Input
+								bind:value={passwordUpdate.newPassword}
+								type="password"
+								placeholder="New password"
+							/>
+						</div>
 					</div>
 
 					<div class="sticky bottom-0 w-full">
