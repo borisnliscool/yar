@@ -19,13 +19,17 @@
 	class="sticky top-0 grid h-16 max-h-16 min-h-16 w-full grid-cols-5 place-items-center border-b bg-white/95 px-8 shadow-sm backdrop-blur-lg dark:border-b-neutral-700 dark:bg-neutral-800/95"
 >
 	<div class="text-md w-full">
-		<a href="/" class="flex items-center gap-4">
+		<a href="/" class="group flex items-center gap-4">
 			<picture>
 				<source srcset="/logo.webp" type="image/webp" />
 				<img class="max-h-8" src="/logo.png" alt="Youtube Archive Logo" loading="eager" />
 			</picture>
 
-			<p>Youtube Archive</p>
+			<p
+				class="bg-gradient-to-br from-orange-500 to-purple-500 bg-clip-text font-medium transition-colors group-hover:text-transparent"
+			>
+				Youtube Archive
+			</p>
 		</a>
 	</div>
 
@@ -56,10 +60,10 @@
 		</a>
 
 		<a
-			href="/settings"
+			href="/profile"
 			class="grid h-10 w-12 place-items-center text-lg text-black hover:underline dark:text-white"
 		>
-			<Icon icon="fa6-solid:gear" />
+			<Icon icon="fa6-solid:user" />
 		</a>
 
 		<a
