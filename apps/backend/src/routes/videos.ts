@@ -131,7 +131,10 @@ router.put('/:videoId', validateSchema(VideoUpdateSchema), async (req: Request, 
 		data: {
 			title: body.title,
 			description: body.description,
-			tags: body.tags?.filter(Boolean).join(','),
+			tags: body.tags
+				?.map((t) => t.trim())
+				.filter(Boolean)
+				.join(','),
 		},
 	});
 

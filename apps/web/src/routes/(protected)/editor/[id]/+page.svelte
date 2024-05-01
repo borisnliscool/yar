@@ -161,7 +161,12 @@
 						class="grid place-items-center bg-white/25 py-2 backdrop-blur-md dark:bg-neutral-900/25"
 					>
 						<div class="flex w-full max-w-2xl items-center justify-end gap-2">
-							<Button class="w-fit px-6 py-1.5" variant="destructive" on:click={deleteVideo}>
+							<Button
+								class="w-fit px-6 py-1.5"
+								disabled={isBusy}
+								variant="destructive"
+								on:click={deleteVideo}
+							>
 								Delete
 							</Button>
 

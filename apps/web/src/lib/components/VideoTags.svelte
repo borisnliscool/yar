@@ -7,7 +7,7 @@
 
 	const keyup = (event: KeyboardEvent) => {
 		if (event.key !== 'Enter') return;
-		tags = [...tags, value];
+		tags = [...tags, value].filter(Boolean);
 		value = '';
 	};
 </script>

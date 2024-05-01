@@ -119,7 +119,10 @@ router.post(
 					author_id: req.user!.id,
 					mediaId: media.id,
 					source_url: body.url,
-					tags: body.tags.filter(Boolean).join(','),
+					tags: body.tags
+						.map((t) => t.trim())
+						.filter(Boolean)
+						.join(','),
 					thumbnail_id: thumbnailMedia.id,
 				},
 				include: {
@@ -227,7 +230,10 @@ router.post(
 				title: body.title,
 				author_id: req.user!.id,
 				mediaId: media.id,
-				tags: body.tags.join(','),
+				tags: body.tags
+					.map((t) => t.trim())
+					.filter(Boolean)
+					.join(','),
 			},
 			include: {
 				media: true,
