@@ -18,11 +18,10 @@
 		if (total && videos.length >= total) return;
 
 		videoPromise = new Promise(async (resolve) => {
-			console.log(page);
 			const response = await API.get(`/videos?page=${page}&count=${count}`);
 			const data: { videos: Video[]; total: number } = await response.json();
-			videos = [...videos, ...data.videos];
 			total = data.total;
+			videos = [...videos, ...data.videos];
 			resolve(data);
 		});
 		page++;
@@ -49,8 +48,11 @@
 
 	{#await videoPromise}
 		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
-		{#each Array(videos.length % count) as _}
-			<Skeleton class="aspect-video w-full" />
+		{#each Array(Math.min(count, (total ?? 100) - count * Math.max(page, 1))) as _}
+			<div class="flex flex-col gap-2">
+				<Skeleton class="aspect-video w-full" />
+				<Skeleton class="h-8 w-full" />
+			</div>
 		{/each}
 		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 	{:then _}
