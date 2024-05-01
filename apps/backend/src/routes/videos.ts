@@ -63,6 +63,11 @@ router.get('/search', async (req: Request, res: Response) => {
 					},
 				},
 			],
+			media: {
+				NOT: {
+					processing: true,
+				},
+			},
 		},
 		include: {
 			author: true,
