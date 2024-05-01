@@ -138,6 +138,9 @@ router.post(
 					video: videoConverter.convert(video),
 				}) + '\n'
 			);
+
+			stream.destroy();
+			stream.ytDlpProcess?.kill();
 		});
 	}
 );
