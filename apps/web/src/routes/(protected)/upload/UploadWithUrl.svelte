@@ -175,7 +175,7 @@
 					</div>
 				{/if}
 			{:catch error}
-				failed! {error}
+				<p class="text-red-500">{error}</p>
 			{/await}
 		</div>
 	</div>

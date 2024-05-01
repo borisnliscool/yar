@@ -30,11 +30,15 @@ router.post(
 	async (req: Request, res: Response) => {
 		const body = req.body as RT.Static<typeof VideoInfoSchema>;
 
-		// todo cache this
-		const videoInfo = await VideoDownloadService.getVideoInformation(body.url);
-
-		res.setHeader('Cache-Control', 'max-age=3600');
-		res.send(videoInfo);
+		try {
+			// todo cache this
+			const videoInfo = await VideoDownloadService.getVideoInformation(body.url);
+			res.setHeader('Cache-Control', 'max-age=3600');
+			res.send(videoInfo);
+		} catch (error) {
+			res.statusCode = 500;
+			throw new Error('Failed to fetch video info, is the video url valid?');
+		}
 	}
 );
 
