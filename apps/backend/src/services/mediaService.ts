@@ -1,4 +1,5 @@
 import { media } from '@repo/database';
+import { JwtTokenType } from '@repo/types';
 import FileService from './fileService';
 import JwtService from './jwtService';
 
@@ -8,7 +9,7 @@ export default class MediaService {
 			{
 				mediaId,
 			},
-			'media'
+			JwtTokenType.MEDIA
 		);
 
 		return `${process.env.DOMAIN}/api/media/${mediaId}?token=${token}`;

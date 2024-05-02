@@ -1,4 +1,6 @@
+import { ErrorType } from '@repo/types';
 import { NextFunction, Request, Response } from 'express';
+import { TokenExpiredError } from 'jsonwebtoken';
 import { database } from './databaseService';
 import JwtService from './jwtService';
 
@@ -6,22 +8,26 @@ export default class AuthenticationService {
 	static async isAuthenticated(req: Request, res: Response, next: NextFunction) {
 		const authorizationToken = req.headers.authorization?.replace('Bearer ', '');
 		if (!authorizationToken) {
-			res.statusCode = 403;
-			throw new Error('authorization header not found');
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'authorization header not found');
 		}
 
 		let decodedToken!: Record<string, any>;
 		try {
 			decodedToken = JwtService.decodeToken(authorizationToken);
 		} catch (error) {
-			console.error(error);
-			res.statusCode = 403;
-			throw new Error('failed to decode authorization token');
+			if (error instanceof TokenExpiredError) {
+				return req.fail(ErrorType.ACCESS_TOKEN_EXPIRED, 403, 'authorization token expired');
+			}
+
+			return req.fail(
+				ErrorType.INVALID_CREDENTIALS,
+				403,
+				'failed to decode authorization token'
+			);
 		}
 
 		if (decodedToken.type !== 'access' || !decodedToken.sub) {
-			res.statusCode = 403;
-			throw new Error('invalid authorization token');
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'invalid authorization token');
 		}
 
 		const user = await database.user.findFirst({
@@ -29,7 +35,9 @@ export default class AuthenticationService {
 				id: decodedToken.sub,
 			},
 		});
-		if (!user) throw new Error('failed to find user');
+		if (!user) {
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'failed to find user');
+		}
 
 		req.user = user;
 
@@ -39,8 +47,7 @@ export default class AuthenticationService {
 	static async media(req: Request, res: Response, next: NextFunction) {
 		const { token: mediaToken } = req.query;
 		if (!mediaToken) {
-			res.statusCode = 403;
-			throw new Error('media token not found');
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'media token not found');
 		}
 
 		let decodedToken!: Record<string, any>;
@@ -48,14 +55,16 @@ export default class AuthenticationService {
 			decodedToken = JwtService.decodeToken(mediaToken as string);
 		} catch (error) {
 			console.error(error);
-			res.statusCode = 403;
-			throw new Error('failed to decode authorization token');
+			return req.fail(
+				ErrorType.INVALID_CREDENTIALS,
+				403,
+				'failed to decode authorization token'
+			);
 		}
 
 		const { mediaId } = req.params;
 		if (decodedToken.mediaId !== mediaId) {
-			res.statusCode = 403;
-			throw new Error('invalid media token');
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'invalid media token');
 		}
 
 		return next();
@@ -64,10 +73,15 @@ export default class AuthenticationService {
 	static async hasRoles(roles: string | string[]) {
 		return (req: Request, res: Response, next: NextFunction) => {
 			roles = typeof roles == 'string' ? [roles] : roles;
+
 			if (!req.user || !req.user.roles.split(',').some((role) => roles.includes(role))) {
-				res.statusCode = 403;
-				throw new Error('insufficient permissions');
+				return req.fail(
+					ErrorType.INSUFFICIENT_PERMISSIONS,
+					403,
+					'insufficient permissions'
+				);
 			}
+
 			return next();
 		};
 	}

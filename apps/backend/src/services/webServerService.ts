@@ -10,6 +10,7 @@ import requestIp from 'request-ip';
 
 import BodyParsers from '../middleware/bodyParsers';
 import { errorHandler } from '../middleware/errors';
+import { methodsMiddleware } from '../middleware/methods';
 import { notFoundHandler } from '../middleware/notFound';
 import { router } from '../routes';
 import LoggerService from './loggerService';
@@ -35,6 +36,7 @@ export default class WebServerService {
 		this.app.use(requestIp.mw());
 		this.app.use(compression());
 		this.app.use(cookieParser());
+		this.app.use(methodsMiddleware());
 
 		this.logger('Applied middlewares');
 	}

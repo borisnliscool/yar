@@ -48,7 +48,7 @@
 
 	{#await videoPromise}
 		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
-		{#each Array(Math.min(count, (total ?? 100) - count * Math.max(page, 1))) as _}
+		{#each { length: Math.min(count, (total ?? 100) - count * Math.max(page, 1)) } as _}
 			<div class="flex flex-col gap-2">
 				<Skeleton class="aspect-video w-full" />
 				<Skeleton class="h-8 w-full" />

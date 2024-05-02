@@ -18,7 +18,21 @@ model user {
     created_at    DateTime @default(now())
     roles         String   @default("ROLE_USER")
 
-    uploads video[]
+    uploads            video[]
+    user_refresh_token user_refresh_token[]
+}
+
+model user_refresh_token {
+    id String @id @unique @default(uuid())
+
+    user    user   @relation(fields: [user_id], references: [id])
+    user_id String
+
+    created_at DateTime @default(now())
+    expires_at DateTime
+
+    token       String
+    device_name String
 }
 
 model media {

@@ -3,7 +3,13 @@
 	import API from '$lib/api';
 	import { onMount } from 'svelte';
 
-	onMount(() => API.post('/auth/logout').then(() => goto('/login')));
+	onMount(() => {
+		try {
+			API.post('/auth/logout');
+		} finally {
+			goto('/login');
+		}
+	});
 </script>
 
 <svelte:head>

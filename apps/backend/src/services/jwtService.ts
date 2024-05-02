@@ -1,3 +1,4 @@
+import { JwtTokenType } from '@repo/types';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import ms from 'ms';
 import KeyService from './keyService';
@@ -8,7 +9,7 @@ export default class JwtService {
 
 	static encodeToken(
 		payload: Record<string, any>,
-		type: 'refresh' | 'access' | 'media',
+		type: JwtTokenType,
 		options: SignOptions = { expiresIn: ms('1d') }
 	): string {
 		return jwt.sign({ ...payload, type }, this.privateKey, {

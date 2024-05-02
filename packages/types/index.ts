@@ -1,8 +1,9 @@
 interface RequestError {
 	error: {
+		type: ErrorType;
 		code: number;
 		message: string;
-		stack?: string;
+		trace?: string;
 		details?: object;
 	};
 }
@@ -24,6 +25,27 @@ interface Video {
 	thumbnail?: Media;
 	media: Media;
 	tags: string[];
+}
+
+enum JwtTokenType {
+	ACCESS = 'access',
+	REFRESH = 'refresh',
+	MEDIA = 'media',
+}
+
+enum ErrorType {
+	UNKNOWN = 'UNKNOWN',
+	INVALID_CREDENTIALS = 'INVALID_CREDENTIALS',
+	TOTP_REQUIRED = 'TOTP_REQUIRED',
+	TOTP_INVALID = 'TOTP_INVALID',
+	MEDIA_NOT_FOUND = 'MEDIA_NOT_FOUND',
+	INVALID_URL = 'INVALID_URL',
+	INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
+	MEDIA_NOT_PROCESSING = 'MEDIA_NOT_PROCESSING',
+	UNAUTHORIZED = 'UNAUTHORIZED',
+	INVALID_MEDIA = 'INVALID_MEDIA',
+	ACCESS_TOKEN_EXPIRED = 'ACCESS_TOKEN_EXPIRED',
+	INSUFFICIENT_PERMISSIONS = 'INSUFFICIENT_PERMISSIONS',
 }
 
 type MediaType = 'IMAGE' | 'VIDEO';
@@ -80,4 +102,5 @@ type YtdlpVideo = Record<string, any> & {
 	}>;
 };
 
+export { ErrorType, JwtTokenType };
 export type { Media, MediaType, RequestError, User, Video, YtdlpFormat, YtdlpVideo };

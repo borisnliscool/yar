@@ -1,4 +1,5 @@
-import type { RequestError } from '@repo/types';
+import { goto } from '$app/navigation';
+import { ErrorType, type RequestError } from '@repo/types';
 
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 type Options = {
@@ -7,9 +8,27 @@ type Options = {
 	raw?: boolean;
 };
 
+class HttpError extends Error {
+	public readonly code: RequestError['error']['code'];
+	public readonly details: RequestError['error']['details'];
+	public readonly message: RequestError['error']['message'];
+	public readonly trace: RequestError['error']['trace'];
+	public readonly type: RequestError['error']['type'];
+
+	constructor(err: RequestError) {
+		super(err.error.message);
+		this.code = err.error.code;
+		this.details = err.error.details;
+		this.message = err.error.message;
+		this.trace = err.error.trace;
+		this.type = err.error.type;
+	}
+}
+
 export default class API {
 	static fetch: typeof fetch = fetch;
 	static authorizationToken?: string;
+	static refreshTokenRequest: Promise<{ accessToken: string }> | null = null;
 
 	static get(url: string, options?: Options) {
 		return this.request(url, 'GET', undefined, options);
@@ -28,11 +47,28 @@ export default class API {
 	}
 
 	static async getAuthorizationToken(): Promise<string> {
-		const response = await this.request('/auth/refresh', 'POST', undefined, {
-			noAuth: true
-		});
-		const data = (await response.json()) as { accessToken: string };
-		return data.accessToken;
+		try {
+			if (!this.refreshTokenRequest) {
+				// TODO: set device_name
+				this.refreshTokenRequest = this.request('/auth/refresh', 'POST', undefined, {
+					noAuth: true
+				}).then((response) => response.json());
+			}
+
+			const response = await this.refreshTokenRequest;
+			this.refreshTokenRequest = null;
+			return response.accessToken;
+		} catch (error: unknown) {
+			if (!(error instanceof HttpError)) {
+				throw error;
+			}
+
+			if (error.type == ErrorType.INVALID_CREDENTIALS) {
+				throw goto('/logout');
+			}
+
+			throw error;
+		}
 	}
 
 	private static async request(
@@ -63,15 +99,16 @@ export default class API {
 			credentials: 'include'
 		});
 
-		if (response.status == 403) {
-			this.authorizationToken = await this.getAuthorizationToken();
-			return this.request(url, method, body, options, attempt + 1);
-		}
-
 		if (!response.ok) {
 			const data: RequestError = await response.json();
+
+			if (data.error.type == ErrorType.ACCESS_TOKEN_EXPIRED) {
+				this.authorizationToken = await this.getAuthorizationToken();
+				return this.request(url, method, body, options, attempt + 1);
+			}
+
 			console.error(`[API] Failed to perform request: ${data.error.message}`, data);
-			throw new Error(data.error.message);
+			throw new HttpError(data);
 		}
 
 		return response;

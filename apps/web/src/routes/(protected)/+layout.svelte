@@ -5,11 +5,15 @@
 	import { onMount } from 'svelte';
 
 	const getCurrentUser = async () => {
-		const response = await API.get('/users/me');
-		if (!response.ok) return goto('/login');
+		try {
+			const response = await API.get('/users/me');
+			if (!response.ok) throw new Error('failed to perform request');
 
-		const data = await response.json();
-		userStore.set(data);
+			const data = await response.json();
+			userStore.set(data);
+		} catch (error) {
+			return goto('/login');
+		}
 	};
 
 	onMount(getCurrentUser);

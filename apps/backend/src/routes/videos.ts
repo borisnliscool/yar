@@ -1,3 +1,4 @@
+import { ErrorType } from '@repo/types';
 import crypto from 'crypto';
 import { Request, Response, Router } from 'express';
 import { shuffle } from 'lodash';
@@ -92,8 +93,9 @@ router.get('/:videoId', async (req: Request, res: Response) => {
 	});
 
 	if (!video) {
-		res.statusCode = 404;
-		throw new Error('video not found');
+		// res.statusCode = 404;
+		// throw new Error('video not found');
+		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
 	}
 
 	return res.json(VideoConverter.convert(video));
@@ -120,13 +122,11 @@ router.put('/:videoId', validateSchema(VideoUpdateSchema), async (req: Request, 
 	});
 
 	if (!video) {
-		res.statusCode = 404;
-		throw new Error('video not found');
+		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
 	}
 
 	if (video.author.id !== req.user!.id) {
-		res.statusCode = 403;
-		throw new Error('unauthorized');
+		return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
 	}
 
 	await database.video.update({
@@ -163,18 +163,16 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 	});
 
 	if (!video) {
-		res.statusCode = 404;
-		throw new Error('video not found');
+		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
 	}
 
 	if (video.author.id !== req.user!.id) {
-		res.statusCode = 403;
-		throw new Error('unauthorized');
+		return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
 	}
 
 	const thumbnail = req.files && Object.values(req.files)[0];
 	if (!thumbnail) {
-		throw new Error('thumbnail not found');
+		return req.fail(ErrorType.INVALID_MEDIA, 400, 'invalid media');
 	}
 
 	const file = thumbnail as Express.Multer.File;
@@ -228,13 +226,11 @@ router.delete('/:videoId', async (req: Request, res: Response) => {
 	});
 
 	if (!video) {
-		res.statusCode = 404;
-		throw new Error('video not found');
+		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
 	}
 
 	if (video.author.id !== req.user!.id) {
-		res.statusCode = 403;
-		throw new Error('unauthorized');
+		return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
 	}
 
 	await database.video.delete({

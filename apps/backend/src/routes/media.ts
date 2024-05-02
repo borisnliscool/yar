@@ -1,3 +1,4 @@
+import { ErrorType } from '@repo/types';
 import { Request, Response, Router } from 'express';
 import RangeParser from 'range-parser';
 import AuthenticationService from '../services/authenticationService';
@@ -17,8 +18,7 @@ router.get('/:mediaId', AuthenticationService.media, async (req: Request, res: R
 	});
 
 	if (!media) {
-		res.statusCode = 404;
-		throw new Error('media not found');
+		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
 	}
 
 	const fileName = `${media.id}.${media.extension}`;

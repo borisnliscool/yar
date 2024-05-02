@@ -1,3 +1,4 @@
+import { ErrorType } from '@repo/types';
 import { Request, Response, Router } from 'express';
 import { merge } from 'lodash';
 import crypto from 'node:crypto';
@@ -36,8 +37,7 @@ router.post(
 			res.setHeader('Cache-Control', 'max-age=3600');
 			res.send(videoInfo);
 		} catch (error) {
-			res.statusCode = 500;
-			throw new Error('Failed to fetch video info, is the video url valid?');
+			return req.fail(ErrorType.INVALID_URL, 400, 'invalid url');
 		}
 	}
 );
@@ -74,7 +74,7 @@ router.post(
 				videoUpload: err.message,
 			});
 
-			throw new Error('Failed to upload video');
+			return req.fail(ErrorType.INTERNAL_SERVER_ERROR, 500, 'failed to upload video');
 		});
 
 		stream.on('data', (data) => FileService.appendFile('media', fileName, data));
@@ -184,11 +184,11 @@ router.post('/file/:mediaId/part', BodyParsers.raw, async (req: Request, res: Re
 	});
 
 	if (!media) {
-		throw new Error('media not found');
+		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
 	}
 
 	if (!media.processing) {
-		throw new Error('media not processing');
+		return req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
 	}
 
 	const fileName = `${media.id}.${media.extension}`;
@@ -212,11 +212,11 @@ router.post(
 		});
 
 		if (!media) {
-			throw new Error('media not found');
+			return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
 		}
 
 		if (!media.processing) {
-			throw new Error('media not processing');
+			return req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
 		}
 
 		media.processing = false;
@@ -259,11 +259,11 @@ router.post('/file/:mediaId/cancel', async (req: Request, res: Response) => {
 	});
 
 	if (!media) {
-		throw new Error('media not found');
+		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
 	}
 
 	if (!media.processing) {
-		throw new Error('media not processing');
+		return req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
 	}
 
 	await database.media.delete({

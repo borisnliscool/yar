@@ -1,3 +1,4 @@
+import { ErrorType } from '@repo/types';
 import { Request, Response, Router } from 'express';
 import AuthenticationService from '../services/authenticationService';
 
@@ -10,11 +11,13 @@ router.get('/image/:url', async (req: Request, res: Response) => {
 	try {
 		new URL(url);
 	} catch (err) {
-		throw Error('invalid url');
+		return req.fail(ErrorType.INVALID_URL, 400, 'invalid url');
 	}
 
 	const response = await fetch(url);
-	if (!response.ok) throw Error('failed to perform request');
+	if (!response.ok) {
+		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
+	}
 
 	const addHeader = (name: string) => {
 		const header = response.headers.get(name);
@@ -29,5 +32,5 @@ router.get('/image/:url', async (req: Request, res: Response) => {
 	res.type(blob.type);
 
 	const buffer = await blob.arrayBuffer();
-	res.send(Buffer.from(buffer));
+	return res.send(Buffer.from(buffer));
 });

@@ -1,4 +1,5 @@
 import { user } from '@repo/database';
+import { ErrorType } from '@repo/types';
 import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import * as RT from 'runtypes';
@@ -24,13 +25,15 @@ router.put('/me', validateSchema(ProfileUpdateSchema), async (req: Request, res:
 	const body: RT.Static<typeof ProfileUpdateSchema> = req.body;
 
 	if (!req.user) {
-		res.statusCode = 401;
-		throw new Error('unauthorized');
+		return req.fail(ErrorType.UNAUTHORIZED, 401, 'unauthorized');
 	}
 
 	if (!!body.oldPassword !== !!body.newPassword) {
-		res.statusCode = 400;
-		throw new Error('oldPassword and newPassword must be provided together');
+		return req.fail(
+			ErrorType.INVALID_CREDENTIALS,
+			401,
+			'oldPassword and newPassword must be provided together'
+		);
 	}
 
 	const updateUser: Partial<user> = {};
@@ -38,8 +41,7 @@ router.put('/me', validateSchema(ProfileUpdateSchema), async (req: Request, res:
 
 	if (body.oldPassword && body.newPassword) {
 		if (!compareSync(body.oldPassword, req.user.password_hash)) {
-			res.statusCode = 401;
-			throw new Error('invalid password');
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid credentials');
 		}
 
 		updateUser.password_hash = hashSync(body.newPassword, 12);

@@ -4,7 +4,9 @@
 		"build": "turbo run build",
 		"dev": "dotenv -e .env.dev -- turbo run dev",
 		"lint": "turbo run lint",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"db:generate": "dotenv -e .env.dev -- turbo run db:generate",
+		"db:push": "dotenv -e .env.dev -- turbo run db:push"
 	},
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",

@@ -1,15 +1,13 @@
+import { ErrorType } from '@repo/types';
 import { compareSync } from 'bcrypt';
 import { Request, Response, Router } from 'express';
-import ms from 'ms';
 import * as OTPAuth from 'otpauth';
 import * as RT from 'runtypes';
 import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
 import { database } from '../services/databaseService';
 import JwtService from '../services/jwtService';
-
-const REFRESH_TOKEN_EXPIRY = ms('1w') / 1000;
-const ACCESS_TOKEN_EXPIRY = ms('30m') / 1000;
+import TokenService from '../services/tokenService';
 
 export const router = Router();
 
@@ -17,6 +15,7 @@ const LoginSchema = RT.Record({
 	username: RT.String,
 	password: RT.String,
 	totp_code: RT.String.optional(),
+	device_name: RT.String.optional(),
 });
 
 router.post(
@@ -34,17 +33,19 @@ router.post(
 			},
 		});
 
-		const invalid = (message?: string) => {
-			res.statusCode = 401;
-			throw new Error(message ? message : 'invalid credentials');
-		};
+		// const invalid = (message?: string) => {
+		// 	res.statusCode = 401;
+		// 	throw new Error(message ? message : 'invalid credentials');
+		// };
 
 		if (!user || !compareSync(body.password, user.password_hash)) {
-			return invalid();
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid credentials');
 		}
 
 		if (user.totp_secret) {
-			if (!body.totp_code) return invalid('totp code missing');
+			if (!body.totp_code) {
+				return req.fail(ErrorType.TOTP_REQUIRED, 401, 'totp code required');
+			}
 
 			const totp = new OTPAuth.TOTP({
 				secret: user.totp_secret,
@@ -56,25 +57,21 @@ router.post(
 			});
 
 			if (!isTokenValid) {
-				return invalid('totp code invalid');
+				return req.fail(ErrorType.TOTP_INVALID, 401, 'totp code invalid');
 			}
 		}
 
-		const refreshToken = JwtService.encodeToken({}, 'refresh', {
-			expiresIn: REFRESH_TOKEN_EXPIRY,
-			subject: user.id,
-		});
-
-		const accessToken = JwtService.encodeToken({}, 'access', {
-			expiresIn: ACCESS_TOKEN_EXPIRY,
-			subject: user.id,
-		});
+		const refreshToken = await TokenService.refreshToken(
+			user.id,
+			body.device_name ?? 'unknown'
+		);
+		const accessToken = TokenService.accessToken(user.id);
 
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
-			maxAge: REFRESH_TOKEN_EXPIRY * 1000,
+			secure: process.env.NODE_ENV === 'production',
+			maxAge: TokenService.REFRESH_TOKEN_EXPIRY * 1000,
 			path: '/',
-			secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
 		});
 
 		return res.json({
@@ -83,37 +80,50 @@ router.post(
 	}
 );
 
-router.post('/refresh', async (req: Request, res: Response) => {
+const RefreshSchema = RT.Record({
+	device_name: RT.String.optional(),
+});
+
+router.post('/refresh', validateSchema(RefreshSchema), async (req: Request, res: Response) => {
+	const body = req.body as RT.Static<typeof RefreshSchema>;
+
 	const suppliedRefreshToken = req.cookies['refreshToken'];
-	if (!suppliedRefreshToken) throw new Error('refresh cookie missing');
+	if (!suppliedRefreshToken) {
+		return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'refresh cookie missing');
+	}
 
 	try {
 		const decodedToken = JwtService.decodeToken(suppliedRefreshToken);
+		const storedToken = await TokenService.getByRefreshToken(decodedToken.jti);
 
-		const refreshToken = JwtService.encodeToken({}, 'refresh', {
-			expiresIn: REFRESH_TOKEN_EXPIRY,
-			subject: String(decodedToken.sub),
-		});
+		if (
+			!storedToken ||
+			storedToken.expires_at < new Date() ||
+			storedToken.user_id !== decodedToken.sub
+		) {
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid refresh token');
+		}
 
-		const accessToken = JwtService.encodeToken({}, 'access', {
-			expiresIn: ACCESS_TOKEN_EXPIRY,
-			subject: String(decodedToken.sub),
-		});
+		await TokenService.deleteRefreshTokenById(storedToken.id);
 
-		res.cookie('refreshToken', refreshToken, {
+		const accessToken = TokenService.accessToken(storedToken.user_id);
+		const newRefreshToken = await TokenService.refreshToken(
+			storedToken.user_id,
+			body.device_name ?? storedToken.device_name
+		);
+
+		res.cookie('refreshToken', newRefreshToken, {
 			httpOnly: true,
-			maxAge: REFRESH_TOKEN_EXPIRY * 1000,
+			secure: process.env.NODE_ENV === 'production',
+			maxAge: TokenService.REFRESH_TOKEN_EXPIRY * 1000,
 			path: '/',
-			secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
 		});
 
 		return res.json({
 			accessToken,
 		});
 	} catch (error) {
-		console.error(error);
-		res.statusCode = 401;
-		throw new Error('failed to verify refresh token');
+		return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'failed to verify refresh token');
 	}
 });
 
