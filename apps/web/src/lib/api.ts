@@ -49,7 +49,6 @@ export default class API {
 	static async getAuthorizationToken(): Promise<string> {
 		try {
 			if (!this.refreshTokenRequest) {
-				// TODO: set device_name
 				this.refreshTokenRequest = this.request('/auth/refresh', 'POST', undefined, {
 					noAuth: true
 				}).then((response) => response.json());

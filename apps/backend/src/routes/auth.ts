@@ -8,6 +8,7 @@ import { validateSchema } from '../middleware/schemaValidation';
 import { database } from '../services/databaseService';
 import JwtService from '../services/jwtService';
 import TokenService from '../services/tokenService';
+import UserAgentParser from '../services/userAgentParser';
 
 export const router = Router();
 
@@ -15,7 +16,6 @@ const LoginSchema = RT.Record({
 	username: RT.String,
 	password: RT.String,
 	totp_code: RT.String.optional(),
-	device_name: RT.String.optional(),
 });
 
 router.post(
@@ -32,11 +32,6 @@ router.post(
 				username: body.username,
 			},
 		});
-
-		// const invalid = (message?: string) => {
-		// 	res.statusCode = 401;
-		// 	throw new Error(message ? message : 'invalid credentials');
-		// };
 
 		if (!user || !compareSync(body.password, user.password_hash)) {
 			return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid credentials');
@@ -63,7 +58,7 @@ router.post(
 
 		const refreshToken = await TokenService.refreshToken(
 			user.id,
-			body.device_name ?? 'unknown'
+			UserAgentParser.getDeviceName(req.headers['user-agent']!)
 		);
 		const accessToken = TokenService.accessToken(user.id);
 
@@ -80,13 +75,7 @@ router.post(
 	}
 );
 
-const RefreshSchema = RT.Record({
-	device_name: RT.String.optional(),
-});
-
-router.post('/refresh', validateSchema(RefreshSchema), async (req: Request, res: Response) => {
-	const body = req.body as RT.Static<typeof RefreshSchema>;
-
+router.post('/refresh', async (req: Request, res: Response) => {
 	const suppliedRefreshToken = req.cookies['refreshToken'];
 	if (!suppliedRefreshToken) {
 		return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'refresh cookie missing');
@@ -109,7 +98,7 @@ router.post('/refresh', validateSchema(RefreshSchema), async (req: Request, res:
 		const accessToken = TokenService.accessToken(storedToken.user_id);
 		const newRefreshToken = await TokenService.refreshToken(
 			storedToken.user_id,
-			body.device_name ?? storedToken.device_name
+			UserAgentParser.getDeviceName(req.headers['user-agent']!)
 		);
 
 		res.cookie('refreshToken', newRefreshToken, {
