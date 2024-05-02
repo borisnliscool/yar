@@ -3,6 +3,7 @@
 
 	import dayjs from 'dayjs';
 	import relativeType from 'dayjs/plugin/relativeTime';
+	import VideoThumbnailImage from './VideoThumbnailImage.svelte';
 
 	dayjs.extend(relativeType);
 
@@ -10,24 +11,7 @@
 </script>
 
 <div class="grid grid-cols-7 gap-4">
-	<div
-		class="col-span-3 mb-1 aspect-video w-full overflow-hidden rounded-md bg-neutral-300 dark:bg-neutral-700"
-	>
-		{#if video.thumbnail?.url}
-			<img
-				crossorigin="anonymous"
-				class="h-full w-full object-contain"
-				src={video.thumbnail.url}
-				alt={video.title}
-			/>
-		{:else}
-			<div
-				class="grid h-full w-full select-none place-items-center text-4xl font-semibold text-neutral-400 dark:text-neutral-500"
-			>
-				?
-			</div>
-		{/if}
-	</div>
+	<VideoThumbnailImage class="col-span-3" {video} />
 
 	<div class="col-span-4">
 		<p class="mb-1 line-clamp-2 text-sm font-medium">{video.title}</p>
