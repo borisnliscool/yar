@@ -1,7 +1,6 @@
 import { ErrorType } from '@repo/types';
 import crypto from 'crypto';
 import { Request, Response, Router } from 'express';
-import { shuffle } from 'lodash';
 import multer from 'multer';
 import * as RT from 'runtypes';
 import VideoConverter from '../converters/videoConverter';
@@ -30,12 +29,15 @@ router.get('/', async (req: Request, res: Response) => {
 			thumbnail: true,
 			media: true,
 		},
+		orderBy: {
+			created_at: 'desc',
+		},
 	});
 
 	const videos = databaseVideos.map(VideoConverter.convert);
 
 	return res.json({
-		videos: shuffle(videos),
+		videos,
 		page: page,
 		total: total,
 	});
