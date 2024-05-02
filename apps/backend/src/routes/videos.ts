@@ -4,6 +4,7 @@ import { Request, Response, Router } from 'express';
 import multer from 'multer';
 import * as RT from 'runtypes';
 import VideoConverter from '../converters/videoConverter';
+import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
 import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
@@ -14,7 +15,7 @@ export const router = Router();
 
 router.use(AuthenticationService.isAuthenticated);
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', rateLimit(), async (req: Request, res: Response) => {
 	const total = await database.video.count();
 
 	const { page: _page, count: _count } = req.query;
@@ -34,53 +35,57 @@ router.get('/', async (req: Request, res: Response) => {
 		},
 	});
 
-	const videos = databaseVideos.map(VideoConverter.convert);
-
 	return res.json({
-		videos,
+		videos: databaseVideos.map(VideoConverter.convert),
 		page: page,
 		total: total,
 	});
 });
 
-router.get('/search', async (req: Request, res: Response) => {
-	const { query } = req.query;
-	if (!query) return res.json({ videos: [] });
+router.get(
+	'/search',
+	rateLimit({
+		max: 3,
+	}),
+	async (req: Request, res: Response) => {
+		const { query } = req.query;
+		if (!query) return res.json({ videos: [] });
 
-	const videos = await database.video.findMany({
-		where: {
-			OR: [
-				{
-					title: {
-						contains: query as string,
+		const videos = await database.video.findMany({
+			where: {
+				OR: [
+					{
+						title: {
+							contains: query as string,
+						},
 					},
-				},
-				{
-					description: {
-						contains: query as string,
+					{
+						description: {
+							contains: query as string,
+						},
 					},
-				},
-				{
-					tags: {
-						contains: query as string,
+					{
+						tags: {
+							contains: query as string,
+						},
 					},
-				},
-			],
-			media: {
-				NOT: {
-					processing: true,
+				],
+				media: {
+					NOT: {
+						processing: true,
+					},
 				},
 			},
-		},
-		include: {
-			author: true,
-			thumbnail: true,
-			media: true,
-		},
-	});
+			include: {
+				author: true,
+				thumbnail: true,
+				media: true,
+			},
+		});
 
-	return res.json({ videos: videos.map(VideoConverter.convert) });
-});
+		return res.json({ videos: videos.map(VideoConverter.convert) });
+	}
+);
 
 router.get('/:videoId', async (req: Request, res: Response) => {
 	const video = await database.video.findUnique({
@@ -109,44 +114,49 @@ const VideoUpdateSchema = RT.Record({
 	tags: RT.Array(RT.String).optional(),
 });
 
-router.put('/:videoId', validateSchema(VideoUpdateSchema), async (req: Request, res: Response) => {
-	const body = req.body as RT.Static<typeof VideoUpdateSchema>;
+router.put(
+	'/:videoId',
+	rateLimit(),
+	validateSchema(VideoUpdateSchema),
+	async (req: Request, res: Response) => {
+		const body = req.body as RT.Static<typeof VideoUpdateSchema>;
 
-	const video = await database.video.findUnique({
-		where: {
-			id: req.params.videoId,
-		},
-		include: {
-			author: true,
-			thumbnail: true,
-			media: true,
-		},
-	});
+		const video = await database.video.findUnique({
+			where: {
+				id: req.params.videoId,
+			},
+			include: {
+				author: true,
+				thumbnail: true,
+				media: true,
+			},
+		});
 
-	if (!video) {
-		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+		if (!video) {
+			return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+		}
+
+		if (video.author.id !== req.user!.id) {
+			return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
+		}
+
+		await database.video.update({
+			where: {
+				id: req.params.videoId,
+			},
+			data: {
+				title: body.title,
+				description: body.description,
+				tags: body.tags
+					?.map((t) => t.trim())
+					.filter(Boolean)
+					.join(','),
+			},
+		});
+
+		return res.json(VideoConverter.convert(video));
 	}
-
-	if (video.author.id !== req.user!.id) {
-		return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
-	}
-
-	await database.video.update({
-		where: {
-			id: req.params.videoId,
-		},
-		data: {
-			title: body.title,
-			description: body.description,
-			tags: body.tags
-				?.map((t) => t.trim())
-				.filter(Boolean)
-				.join(','),
-		},
-	});
-
-	return res.json(VideoConverter.convert(video));
-});
+);
 
 const upload = multer({
 	storage: multer.memoryStorage(),

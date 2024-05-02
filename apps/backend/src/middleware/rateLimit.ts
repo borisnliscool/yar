@@ -11,9 +11,7 @@ interface RateLimitOptions {
 const defaults: RateLimitOptions = {
 	window: 5 * 1000,
 	max: 10,
-	identify: (req: Request): string => {
-		return req.clientIp ?? randomUUID();
-	},
+	identify: (req: Request): string => req.user?.id ?? req.clientIp ?? randomUUID(),
 };
 
 export const rateLimit = (options?: RateLimitOptions) => {
