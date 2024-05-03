@@ -2,9 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { theme } from '$lib/stores/theme';
 	import Icon from '@iconify/svelte';
-	import { Input } from '@repo/ui';
+	import { Button, Input } from '@repo/ui';
 
 	let searchValue = '';
+	let mobileMenu = false;
 
 	const input = (event: KeyboardEvent) => {
 		if (event.key == 'Enter') {
@@ -16,9 +17,9 @@
 </script>
 
 <header
-	class="sticky top-0 z-[100] grid h-16 max-h-16 min-h-16 w-full grid-cols-5 place-items-center border-b bg-white/95 px-8 shadow-sm backdrop-blur-lg dark:border-b-neutral-700 dark:bg-neutral-800/95"
+	class="sticky top-0 z-[100] grid h-16 max-h-16 min-h-16 w-full grid-cols-9 place-items-center gap-4 border-b bg-white/95 px-4 shadow-sm backdrop-blur-lg md:gap-0 md:px-8 dark:border-b-neutral-700 dark:bg-neutral-800/95"
 >
-	<div class="text-md w-full">
+	<div class="text-md col-span-2 hidden w-full md:block">
 		<a href="/" class="group flex items-center gap-4">
 			<picture>
 				<source srcset="/logo.webp" type="image/webp" />
@@ -33,7 +34,7 @@
 		</a>
 	</div>
 
-	<div class="col-span-3 w-full min-w-[20rem] max-w-[30rem]">
+	<div class="col-span-8 w-full max-w-[30rem] md:col-span-5">
 		<Input
 			type="search"
 			class="w-full rounded-full px-4"
@@ -43,8 +44,9 @@
 		/>
 	</div>
 
-	<div class="flex w-full items-center justify-end">
-		<button
+	<div class="col-span-2 hidden w-full items-center justify-end md:flex">
+		<Button
+			variant="ghost"
 			on:click={() => ($theme = $theme == 'dark' ? 'light' : 'dark')}
 			class="grid h-10 w-12 place-items-center text-lg"
 		>
@@ -53,25 +55,94 @@
 			{:else}
 				<Icon icon="fa6-solid:moon" />
 			{/if}
-		</button>
+		</Button>
 
-		<a href="/upload" class="grid h-10 w-12 place-items-center text-2xl">
+		<Button variant="ghost" href="/upload" class="grid h-10 w-12 place-items-center text-2xl">
 			<Icon icon="ri:video-upload-line" />
-		</a>
+		</Button>
 
-		<a
+		<Button
+			variant="ghost"
 			href="/profile"
 			class="grid h-10 w-12 place-items-center text-lg text-black hover:underline dark:text-white"
 		>
 			<Icon icon="fa6-solid:user" />
-		</a>
+		</Button>
 
-		<a
+		<Button
+			variant="ghost"
 			href="/logout"
 			data-sveltekit-preload-data="off"
-			class="py-2 pl-4 text-sm text-black hover:underline dark:text-white"
+			class="py-2 pl-4 text-lg text-black hover:underline dark:text-white"
 		>
-			Logout
-		</a>
+			<Icon icon="fa6-solid:right-from-bracket" />
+		</Button>
+	</div>
+
+	<div class="col-span-1 grid place-items-center md:hidden">
+		<Button on:click={() => (mobileMenu = !mobileMenu)} variant="ghost">
+			<Icon icon="fa6-solid:bars" />
+		</Button>
 	</div>
 </header>
+
+{#if mobileMenu}
+	<div
+		class="fixed top-16 z-10 h-[calc(100vh-4rem)] w-full bg-white/75 backdrop-blur-md dark:bg-neutral-800/75"
+	>
+		<div class="flex flex-col gap-4 p-6">
+			<Button
+				variant="ghost"
+				on:click={() => ($theme = $theme == 'dark' ? 'light' : 'dark')}
+				class="flex items-center justify-start gap-4 p-0 text-base"
+			>
+				<div class="grid h-10 w-12 place-items-center text-xl">
+					{#if $theme == 'dark'}
+						<Icon icon="fa6-solid:sun" />
+					{:else}
+						<Icon icon="fa6-solid:moon" />
+					{/if}
+				</div>
+
+				Toggle theme
+			</Button>
+
+			<Button
+				variant="ghost"
+				href="/upload"
+				class="flex items-center justify-start gap-4 p-0 text-base"
+			>
+				<div class="grid h-10 w-12 place-items-center text-2xl">
+					<Icon icon="ri:video-upload-line" />
+				</div>
+
+				Upload
+			</Button>
+
+			<Button
+				variant="ghost"
+				href="/profile"
+				class="flex items-center justify-start gap-4 p-0 text-base"
+			>
+				<div class="grid h-10 w-12 place-items-center text-xl">
+					<Icon icon="fa6-solid:user" />
+				</div>
+
+				Profile
+			</Button>
+
+			<Button
+				variant="ghost"
+				href="/logout"
+				data-sveltekit-preload-data="off"
+				class="flex items-center justify-start gap-4 p-0 text-base"
+			>
+				<div class="grid h-10 w-12 place-items-center text-xl">
+					<Icon icon="fa6-solid:right-from-bracket" />
+				</div>
+
+				Logout
+			</Button>
+		</div>
+	</div>
+{/if}
