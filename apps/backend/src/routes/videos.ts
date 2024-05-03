@@ -100,8 +100,6 @@ router.get('/:videoId', async (req: Request, res: Response) => {
 	});
 
 	if (!video) {
-		// res.statusCode = 404;
-		// throw new Error('video not found');
 		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
 	}
 
@@ -210,6 +208,7 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 			extension: thumbnailExtension,
 			type: 'IMAGE',
 			mime_type: file.mimetype,
+			file_size: file.size,
 		},
 	});
 
@@ -245,15 +244,23 @@ router.delete('/:videoId', async (req: Request, res: Response) => {
 		return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
 	}
 
-	await database.video.delete({
-		where: {
-			id: video.id,
-		},
-		include: {
-			media: true,
-			thumbnail: true,
-		},
-	});
+	const mediasToDelete = [video.mediaId];
+	if (video.thumbnail_id) mediasToDelete.push(video.thumbnail_id);
+
+	await database.$transaction([
+		database.video.delete({
+			where: {
+				id: video.id,
+			},
+		}),
+		database.media.deleteMany({
+			where: {
+				id: {
+					in: mediasToDelete,
+				},
+			},
+		}),
+	]);
 
 	MediaService.deleteMediaFile(video.media);
 	if (video.thumbnail) MediaService.deleteMediaFile(video.thumbnail);

@@ -44,9 +44,10 @@ model media {
     type       media_type
     processing Boolean    @default(false)
 
-    width    Int?
-    height   Int?
-    duration Int?
+    width     Int?
+    height    Int?
+    duration  Int?
+    file_size Int?
 
     video     video[] @relation("video_media")
     thumbnail video[] @relation("video_thumbnail")

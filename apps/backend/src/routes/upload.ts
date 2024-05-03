@@ -2,6 +2,7 @@ import { ErrorType } from '@repo/types';
 import { Request, Response, Router } from 'express';
 import { merge } from 'lodash';
 import crypto from 'node:crypto';
+import path from 'path';
 import * as RT from 'runtypes';
 import mediaConverter from '../converters/mediaConverter';
 import videoConverter from '../converters/videoConverter';
@@ -10,6 +11,7 @@ import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
 import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
+import FFmpegService from '../services/ffmpegService';
 import FileService from '../services/fileService';
 import VideoDownloadService from '../services/videoDownloadService';
 
@@ -86,21 +88,30 @@ router.post(
 		});
 
 		stream.once('end', async () => {
+			const ffprobeData = await FFmpegService.probe(
+				path.join(FileService.getDirectoryPath('media'), fileName),
+				false
+			);
+			const duration = ffprobeData?.streams[0].duration ?? null;
+
 			const media = await database.media.create({
 				data: {
 					id,
 					extension,
 					type: 'VIDEO',
 					mime_type: 'video/' + extension,
+					file_size: FileService.getFileSize('media', fileName),
+					duration: duration ? +duration : null,
 				},
 			});
 
 			const thumbnailId = crypto.randomUUID();
 			const thumbnailExtension = videoDetails.thumbnail.split('.').at(-1)!;
+			const thumbnailFileName = thumbnailId + '.' + thumbnailExtension;
 
 			FileService.writeFile(
 				'media',
-				thumbnailId + '.' + thumbnailExtension,
+				thumbnailFileName,
 				await VideoDownloadService.thumbnail(videoDetails.thumbnail)
 			);
 
@@ -110,6 +121,7 @@ router.post(
 					extension: thumbnailExtension,
 					type: 'IMAGE',
 					mime_type: 'image/' + thumbnailExtension,
+					file_size: FileService.getFileSize('media', thumbnailFileName),
 				},
 			});
 
@@ -219,7 +231,15 @@ router.post(
 			return req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
 		}
 
+		const ffprobeData = await FFmpegService.probe(
+			path.join(FileService.getDirectoryPath('media'), media.id + '.' + media.extension),
+			false
+		);
+
+		const duration = ffprobeData?.streams[0].duration ?? null;
+		media.duration = duration ? +duration : null;
 		media.processing = false;
+		media.file_size = FileService.getFileSize('media', media.id + '.' + media.extension);
 
 		await database.media.update({
 			where: {

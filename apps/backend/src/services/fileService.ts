@@ -57,6 +57,10 @@ export default class FileService {
 		return fs.createReadStream(path.join(this.getDirectoryPath(directory), filePath), options);
 	}
 
+	static getFileSize(directory: string, filePath: string) {
+		return fs.statSync(path.join(this.getDirectoryPath(directory), filePath)).size;
+	}
+
 	private static makeDirectoryPath(directory: string): string {
 		const dirPath = path.join(this.rootDir, directory);
 		fs.mkdirSync(dirPath, { recursive: true });
