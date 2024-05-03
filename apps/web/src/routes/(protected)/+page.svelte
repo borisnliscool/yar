@@ -39,7 +39,7 @@
 
 <Header />
 
-<div class="grid grid-cols-1 gap-4 p-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+<div class="grid grid-cols-1 gap-4 p-2 md:grid-cols-2 lg:grid-cols-3 lg:p-6 2xl:grid-cols-4">
 	<InfiniteList items={videos} on:loadmore={loadVideos} let:item>
 		<Button class="h-fit w-full p-0" variant="ghost" href="/watch/{item.id}">
 			<VideoThumbnail video={item} />
