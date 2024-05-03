@@ -88,9 +88,24 @@
 
 {#if mobileMenu}
 	<div
-		class="fixed top-16 z-10 h-[calc(100vh-4rem)] w-full bg-white/75 backdrop-blur-md dark:bg-neutral-800/75"
+		class="fixed top-16 z-10 h-[calc(100vh-4rem)] w-full bg-white/95 backdrop-blur-sm dark:bg-neutral-800/95"
 	>
 		<div class="flex flex-col gap-4 p-6">
+			<Button variant="ghost" href="/" class="flex items-center justify-start gap-4 p-0 text-base">
+				<div class="grid h-10 w-12 place-items-center text-xl">
+					<picture>
+						<source srcset="/logo.webp" type="image/webp" />
+						<img class="max-h-6" src="/logo.png" alt="Youtube Archive Logo" loading="eager" />
+					</picture>
+				</div>
+
+				<span
+					class="bg-gradient-to-br from-orange-500 to-purple-500 bg-clip-text font-medium text-transparent transition-colors"
+				>
+					Home
+				</span>
+			</Button>
+
 			<Button
 				variant="ghost"
 				on:click={() => ($theme = $theme == 'dark' ? 'light' : 'dark')}
@@ -144,5 +159,11 @@
 				Logout
 			</Button>
 		</div>
+
+		<Button
+			variant="ghost"
+			on:click={() => (mobileMenu = false)}
+			class="h-full max-h-none w-full"
+		/>
 	</div>
 {/if}
