@@ -2,6 +2,7 @@
 	import { page } from '$app/stores';
 	import Header from '$components/Header.svelte';
 	import API from '$lib/api';
+	import { userStore } from '$lib/stores/user';
 	import Icon from '@iconify/svelte';
 	import type { Video } from '@repo/types';
 	import { Button, Skeleton } from '@repo/ui';
@@ -46,9 +47,12 @@
 					<div class="flex flex-col gap-4 p-4 xl:p-0">
 						<h1 class="flex w-full items-center justify-between text-2xl font-semibold">
 							{video.title}
-							<Button variant="ghost" href="/editor/{video.id}">
-								<Icon icon="fa6-solid:pen" />
-							</Button>
+
+							{#if video.author.id == $userStore.id}
+								<Button variant="ghost" href="/editor/{video.id}">
+									<Icon icon="fa6-solid:pen" />
+								</Button>
+							{/if}
 						</h1>
 						{#if video.description}
 							<p>{video.description}</p>

@@ -5,21 +5,28 @@
 	import VideoTags from '$components/VideoTags.svelte';
 	import { notifications } from '$components/notifications';
 	import API from '$lib/api';
+	import { userStore } from '$lib/stores/user';
 	import type { Video } from '@repo/types';
 	import { Button, Input, Skeleton, Textarea } from '@repo/ui';
 
 	let videoPromise: Promise<Video>;
 	let loadedVideo: Video;
 
-	let thumbnailInput: HTMLInputElement;
 	let isBusy = false;
+	let thumbnailInput: HTMLInputElement;
 	let thumbnails: FileList | null = null;
 
 	const loadVideo = (videoId: string) => {
-		videoPromise = new Promise<Video>(async (resolve) => {
+		videoPromise = new Promise<Video>(async (resolve, reject) => {
 			const response = await API.get('/videos/' + videoId);
 			const data: Video = await response.json();
 			loadedVideo = data;
+
+			if (loadedVideo.author.id !== $userStore.id) {
+				notifications.error('You are not allowed to edit this video');
+				return reject(goto('/'));
+			}
+
 			return resolve(data);
 		});
 	};
