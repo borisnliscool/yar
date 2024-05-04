@@ -3,7 +3,7 @@ import { writable } from 'svelte/store';
 
 export type ColorTheme = 'light' | 'dark';
 
-function createThemeStore() {
+const createThemeStore = () => {
 	const { subscribe, set, update } = writable<ColorTheme>('light');
 
 	return {

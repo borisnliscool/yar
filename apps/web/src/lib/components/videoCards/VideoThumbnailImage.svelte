@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Formatter from '$lib/formatting';
 	import type { Video } from '@repo/types';
 	import { cn } from '@repo/utils';
 
@@ -6,6 +7,7 @@
 
 	export { className as class };
 	export let video: Video | undefined;
+	export let showDuration = true;
 
 	let loaded = false;
 </script>
@@ -16,6 +18,12 @@
 		className
 	)}
 >
+	{#if video && showDuration && video.media.duration}
+		<div class="absolute bottom-2 right-2 z-10 rounded bg-black/80 p-1 px-2 text-xs text-white">
+			{Formatter.seconds(video.media.duration)}
+		</div>
+	{/if}
+
 	{#if video && video.thumbnail?.url}
 		<img
 			crossorigin="anonymous"
