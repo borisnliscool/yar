@@ -1,4 +1,4 @@
-import { ErrorType } from '@repo/types';
+import { ErrorType, UserRole } from '@repo/types';
 import { NextFunction, Request, Response } from 'express';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { database } from './databaseService';
@@ -70,11 +70,14 @@ export default class AuthenticationService {
 		return next();
 	}
 
-	static async hasRoles(roles: string | string[]) {
-		return (req: Request, res: Response, next: NextFunction) => {
+	static hasRoles(roles: UserRole | UserRole[]) {
+		return async (req: Request, res: Response, next: NextFunction) => {
 			roles = typeof roles == 'string' ? [roles] : roles;
 
-			if (!req.user || !req.user.roles.split(',').some((role) => roles.includes(role))) {
+			if (
+				!req.user ||
+				!req.user.roles.split(',').some((role) => roles.includes(role as UserRole))
+			) {
 				return req.fail(
 					ErrorType.INSUFFICIENT_PERMISSIONS,
 					403,

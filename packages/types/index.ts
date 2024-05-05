@@ -1,3 +1,5 @@
+import { setting_value_type } from '../database/dist';
+
 interface RequestError {
 	error: {
 		type: ErrorType;
@@ -8,9 +10,15 @@ interface RequestError {
 	};
 }
 
+enum UserRole {
+	ADMIN = 'ROLE_ADMIN',
+	USER = 'ROLE_USER',
+}
+
 interface User {
 	id: string;
 	username: string;
+	roles: UserRole[];
 	created_at: Date;
 }
 
@@ -46,6 +54,13 @@ enum ErrorType {
 	INVALID_MEDIA = 'INVALID_MEDIA',
 	ACCESS_TOKEN_EXPIRED = 'ACCESS_TOKEN_EXPIRED',
 	INSUFFICIENT_PERMISSIONS = 'INSUFFICIENT_PERMISSIONS',
+}
+
+enum SettingsKey {}
+
+interface Setting {
+	type: string;
+	value: setting_value_type;
 }
 
 type MediaType = 'IMAGE' | 'VIDEO';
@@ -102,5 +117,5 @@ type YtdlpVideo = Record<string, any> & {
 	}>;
 };
 
-export { ErrorType, JwtTokenType };
-export type { Media, MediaType, RequestError, User, Video, YtdlpFormat, YtdlpVideo };
+export { ErrorType, JwtTokenType, SettingsKey, UserRole };
+export type { Media, MediaType, RequestError, Setting, User, Video, YtdlpFormat, YtdlpVideo };

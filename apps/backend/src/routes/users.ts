@@ -3,6 +3,7 @@ import { ErrorType } from '@repo/types';
 import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import * as RT from 'runtypes';
+import userConverter from '../converters/userConverter';
 import { validateSchema } from '../middleware/schemaValidation';
 import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
@@ -12,7 +13,7 @@ export const router = Router();
 router.use(AuthenticationService.isAuthenticated);
 
 router.get('/me', async (req: Request, res: Response) => {
-	return res.json(req.user!);
+	return res.json(userConverter.convert(req.user!));
 });
 
 const ProfileUpdateSchema = RT.Record({
@@ -54,5 +55,5 @@ router.put('/me', validateSchema(ProfileUpdateSchema), async (req: Request, res:
 		data: updateUser,
 	});
 
-	return res.json(user);
+	return res.json(userConverter.convert(user));
 });

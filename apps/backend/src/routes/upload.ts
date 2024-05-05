@@ -129,7 +129,7 @@ router.post(
 				data: {
 					title: body.title,
 					author_id: req.user!.id,
-					mediaId: media.id,
+					media_id: media.id,
 					source_url: body.url,
 					tags: body.tags
 						.map((t) => t.trim())
@@ -252,7 +252,7 @@ router.post(
 			data: {
 				title: body.title,
 				author_id: req.user!.id,
-				mediaId: media.id,
+				media_id: media.id,
 				tags: body.tags
 					.map((t) => t.trim())
 					.filter(Boolean)

@@ -73,6 +73,21 @@ model video {
     thumbnail    media?  @relation("video_thumbnail", fields: [thumbnail_id], references: [id])
     thumbnail_id String?
 
-    media   media  @relation("video_media", fields: [mediaId], references: [id])
-    mediaId String // This should be _id but I'm to lazy to change it
+    media    media  @relation("video_media", fields: [media_id], references: [id])
+    media_id String
+}
+
+enum setting_value_type {
+    STRING
+    BOOLEAN
+    INTEGER
+}
+
+model setting {
+    key        String             @id @unique
+    value_type setting_value_type
+    value      String             @db.VarChar(255)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }

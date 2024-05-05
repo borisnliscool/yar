@@ -244,7 +244,7 @@ router.delete('/:videoId', async (req: Request, res: Response) => {
 		return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
 	}
 
-	const mediasToDelete = [video.mediaId];
+	const mediasToDelete = [video.media_id];
 	if (video.thumbnail_id) mediasToDelete.push(video.thumbnail_id);
 
 	await database.$transaction([

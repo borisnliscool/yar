@@ -1,5 +1,5 @@
 import { media, user, video } from '@repo/database';
-import { Video } from '@repo/types';
+import { UserRole, Video } from '@repo/types';
 import Converter from '../classes/converter';
 import MediaConverter from './mediaConverter';
 
@@ -16,6 +16,7 @@ class VideoConverter implements Converter<db_video, Video> {
 			author: {
 				id: input.author.id,
 				username: input.author.username,
+				roles: input.author.roles.split(',') as UserRole[],
 				created_at: input.author.created_at,
 			},
 			media: MediaConverter.convert(input.media),

@@ -71,6 +71,14 @@
 
 		<Button
 			variant="ghost"
+			href="/settings"
+			class="grid h-10 w-12 place-items-center text-lg text-black hover:underline dark:text-white"
+		>
+			<Icon icon="fa6-solid:gear" />
+		</Button>
+
+		<Button
+			variant="ghost"
 			href="/logout"
 			data-sveltekit-preload-data="off"
 			class="py-2 pl-4 text-lg text-black hover:underline dark:text-white"
@@ -144,6 +152,18 @@
 				</div>
 
 				Profile
+			</Button>
+
+			<Button
+				variant="ghost"
+				href="/settings"
+				class="flex items-center justify-start gap-4 p-0 text-base"
+			>
+				<div class="grid h-10 w-12 place-items-center text-xl">
+					<Icon icon="fa6-solid:gear" />
+				</div>
+
+				Settings
 			</Button>
 
 			<Button
