@@ -1,5 +1,3 @@
-import { setting_value_type } from '../database/dist';
-
 interface RequestError {
 	error: {
 		type: ErrorType;
@@ -56,11 +54,16 @@ enum ErrorType {
 	INSUFFICIENT_PERMISSIONS = 'INSUFFICIENT_PERMISSIONS',
 }
 
-enum SettingsKey {}
+enum SettingsKey {
+	ENABLE_REGISTRATION = 'ENABLE_REGISTRATION',
+}
+
+type SettingValueType = string | boolean | number;
 
 interface Setting {
 	type: string;
-	value: setting_value_type;
+	value: SettingValueType;
+	label: string;
 }
 
 type MediaType = 'IMAGE' | 'VIDEO';
@@ -118,4 +121,14 @@ type YtdlpVideo = Record<string, any> & {
 };
 
 export { ErrorType, JwtTokenType, SettingsKey, UserRole };
-export type { Media, MediaType, RequestError, Setting, User, Video, YtdlpFormat, YtdlpVideo };
+export type {
+	Media,
+	MediaType,
+	RequestError,
+	Setting,
+	SettingValueType,
+	User,
+	Video,
+	YtdlpFormat,
+	YtdlpVideo,
+};

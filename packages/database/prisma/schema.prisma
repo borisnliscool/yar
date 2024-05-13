@@ -87,6 +87,7 @@ model setting {
     key        String             @id @unique
     value_type setting_value_type
     value      String             @db.VarChar(255)
+    label      String             @db.VarChar(255)
 
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt

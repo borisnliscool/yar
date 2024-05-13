@@ -1,5 +1,15 @@
-export class Cache<T, TKey = string> {
+export class Cache<T, TKey extends string | number | symbol> {
 	private cache: Map<TKey, T> = new Map();
+
+	constructor(data?: Record<string | number | symbol, T>) {
+		if (!data) return this;
+
+		for (const [key, value] of Object.entries(data)) {
+			this.cache.set(key as TKey, value);
+		}
+
+		return this;
+	}
 
 	get(key: TKey) {
 		return this.cache.get(key);

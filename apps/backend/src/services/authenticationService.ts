@@ -70,9 +70,9 @@ export default class AuthenticationService {
 		return next();
 	}
 
-	static hasRoles(roles: UserRole | UserRole[]) {
+	static hasRoles(_roles: UserRole | UserRole[]) {
 		return async (req: Request, res: Response, next: NextFunction) => {
-			roles = typeof roles == 'string' ? [roles] : roles;
+			const roles = typeof _roles == 'string' ? [_roles] : _roles;
 
 			if (
 				!req.user ||
