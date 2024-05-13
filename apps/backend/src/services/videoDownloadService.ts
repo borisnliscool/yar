@@ -10,7 +10,10 @@ export default class VideoDownloadService {
 
 	static {
 		(async () => {
-			const executablePath = path.join(FileService.getDirectoryPath('utils'), 'yt-dlp.exe');
+			const executablePath = path.join(
+				FileService.getDirectoryPath('binaries'),
+				'yt-dlp.exe'
+			);
 			if (!existsSync(executablePath)) await YTDlpWrap.downloadFromGithub(executablePath);
 
 			this.ytdlp.setBinaryPath(executablePath);
