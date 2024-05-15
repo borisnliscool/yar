@@ -1,6 +1,17 @@
 {
 	"name": "@repo/types",
 	"version": "0.0.0",
-	"module": "index.ts",
-	"main": "index.ts"
+	"module": "src/index.ts",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"devDependencies": {
+		"@repo/typescript-config": "*",
+		"typescript": "^5.4.5"
+	},
+	"scripts": {
+		"build": "tsc"
+	},
+	"files": [
+		"dist/**"
+	]
 }

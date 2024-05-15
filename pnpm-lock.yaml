@@ -32,9 +32,6 @@ importers:
       '@repo/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@repo/types':
-        specifier: workspace:*
-        version: link:../../packages/types
       '@repo/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -108,6 +105,9 @@ importers:
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/config-eslint
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -320,7 +320,14 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
 
-  packages/types: {}
+  packages/types:
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: '*'
+        version: link:../typescript-config
+      typescript:
+        specifier: ^5.4.5
+        version: 5.4.5
 
   packages/typescript-config: {}
 
