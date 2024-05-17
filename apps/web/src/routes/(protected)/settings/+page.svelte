@@ -5,7 +5,7 @@
 	import API from '$lib/api';
 	import { userStore } from '$lib/stores/user';
 	import { SettingsKey, UserRole, type Setting, type User } from '@repo/types';
-	import { Button, Checkbox, Input, Skeleton } from '@repo/ui';
+	import { Button, Checkbox, Input, Skeleton, Tooltip } from '@repo/ui';
 	import { onMount } from 'svelte';
 
 	let settingsPromise: Promise<Record<SettingsKey, Setting>> | undefined;
@@ -135,14 +135,17 @@
 
 						{#each users as user}
 							<div
-								class="group grid grid-cols-7 px-4 py-2 text-neutral-900 hover:bg-neutral-50 dark:text-neutral-100 dark:hover:bg-neutral-800/50"
+								class="group grid h-10 grid-cols-7 content-center px-4 text-neutral-900 hover:bg-neutral-50 dark:text-neutral-100 dark:hover:bg-neutral-800/50"
 							>
 								<p class="col-span-2">{user.username}</p>
 								<p class="col-span-3">
 									{user.roles.map((r) => r.replace('ROLE_', '').toLowerCase()).join(', ')}
 								</p>
-								<p class="col-span-1" title={new Date(user.created_at).toISOString()}>
-									{new Date(user.created_at).toLocaleDateString()}
+								<p class="col-span-1">
+									<span class="h-full py-1">{new Date(user.created_at).toLocaleDateString()}</span>
+									<Tooltip class="text-xs">
+										{new Date(user.created_at).toISOString()}
+									</Tooltip>
 								</p>
 								<p
 									class="col-span-1 flex items-center justify-end opacity-0 group-hover:opacity-100"
