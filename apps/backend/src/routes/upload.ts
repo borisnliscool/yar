@@ -106,7 +106,10 @@ router.post(
 			});
 
 			const thumbnailId = crypto.randomUUID();
-			const thumbnailExtension = videoDetails.thumbnail.split('.').at(-1)!;
+			const thumbnailExtension = videoDetails.thumbnail
+				.split('.')
+				.at(-1)!
+				.replace(/\?.*/, '');
 			const thumbnailFileName = thumbnailId + '.' + thumbnailExtension;
 
 			FileService.writeFile(

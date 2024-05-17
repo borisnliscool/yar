@@ -40,7 +40,7 @@
 </svelte:head>
 
 <div
-	class="relative z-0 flex h-screen w-full flex-col items-center justify-center gap-4 px-4 sm:p-0 dark:text-white"
+	class="relative z-0 flex h-screen w-full flex-col items-center justify-center gap-4 bg-black px-4 sm:p-0 dark:text-white"
 >
 	<div class="absolute -z-10 h-full w-full">
 		<enhanced:img
@@ -84,7 +84,7 @@
 		{/if} -->
 	</form>
 
-	<footer class="absolute bottom-0 left-0 right-0 flex w-full justify-end p-2">
+	<footer class="absolute bottom-0 left-0 right-0 flex w-full justify-end p-2 text-white">
 		<p class="flex gap-1 text-xs">
 			Background by
 			<Button
