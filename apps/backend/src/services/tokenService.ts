@@ -54,6 +54,14 @@ export default class TokenService {
 		});
 	}
 
+	static getById(id: string) {
+		return database.user_refresh_token.findFirst({
+			where: {
+				id,
+			},
+		});
+	}
+
 	static deleteRefreshTokenById(id: string) {
 		return database.user_refresh_token.delete({
 			where: {

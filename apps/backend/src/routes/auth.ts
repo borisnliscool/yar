@@ -1,10 +1,11 @@
-import { ErrorType, SettingsKey, UserRole } from '@repo/types';
+import { ErrorType, SessionDisplay, SettingsKey, UserRole } from '@repo/types';
 import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import * as OTPAuth from 'otpauth';
 import * as RT from 'runtypes';
 import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
+import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
 import JwtService from '../services/jwtService';
 import SettingsService from '../services/settingsService';
@@ -152,7 +153,7 @@ router.post(
 		const body = req.body as RT.Static<typeof RegisterSchema>;
 
 		if (await database.user.findFirst({ where: { username: body.username } })) {
-			return req.fail(ErrorType.INVALID_CREDENTIALS, 409, 'username already taken');
+			return req.fail(ErrorType.USERNAME_TAKEN, 409, 'username already taken');
 		}
 
 		const totalUsers = await database.user.count();
@@ -182,5 +183,48 @@ router.post(
 		return res.json({
 			accessToken,
 		});
+	}
+);
+
+router.get(
+	'/sessions',
+	AuthenticationService.isAuthenticated,
+	async (req: Request, res: Response) => {
+		const refreshTokens = await database.user_refresh_token.findMany({
+			where: {
+				user_id: req.user!.id,
+				expires_at: { gte: new Date() },
+			},
+			orderBy: {
+				created_at: 'desc',
+			},
+		});
+
+		return res.json(
+			refreshTokens.map(
+				(t) =>
+					({
+						id: t.id,
+						device_name: t.device_name,
+						created_at: t.created_at,
+					}) as SessionDisplay
+			)
+		);
+	}
+);
+
+router.delete(
+	'/sessions/:sessionId',
+	AuthenticationService.isAuthenticated,
+	async (req: Request, res: Response) => {
+		const sessionId = req.params.sessionId;
+		const storedToken = await TokenService.getById(sessionId);
+
+		if (!storedToken || storedToken.user_id !== req.user!.id) {
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid session id');
+		}
+
+		await TokenService.deleteRefreshTokenById(storedToken.id);
+		return res.sendStatus(200);
 	}
 );

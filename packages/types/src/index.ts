@@ -52,6 +52,8 @@ enum ErrorType {
 	INVALID_MEDIA = 'INVALID_MEDIA',
 	ACCESS_TOKEN_EXPIRED = 'ACCESS_TOKEN_EXPIRED',
 	INSUFFICIENT_PERMISSIONS = 'INSUFFICIENT_PERMISSIONS',
+	NOT_FOUND = 'NOT_FOUND',
+	USERNAME_TAKEN = 'USERNAME_TAKEN',
 }
 
 enum SettingsKey {
@@ -120,11 +122,18 @@ type YtdlpVideo = Record<string, any> & {
 	}>;
 };
 
+interface SessionDisplay {
+	id: string;
+	device_name: string;
+	created_at: Date;
+}
+
 export { ErrorType, JwtTokenType, SettingsKey, UserRole };
 export type {
 	Media,
 	MediaType,
 	RequestError,
+	SessionDisplay,
 	Setting,
 	SettingValueType,
 	User,

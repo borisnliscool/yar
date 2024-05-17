@@ -3,7 +3,7 @@
 	import { notifications } from '$components/notifications';
 	import API from '$lib/api';
 	import { userStore } from '$lib/stores/user';
-	import type { User } from '@repo/types';
+	import type { SessionDisplay, User } from '@repo/types';
 	import { Button, Input, Skeleton } from '@repo/ui';
 	import { onMount } from 'svelte';
 
@@ -15,6 +15,8 @@
 		oldPassword: '',
 		newPassword: ''
 	};
+
+	let sessionsPromise: Promise<SessionDisplay[]>;
 
 	const loadUser = () => {
 		userPromise = (async () => {
@@ -29,6 +31,10 @@
 			}
 		})();
 		return userPromise;
+	};
+
+	const loadSessions = async () => {
+		sessionsPromise = API.get('/auth/sessions').then((r) => r.json());
 	};
 
 	const save = async () => {
@@ -58,7 +64,25 @@
 		}
 	};
 
-	onMount(loadUser);
+	const revokeSession = async (sessionId: string) => {
+		if (!confirm('Are you sure you want to revoke this session?')) {
+			return;
+		}
+
+		try {
+			await API.delete('/auth/sessions/' + sessionId);
+			await loadSessions();
+			notifications.success('Session revoked');
+		} catch (error) {
+			notifications.error('Failed to revoke session');
+			throw error;
+		}
+	};
+
+	onMount(() => {
+		loadUser();
+		loadSessions();
+	});
 </script>
 
 <svelte:head>
@@ -67,8 +91,8 @@
 
 <Header />
 
-<div class="grid place-items-center">
-	<div class="flex w-full flex-col items-center gap-4 py-8">
+<div class="flex flex-col items-center justify-center gap-16 py-8">
+	<div class="flex w-full flex-col items-center gap-4">
 		{#key userPromise}
 			{#await userPromise}
 				<Skeleton class="h-10 w-full max-w-lg" />
@@ -116,5 +140,38 @@
 				<p class="text-red-500">{error}</p>
 			{/await}
 		{/key}
+	</div>
+
+	<div class="flex w-full max-w-lg flex-col gap-4">
+		{#await sessionsPromise}
+			<Skeleton class="h-24 w-full max-w-lg" />
+			<Skeleton class="h-24 w-full max-w-lg" />
+			<Skeleton class="h-24 w-full max-w-lg" />
+		{:then sessions}
+			<p>Active Sessions</p>
+
+			<div class="flex flex-col gap-2">
+				{#if sessions}
+					{#each sessions as session}
+						<div
+							class="flex items-center justify-between rounded-lg border p-4 pl-5 dark:border-neutral-700"
+						>
+							<div>
+								<p class="text-sm font-medium">{session.device_name}</p>
+								<p class="text-xs text-neutral-700 dark:text-neutral-400">
+									{new Date(session.created_at).toLocaleString()}
+								</p>
+							</div>
+
+							<Button variant="destructive" size="sm" on:click={() => revokeSession(session.id)}
+								>Revoke</Button
+							>
+						</div>
+					{/each}
+				{/if}
+			</div>
+		{:catch error}
+			<p class="text-red-500">{error}</p>
+		{/await}
 	</div>
 </div>

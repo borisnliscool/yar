@@ -25,6 +25,8 @@
 		} catch (err) {
 			notifications.error('Failed to register');
 			console.error(err);
+
+			// TODO: better error handling
 		}
 	};
 
