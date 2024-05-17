@@ -1,5 +1,5 @@
-import { ErrorType } from '@repo/types';
-import { compareSync } from 'bcrypt';
+import { ErrorType, SettingsKey, UserRole } from '@repo/types';
+import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import * as OTPAuth from 'otpauth';
 import * as RT from 'runtypes';
@@ -7,6 +7,7 @@ import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
 import { database } from '../services/databaseService';
 import JwtService from '../services/jwtService';
+import SettingsService from '../services/settingsService';
 import TokenService from '../services/tokenService';
 import UserAgentParser from '../services/userAgentParser';
 
@@ -117,6 +118,60 @@ router.post('/refresh', async (req: Request, res: Response) => {
 });
 
 router.post('/logout', async (req: Request, res: Response) => {
+	// todo: remove the refresh token id from the database
 	res.clearCookie('refreshToken');
 	return res.sendStatus(200);
 });
+
+const RegisterSchema = RT.Record({
+	username: RT.String,
+	password: RT.String,
+});
+
+router.post(
+	'/register',
+	validateSchema(RegisterSchema),
+	rateLimit({
+		window: 60 * 60,
+		max: 5,
+	}),
+	async (req: Request, res: Response) => {
+		if (!SettingsService.getSetting(SettingsKey.ENABLE_REGISTRATION)) {
+			return req.fail(ErrorType.INSUFFICIENT_PERMISSIONS, 403, 'registration is disabled');
+		}
+
+		const body = req.body as RT.Static<typeof RegisterSchema>;
+
+		if (await database.user.findFirst({ where: { username: body.username } })) {
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 409, 'username already taken');
+		}
+
+		const totalUsers = await database.user.count();
+		const roles = totalUsers === 0 ? [UserRole.ADMIN, UserRole.USER] : [UserRole.USER];
+
+		const user = await database.user.create({
+			data: {
+				username: body.username,
+				password_hash: hashSync(body.password, 12),
+				roles: roles.join(','),
+			},
+		});
+
+		const refreshToken = await TokenService.refreshToken(
+			user.id,
+			UserAgentParser.getDeviceName(req.headers['user-agent']!)
+		);
+		const accessToken = TokenService.accessToken(user.id);
+
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			maxAge: TokenService.REFRESH_TOKEN_EXPIRY * 1000,
+			path: '/',
+		});
+
+		return res.json({
+			accessToken,
+		});
+	}
+);

@@ -7,6 +7,7 @@ import userConverter from '../converters/userConverter';
 import { validateSchema } from '../middleware/schemaValidation';
 import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
+import MediaService from '../services/mediaService';
 
 export const router = Router();
 
@@ -79,6 +80,14 @@ router.delete(
 			where: {
 				id: req.params.userId,
 			},
+			include: {
+				uploads: {
+					include: {
+						thumbnail: true,
+						media: true,
+					},
+				},
+			},
 		});
 
 		if (!user) {
@@ -89,9 +98,47 @@ router.delete(
 			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'cannot delete yourself');
 		}
 
+		for (const upload of user.uploads) {
+			await database.media.delete({
+				where: {
+					id: upload.media.id,
+				},
+			});
+			MediaService.deleteMediaFile(upload.media);
+
+			if (upload.thumbnail) {
+				await database.media.delete({
+					where: {
+						id: upload.thumbnail.id,
+					},
+				});
+				MediaService.deleteMediaFile(upload.thumbnail);
+			}
+		}
+
+		await database.user_refresh_token.deleteMany({
+			where: {
+				user_id: user.id,
+			},
+		});
+
+		await database.video.deleteMany({
+			where: {
+				author_id: user.id,
+			},
+		});
+
 		await database.user.delete({
 			where: {
 				id: user.id,
+			},
+			include: {
+				uploads: {
+					include: {
+						thumbnail: true,
+						media: true,
+					},
+				},
 			},
 		});
 

@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { theme } from '$lib/stores/theme';
+	import { userStore } from '$lib/stores/user';
 	import Icon from '@iconify/svelte';
+	import { UserRole } from '@repo/types';
 	import { Button, Input } from '@repo/ui';
 
 	let searchValue = '';
@@ -69,13 +71,15 @@
 			<Icon icon="fa6-solid:user" />
 		</Button>
 
-		<Button
-			variant="ghost"
-			href="/settings"
-			class="grid h-10 w-12 place-items-center text-lg text-black hover:underline dark:text-white"
-		>
-			<Icon icon="fa6-solid:gear" />
-		</Button>
+		{#if $userStore && $userStore.roles.includes(UserRole.ADMIN)}
+			<Button
+				variant="ghost"
+				href="/settings"
+				class="grid h-10 w-12 place-items-center text-lg text-black hover:underline dark:text-white"
+			>
+				<Icon icon="fa6-solid:gear" />
+			</Button>
+		{/if}
 
 		<Button
 			variant="ghost"

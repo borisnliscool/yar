@@ -73,15 +73,15 @@
 				/>
 			</div>
 
-			<Button type="submit">Login</Button>
+			<Button type="submit" disabled={!formData.username || !formData.password}>Login</Button>
 		</div>
 
-		<!-- {#if registrationEnabled}
+		{#if registrationEnabled}
 			<p class="flex items-center justify-center gap-1 text-xs">
 				Don't have an account yet?
 				<Button size="none" variant="link" on:click={() => goto('/register')}>Register</Button>
 			</p>
-		{/if} -->
+		{/if}
 	</form>
 
 	<footer class="absolute bottom-0 left-0 right-0 flex w-full justify-end p-2 text-white">

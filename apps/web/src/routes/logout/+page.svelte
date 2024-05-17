@@ -3,9 +3,9 @@
 	import API from '$lib/api';
 	import { onMount } from 'svelte';
 
-	onMount(() => {
+	onMount(async () => {
 		try {
-			API.post('/auth/logout');
+			await API.post('/auth/logout');
 		} finally {
 			goto('/login');
 		}
