@@ -118,7 +118,16 @@ router.post('/refresh', async (req: Request, res: Response) => {
 });
 
 router.post('/logout', async (req: Request, res: Response) => {
-	// todo: remove the refresh token id from the database
+	const suppliedRefreshToken = req.cookies['refreshToken'];
+	if (suppliedRefreshToken) {
+		const decodedToken = JwtService.decodeToken(suppliedRefreshToken);
+		const storedToken = await TokenService.getByRefreshToken(decodedToken.jti);
+
+		if (storedToken) {
+			await TokenService.deleteRefreshTokenById(storedToken.id);
+		}
+	}
+
 	res.clearCookie('refreshToken');
 	return res.sendStatus(200);
 });
