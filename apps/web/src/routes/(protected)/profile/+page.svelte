@@ -163,13 +163,16 @@
 								</p>
 							</div>
 
-							<Button variant="destructive" size="sm" on:click={() => revokeSession(session.id)}
-								>Revoke</Button
-							>
+							<!-- TODO: don't allow to revoke when it's the current session -->
+							<Button variant="destructive" size="sm" on:click={() => revokeSession(session.id)}>
+								Revoke
+							</Button>
 						</div>
 					{/each}
 				{/if}
 			</div>
+
+			<!-- TODO: revoking all sessions (log out all) -->
 		{:catch error}
 			<p class="text-red-500">{error}</p>
 		{/await}
