@@ -1,5 +1,5 @@
 import { user } from '@repo/database';
-import { ErrorType } from '@repo/types';
+import { ErrorType, UserRole } from '@repo/types';
 import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import * as RT from 'runtypes';
@@ -57,3 +57,44 @@ router.put('/me', validateSchema(ProfileUpdateSchema), async (req: Request, res:
 
 	return res.json(userConverter.convert(user));
 });
+
+router.get(
+	'/',
+	AuthenticationService.hasRoles(UserRole.ADMIN),
+	async (_: Request, res: Response) => {
+		const users = await database.user.findMany({
+			orderBy: {
+				created_at: 'desc',
+			},
+		});
+		return res.json(users.map(userConverter.convert));
+	}
+);
+
+router.delete(
+	'/:userId',
+	AuthenticationService.hasRoles(UserRole.ADMIN),
+	async (req: Request, res: Response) => {
+		const user = await database.user.findUnique({
+			where: {
+				id: req.params.userId,
+			},
+		});
+
+		if (!user) {
+			return req.fail(ErrorType.UNKNOWN, 404, 'user not found');
+		}
+
+		if (user.id === req.user!.id) {
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'cannot delete yourself');
+		}
+
+		await database.user.delete({
+			where: {
+				id: user.id,
+			},
+		});
+
+		return res.json({});
+	}
+);

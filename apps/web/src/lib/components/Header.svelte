@@ -96,7 +96,7 @@
 
 {#if mobileMenu}
 	<div
-		class="fixed top-16 z-10 h-[calc(100vh-4rem)] w-full bg-white/95 backdrop-blur-sm dark:bg-neutral-800/95"
+		class="fixed top-16 z-10 h-[calc(100vh-4rem)] w-full bg-white/95 backdrop-blur-md dark:bg-neutral-800/95"
 	>
 		<div class="flex flex-col gap-4 p-6">
 			<Button variant="ghost" href="/" class="flex items-center justify-start gap-4 p-0 text-base">

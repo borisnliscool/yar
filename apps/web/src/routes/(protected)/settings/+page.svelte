@@ -1,16 +1,21 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Header from '$components/Header.svelte';
+	import { notifications } from '$components/notifications';
 	import API from '$lib/api';
+	import { userStore } from '$lib/stores/user';
 	import { SettingsKey, UserRole, type Setting, type User } from '@repo/types';
-	import { Checkbox, Input, Skeleton } from '@repo/ui';
+	import { Button, Checkbox, Input, Skeleton } from '@repo/ui';
 	import { onMount } from 'svelte';
 
 	let settingsPromise: Promise<Record<SettingsKey, Setting>> | undefined;
 	let settings: { key: SettingsKey; setting: Setting }[];
 	let loaded = false;
 
-	onMount(async () => {
+	let usersPromise: Promise<User[]> | undefined;
+	let users: User[] = [];
+
+	const load = async () => {
 		await API.get('/users/me')
 			.then((r) => r.json())
 			.then((user: User) => {
@@ -19,12 +24,18 @@
 			.catch(() => goto('/'));
 
 		settingsPromise = API.get('/settings').then((r) => r.json());
+		settingsPromise.then((data) => {
+			settings = Object.entries(data).map(([key, setting]) => ({
+				key: key as SettingsKey,
+				setting: setting as Setting
+			}));
+		});
 
-		settings = Object.entries(await settingsPromise).map(([key, setting]) => ({
-			key: key as SettingsKey,
-			setting: setting as Setting
-		}));
-	});
+		usersPromise = API.get('/users').then((r) => r.json());
+		usersPromise.then((data) => (users = data));
+	};
+
+	onMount(load);
 
 	const getInputForSetting = (setting: Setting) => {
 		switch (setting.type) {
@@ -53,6 +64,21 @@
 			loaded = true;
 		}
 	}
+
+	const deleteUser = async (user: User) => {
+		if (!confirm('Are you sure you want to delete this user?')) {
+			return;
+		}
+
+		try {
+			await API.delete('/users/' + user.id);
+			users = users.filter((u) => u.id !== user.id);
+			notifications.success('User deleted');
+		} catch (err) {
+			console.error(err);
+			notifications.error('Failed to delete user');
+		}
+	};
 </script>
 
 <svelte:head>
@@ -62,31 +88,82 @@
 <Header />
 
 <div class="grid place-items-center">
-	<div class="flex w-full max-w-lg flex-col items-center gap-4 py-8">
-		<p class="w-full">Instance Settings</p>
+	<div class="flex w-full max-w-2xl flex-col items-center gap-16 py-16">
+		<div class="flex w-full flex-col gap-4">
+			<p class="w-full">Instance Settings</p>
 
-		{#await settingsPromise}
-			<Skeleton class="h-10 w-full max-w-lg" />
-			<Skeleton class="h-10 w-full max-w-lg" />
-			<Skeleton class="h-10 w-full max-w-lg" />
-		{:then _}
-			{#if settings}
-				<div class="flex w-full flex-col gap-2">
-					{#each settings as s}
-						<div class="flex items-center gap-4">
-							<svelte:component
-								this={getInputForSetting(s.setting)}
-								bind:value={s.setting.value}
-								type={s.setting.type.toLowerCase()}
-							/>
+			{#await settingsPromise}
+				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
+			{:then _}
+				{#if settings}
+					<div class="flex w-full flex-col gap-2">
+						{#each settings as s}
+							<div class="flex items-center gap-4">
+								<svelte:component
+									this={getInputForSetting(s.setting)}
+									bind:value={s.setting.value}
+									type={s.setting.type.toLowerCase()}
+								/>
 
-							<p class="text-base">{s.setting.label}</p>
+								<p class="text-base">{s.setting.label}</p>
+							</div>
+						{/each}
+					</div>
+				{/if}
+			{:catch error}
+				<p class="text-red-500">{error}</p>
+			{/await}
+		</div>
+
+		<div class="flex w-full flex-col gap-4">
+			<p class="w-full">Users</p>
+
+			{#await usersPromise}
+				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
+			{:then _}
+				{#if users}
+					<div class="w-full rounded-md border border-neutral-100 text-sm dark:border-neutral-800">
+						<div class="grid grid-cols-7 bg-neutral-100 px-4 py-2 dark:bg-neutral-800">
+							<p class="col-span-2">Name</p>
+							<p class="col-span-3">Roles</p>
+							<p class="col-span-1">Created at</p>
 						</div>
-					{/each}
-				</div>
-			{/if}
-		{:catch error}
-			<p class="text-red-500">{error}</p>
-		{/await}
+
+						{#each users as user}
+							<div
+								class="group grid grid-cols-7 px-4 py-2 text-neutral-900 hover:bg-neutral-50 dark:text-neutral-100 dark:hover:bg-neutral-800/50"
+							>
+								<p class="col-span-2">{user.username}</p>
+								<p class="col-span-3">
+									{user.roles.map((r) => r.replace('ROLE_', '').toLowerCase()).join(', ')}
+								</p>
+								<p class="col-span-1" title={new Date(user.created_at).toISOString()}>
+									{new Date(user.created_at).toLocaleDateString()}
+								</p>
+								<p
+									class="col-span-1 flex items-center justify-end opacity-0 group-hover:opacity-100"
+								>
+									<Button
+										variant="destructive"
+										class="h-fit rounded-sm px-1 py-0.5 text-xs"
+										size="sm"
+										disabled={$userStore.id === user.id}
+										on:click={() => deleteUser(user)}
+									>
+										Delete
+									</Button>
+								</p>
+							</div>
+						{/each}
+					</div>
+				{/if}
+			{:catch error}
+				<p class="text-red-500">{error}</p>
+			{/await}
+		</div>
 	</div>
 </div>
