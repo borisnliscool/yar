@@ -7,7 +7,8 @@ import SettingsService from '../services/settingsService';
 
 export const router = Router();
 
-router.use(AuthenticationService.isAuthenticated);
+// Instance settings are public, so even unauthenticated users can see them.
+// This is because settings like "Enable registration" are public.
 
 router.get('/', async (_: Request, res: Response) => {
 	const settings = await SettingsService.getSettings();
@@ -15,7 +16,11 @@ router.get('/', async (_: Request, res: Response) => {
 });
 
 router.get('/:key', async (req: Request, res: Response) => {
-	return res.json(await SettingsService.getSetting(req.params.key as unknown as SettingsKey));
+	return res.json({
+		[req.params.key]: await SettingsService.getSetting(
+			req.params.key as unknown as SettingsKey
+		),
+	});
 });
 
 const UpdateSettingSchema = RT.Record({
@@ -24,6 +29,7 @@ const UpdateSettingSchema = RT.Record({
 
 router.put(
 	'/:key',
+	AuthenticationService.isAuthenticated,
 	AuthenticationService.hasRoles(UserRole.ADMIN),
 	validateSchema(UpdateSettingSchema),
 	async (req: Request, res: Response) => {

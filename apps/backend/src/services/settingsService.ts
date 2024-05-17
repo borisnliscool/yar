@@ -32,7 +32,7 @@ export default class SettingsService {
 
 	static async getSetting(key: SettingsKey) {
 		if (this.settingsCache.get(key)) {
-			return this.settingsCache.get(key);
+			return this.settingsCache.get(key)!.value;
 		}
 
 		const setting = await database.setting.findUnique({

@@ -21,6 +21,7 @@ const buttonVariants = tv({
 			default: 'h-10 px-3 py-2 text-sm',
 			sm: 'h-9 rounded-md px-3 text-xs',
 			lg: 'h-11 rounded-md px-6 text-base',
+			none: 'p-0',
 		},
 	},
 	defaultVariants: {

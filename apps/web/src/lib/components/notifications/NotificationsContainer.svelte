@@ -4,7 +4,7 @@
 </script>
 
 {#if $notifications}
-	<section class="fixed bottom-0 right-0 z-[1000] flex flex-col items-end gap-1 p-4">
+	<section class="fixed bottom-4 right-4 z-[1000] flex flex-col items-end gap-1">
 		{#each $notifications as toast (toast.id)}
 			<Notification
 				type={toast.type}

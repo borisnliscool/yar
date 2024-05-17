@@ -25,6 +25,7 @@
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",
 		"@sveltejs/adapter-node": "^5.0.1",
+		"@sveltejs/enhanced-img": "^0.2.0",
 		"@sveltejs/kit": "^2.5.5",
 		"@sveltejs/vite-plugin-svelte": "^3.0.2",
 		"@types/ms": "^0.7.34",
