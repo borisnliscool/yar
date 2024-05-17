@@ -14,7 +14,7 @@
 	let instance: Instance;
 
 	export { className as class };
-	export let options: Partial<OptionsGeneric<Partial<Modifier<any, any>>>> | undefined =
+	export let options: Partial<OptionsGeneric<Partial<Modifier<unknown, unknown>>>> | undefined =
 		undefined;
 
 	const showEvent = () => {
