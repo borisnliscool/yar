@@ -18,8 +18,10 @@
 	};
 </script>
 
+<div class="h-16"></div>
+
 <header
-	class="sticky top-0 z-[100] grid h-16 max-h-16 min-h-16 w-full grid-cols-9 place-items-center gap-4 border-b bg-white/95 px-4 shadow-sm backdrop-blur-lg md:gap-0 md:px-8 dark:border-b-neutral-700 dark:bg-neutral-800/95"
+	class="fixed top-0 z-[100] grid h-16 max-h-16 min-h-16 w-full grid-cols-9 place-items-center gap-4 border-b bg-white/95 px-4 shadow-sm backdrop-blur-lg md:gap-0 md:px-8 dark:border-b-neutral-700 dark:bg-neutral-800/95"
 >
 	<div class="text-md col-span-2 hidden w-full md:block">
 		<a href="/" class="group flex items-center gap-4">

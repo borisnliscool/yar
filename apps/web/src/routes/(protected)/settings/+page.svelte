@@ -98,6 +98,12 @@
 		<div class="flex w-full flex-col gap-4">
 			<p class="w-full">Instance Settings</p>
 
+			{#if !settingsPromise}
+				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
+			{/if}
+
 			{#await settingsPromise}
 				<Skeleton class="h-10 w-full max-w-lg" />
 				<Skeleton class="h-10 w-full max-w-lg" />
@@ -125,6 +131,12 @@
 
 		<div class="flex w-full flex-col gap-4">
 			<p class="w-full">Instance Statistics</p>
+
+			{#if !statsPromise}
+				<Skeleton class="h-8 w-full max-w-lg" />
+				<Skeleton class="h-8 w-full max-w-lg" />
+				<Skeleton class="h-8 w-full max-w-lg" />
+			{/if}
 
 			{#await statsPromise}
 				<Skeleton class="h-8 w-full max-w-lg" />
@@ -169,6 +181,12 @@
 
 		<div class="flex w-full flex-col gap-4">
 			<p class="w-full">Users</p>
+
+			{#if !usersPromise}
+				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
+			{/if}
 
 			{#await usersPromise}
 				<Skeleton class="h-10 w-full max-w-lg" />
