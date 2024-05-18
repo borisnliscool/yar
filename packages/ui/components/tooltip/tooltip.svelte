@@ -61,7 +61,7 @@
 
 <div
 	class={cn(
-		'bg-white shadow px-3 py-2 rounded-md text-black dark:text-white dark:bg-neutral-950 invisible data-[show]:visible transition-opacity z-50',
+		'bg-white shadow px-3 py-2 rounded-md text-black dark:text-white dark:bg-neutral-950 invisible data-[show]:visible z-50',
 		className
 	)}
 	role="tooltip"

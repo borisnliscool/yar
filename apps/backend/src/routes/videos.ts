@@ -87,6 +87,28 @@ router.get(
 	}
 );
 
+router.get('/tags', async (_: Request, res: Response) => {
+	const tags = await database.video.groupBy({
+		by: ['tags'],
+		_count: {
+			_all: true,
+		},
+	});
+
+	return res.json({
+		tags: [
+			...new Set(
+				tags.flatMap((t) =>
+					t.tags
+						.split(',')
+						.map((t) => t.trim())
+						.filter(Boolean)
+				)
+			),
+		],
+	});
+});
+
 router.get('/:videoId', async (req: Request, res: Response) => {
 	const video = await database.video.findUnique({
 		where: {

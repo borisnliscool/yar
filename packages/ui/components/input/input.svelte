@@ -7,9 +7,13 @@
 	//eslint-disable-next-line @typescript-eslint/no-unused-vars
 	type $$Events = InputEvents;
 
+	let input: HTMLInputElement;
 	let className: $$Props['class'] = undefined;
+
 	export let value: $$Props['value'] = undefined;
 	export { className as class };
+
+	export const focus = () => input?.focus();
 </script>
 
 <input
@@ -18,6 +22,7 @@
 		className
 	)}
 	bind:value
+	bind:this={input}
 	on:blur
 	on:change
 	on:click

@@ -88,7 +88,7 @@
 <Header />
 
 <div class="grid place-items-center">
-	<div class="flex w-full max-w-2xl flex-col items-center gap-16 py-16">
+	<div class="flex w-full max-w-2xl flex-col items-center gap-16 px-4 py-16 sm:px-0">
 		<div class="flex w-full flex-col gap-4">
 			<p class="w-full">Instance Settings</p>
 
@@ -107,7 +107,7 @@
 									type={s.setting.type.toLowerCase()}
 								/>
 
-								<p class="text-base">{s.setting.label}</p>
+								<p class="text-sm">{s.setting.label}</p>
 							</div>
 						{/each}
 					</div>
@@ -135,31 +135,37 @@
 
 						{#each users as user}
 							<div
-								class="group grid h-10 grid-cols-7 content-center px-4 text-neutral-900 hover:bg-neutral-50 dark:text-neutral-100 dark:hover:bg-neutral-800/50"
+								class="group grid grid-cols-7 place-items-center px-4 py-1 text-neutral-900 hover:bg-neutral-50 dark:text-neutral-100 dark:hover:bg-neutral-800/50"
 							>
-								<p class="col-span-2">{user.username}</p>
-								<p class="col-span-3">
+								<p class="col-span-2 w-full">{user.username}</p>
+								<p class="col-span-3 w-full">
 									{user.roles.map((r) => r.replace('ROLE_', '').toLowerCase()).join(', ')}
 								</p>
-								<p class="col-span-1">
+								<p class="col-span-1 w-full">
 									<span class="h-full py-1">{new Date(user.created_at).toLocaleDateString()}</span>
 									<Tooltip class="text-xs">
 										{new Date(user.created_at).toISOString()}
 									</Tooltip>
 								</p>
-								<p
-									class="col-span-1 flex items-center justify-end opacity-0 group-hover:opacity-100"
+								<div
+									class="col-span-1 flex w-full items-center justify-end opacity-0 group-hover:opacity-100"
 								>
-									<Button
-										variant="destructive"
-										class="h-fit rounded-sm px-1 py-0.5 text-xs"
-										size="sm"
-										disabled={$userStore.id === user.id}
-										on:click={() => deleteUser(user)}
-									>
-										Delete
-									</Button>
-								</p>
+									<div class="h-full py-1">
+										<Button
+											variant="destructive"
+											class="h-fit rounded-sm px-1 py-0.5 text-xs"
+											size="sm"
+											disabled={$userStore.id === user.id}
+											on:click={() => deleteUser(user)}
+										>
+											Delete
+										</Button>
+									</div>
+
+									{#if $userStore.id === user.id}
+										<Tooltip class="text-xs">You can't delete yourself</Tooltip>
+									{/if}
+								</div>
 							</div>
 						{/each}
 					</div>
