@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { notifications } from '$components/notifications';
-	import API from '$lib/api';
+	import API, { HttpError } from '$lib/api';
 	import { SettingsKey } from '@repo/types';
 	import { Button, Input } from '@repo/ui';
 	import { onMount } from 'svelte';
@@ -23,10 +23,10 @@
 			notifications.success('Registered successfully');
 			await goto('/');
 		} catch (err) {
-			notifications.error('Failed to register');
+			if (err instanceof HttpError) {
+				notifications.error(`Failed to register: ${err.message}`);
+			}
 			console.error(err);
-
-			// TODO: better error handling
 		}
 	};
 

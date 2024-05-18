@@ -34,7 +34,6 @@ router.post(
 		const body = req.body as RT.Static<typeof VideoInfoSchema>;
 
 		try {
-			// todo cache this
 			const videoInfo = await VideoDownloadService.getVideoInformation(body.url);
 			res.setHeader('Cache-Control', 'max-age=3600');
 			res.send(videoInfo);
@@ -273,7 +272,7 @@ router.post(
 			},
 		});
 
-		// todo get thumbnail from body, or generate one from the video
+		// TODO: get thumbnail from body, or generate one from the video
 
 		return res.json(videoConverter.convert(video));
 	}

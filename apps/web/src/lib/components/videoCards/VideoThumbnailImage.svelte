@@ -19,7 +19,7 @@
 	)}
 >
 	{#if video && showDuration && video.media.duration}
-		<div class="absolute bottom-2 right-2 z-10 rounded bg-black/80 p-1 px-2 text-xs text-white">
+		<div class="absolute bottom-2 right-2 z-10 rounded bg-black/80 p-1 px-1.5 text-xs text-white">
 			{Formatter.seconds(video.media.duration)}
 		</div>
 	{/if}

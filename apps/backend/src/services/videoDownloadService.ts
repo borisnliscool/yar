@@ -24,6 +24,7 @@ export default class VideoDownloadService {
 	static async getVideoInformation(url: string): Promise<YtdlpVideo> {
 		if (!this.ready) throw Error('ytdlp service was not ready');
 
+		// TODO: Cache the response from ytdlp, and only fetch if not in cache
 		const data: YtdlpVideo = await this.ytdlp.getVideoInfo([url]);
 		if (!data) throw Error('failed to fetch video info');
 
