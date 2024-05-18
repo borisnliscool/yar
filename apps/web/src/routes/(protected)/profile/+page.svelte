@@ -100,6 +100,25 @@
 		}
 	};
 
+	const disableTotp = async () => {
+		if (
+			!confirm(
+				'Are you sure you want to disable 2FA authentication? This will weaken your account security.'
+			)
+		) {
+			return;
+		}
+
+		try {
+			await API.delete('/auth/totp');
+			user!.totp_enabled = false;
+			notifications.success('2FA disabled');
+		} catch (error) {
+			notifications.error('Failed to disable 2FA');
+			throw error;
+		}
+	};
+
 	onMount(() => {
 		loadUser();
 		loadSessions();
@@ -123,7 +142,7 @@
 				<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 			{:then _}
 				{#if user}
-					<div class="flex w-full max-w-lg flex-col gap-4">
+					<div class="flex w-full max-w-lg flex-col gap-6">
 						<div class="flex flex-col gap-2">
 							<p>User details</p>
 
@@ -131,35 +150,68 @@
 								Changing your username will also change the credentials you log in with.
 							</p>
 
-							<Input bind:value={user.username} placeholder="Username" />
+							<Input
+								bind:value={user.username}
+								placeholder="Username"
+								class="dark:border-neutral-700"
+							/>
 						</div>
 
 						<div class="flex flex-col gap-2">
-							<p>Change Password</p>
+							<p>Change password</p>
 
 							<Input
 								bind:value={passwordUpdate.oldPassword}
 								type="password"
 								placeholder="Old password"
+								class="dark:border-neutral-700"
 							/>
 
 							<Input
 								bind:value={passwordUpdate.newPassword}
 								type="password"
 								placeholder="New password"
+								class="dark:border-neutral-700"
 							/>
 						</div>
-					</div>
 
-					<div class="sticky bottom-0 w-full">
-						<div
-							class="grid place-items-center bg-white/25 py-2 backdrop-blur-md dark:bg-neutral-900/25"
-						>
-							<div class="flex w-full max-w-lg items-center justify-end gap-2">
-								<Button class="w-fit px-4 py-1" disabled={isBusy} size="sm" on:click={save}>
-									Save
+						<div class="flex w-full items-center justify-end gap-2">
+							<Button
+								class="w-fit px-4 py-1"
+								variant="success"
+								disabled={isBusy}
+								size="sm"
+								on:click={save}
+							>
+								Save Changes
+							</Button>
+						</div>
+
+						<div class="flex flex-col gap-2">
+							<p>2FA authentication</p>
+
+							{#if user?.totp_enabled}
+								<p class="text-xs text-neutral-700 dark:text-neutral-400">
+									TOTP authentication is enabled.
+								</p>
+
+								<Button
+									size="sm"
+									class="h-fit w-fit px-2 py-1.5"
+									variant="destructive"
+									on:click={disableTotp}
+								>
+									Disable
 								</Button>
-							</div>
+							{:else}
+								<p class="text-xs text-neutral-700 dark:text-neutral-400">
+									TOTP authentication is disabled, it is recommended to enable it for extra
+									security.
+								</p>
+
+								<!-- TODO: Implement -->
+								<Button size="sm" disabled={true} class="h-fit w-fit px-2 py-1.5">Set up</Button>
+							{/if}
 						</div>
 					</div>
 				{/if}

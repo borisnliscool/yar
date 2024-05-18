@@ -14,7 +14,10 @@ export const router = Router();
 router.use(AuthenticationService.isAuthenticated);
 
 router.get('/me', async (req: Request, res: Response) => {
-	return res.json(userConverter.convert(req.user!));
+	return res.json({
+		...userConverter.convert(req.user!),
+		totp_enabled: !!req.user!.totp_secret,
+	});
 });
 
 const ProfileUpdateSchema = RT.Record({

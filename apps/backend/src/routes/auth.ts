@@ -5,6 +5,7 @@ import * as OTPAuth from 'otpauth';
 import * as RT from 'runtypes';
 import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
+import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
 import JwtService from '../services/jwtService';
 import SettingsService from '../services/settingsService';
@@ -194,5 +195,26 @@ router.post(
 		return res.json({
 			accessToken,
 		});
+	}
+);
+
+router.delete(
+	'/totp',
+	AuthenticationService.isAuthenticated,
+	async (req: Request, res: Response) => {
+		if (!req.user!.totp_secret) {
+			return req.fail(ErrorType.INSUFFICIENT_PERMISSIONS, 403, 'totp not enabled');
+		}
+
+		await database.user.update({
+			where: {
+				id: req.user!.id,
+			},
+			data: {
+				totp_secret: null,
+			},
+		});
+
+		return res.sendStatus(200);
 	}
 );

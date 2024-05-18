@@ -18,6 +18,7 @@ interface User {
 	username: string;
 	roles: UserRole[];
 	created_at: Date;
+	totp_enabled?: boolean;
 }
 
 interface Video {
