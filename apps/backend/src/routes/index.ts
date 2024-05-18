@@ -5,6 +5,7 @@ import { router as mediaRouter } from './media';
 import { router as proxyRouter } from './proxy';
 import { router as sessionsRouter } from './sessions';
 import { router as settingsRouter } from './settings';
+import { router as statsRouter } from './stats';
 import { router as uploadRouter } from './upload';
 import { router as userRouter } from './users';
 import { router as videoRouter } from './videos';
@@ -19,6 +20,7 @@ router.use('/videos', videoRouter);
 router.use('/users', userRouter);
 router.use('/settings', settingsRouter);
 router.use('/sessions', sessionsRouter);
+router.use('/stats', statsRouter);
 
 router.get('/', async (_: Request, res: Response) => {
 	return res.json({

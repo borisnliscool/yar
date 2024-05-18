@@ -136,6 +136,19 @@ interface SessionDisplay {
 	created_at: Date;
 }
 
+interface StatsResponse {
+	storage: {
+		total: number;
+		images: number;
+		videos: number;
+	};
+	videos: {
+		total: number;
+		totalDuration: number;
+		averageDuration: number;
+	};
+}
+
 export { DeviceType, ErrorType, JwtTokenType, SettingsKey, UserRole };
 export type {
 	Media,
@@ -144,6 +157,7 @@ export type {
 	SessionDisplay,
 	Setting,
 	SettingValueType,
+	StatsResponse,
 	User,
 	Video,
 	YtdlpFormat,

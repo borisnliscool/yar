@@ -4,8 +4,10 @@
 	import { notifications } from '$components/notifications';
 	import API from '$lib/api';
 	import { userStore } from '$lib/stores/user';
-	import { SettingsKey, UserRole, type Setting, type User } from '@repo/types';
+	import { SettingsKey, UserRole, type Setting, type StatsResponse, type User } from '@repo/types';
 	import { Button, Checkbox, Input, Skeleton, Tooltip } from '@repo/ui';
+	import { filesize } from 'filesize';
+	import prettyMilliseconds from 'pretty-ms';
 	import { onMount } from 'svelte';
 
 	let settingsPromise: Promise<Record<SettingsKey, Setting>> | undefined;
@@ -14,6 +16,8 @@
 
 	let usersPromise: Promise<User[]> | undefined;
 	let users: User[] = [];
+
+	let statsPromise: Promise<StatsResponse> | undefined;
 
 	const load = async () => {
 		await API.get('/users/me')
@@ -33,6 +37,8 @@
 
 		usersPromise = API.get('/users').then((r) => r.json());
 		usersPromise.then((data) => (users = data));
+
+		statsPromise = API.get('/stats').then((r) => r.json());
 	};
 
 	onMount(load);
@@ -110,6 +116,50 @@
 								<p class="text-sm">{s.setting.label}</p>
 							</div>
 						{/each}
+					</div>
+				{/if}
+			{:catch error}
+				<p class="text-red-500">{error}</p>
+			{/await}
+		</div>
+
+		<div class="flex w-full flex-col gap-4">
+			<p class="w-full">Instance Statistics</p>
+
+			{#await statsPromise}
+				<Skeleton class="h-8 w-full max-w-lg" />
+				<Skeleton class="h-8 w-full max-w-lg" />
+				<Skeleton class="h-8 w-full max-w-lg" />
+			{:then value}
+				{#if value}
+					<div class="grid gap-2 md:grid-cols-2">
+						<div>
+							<p class="pb-1 text-sm">Storage usage:</p>
+
+							<p class="text-xs text-neutral-700 dark:text-neutral-400">
+								Total: {filesize(value.storage.total)}
+							</p>
+							<p class="text-xs text-neutral-700 dark:text-neutral-400">
+								Videos: {filesize(value.storage.videos)}
+							</p>
+							<p class="text-xs text-neutral-700 dark:text-neutral-400">
+								Images: {filesize(value.storage.images)}
+							</p>
+						</div>
+
+						<div>
+							<p class="pb-1 text-sm">Uploads:</p>
+
+							<p class="text-xs text-neutral-700 dark:text-neutral-400">
+								Count: {value.videos.total}
+							</p>
+							<p class="text-xs text-neutral-700 dark:text-neutral-400">
+								Total duration: {prettyMilliseconds(value.videos.totalDuration * 1000)}
+							</p>
+							<p class="text-xs text-neutral-700 dark:text-neutral-400">
+								Average duration: {prettyMilliseconds(value.videos.averageDuration * 1000)}
+							</p>
+						</div>
 					</div>
 				{/if}
 			{:catch error}
