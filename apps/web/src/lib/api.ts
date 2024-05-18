@@ -8,7 +8,7 @@ type Options = {
 	raw?: boolean;
 };
 
-class HttpError extends Error {
+export class HttpError extends Error {
 	public readonly code: RequestError['error']['code'];
 	public readonly details: RequestError['error']['details'];
 	public readonly message: RequestError['error']['message'];

@@ -63,7 +63,6 @@
 	};
 
 	const deleteVideo = async () => {
-		// TODO: better confirmation modal
 		if (!confirm('Are you sure you want to delete this video?')) return;
 
 		isBusy = true;

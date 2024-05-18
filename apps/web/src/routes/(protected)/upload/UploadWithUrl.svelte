@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ProxiedImage from '$components/ProxiedImage.svelte';
-	import API from '$lib/api';
-	import type { YtdlpFormat, YtdlpVideo } from '@repo/types';
+	import API, { HttpError } from '$lib/api';
+	import { ErrorType, type YtdlpFormat, type YtdlpVideo } from '@repo/types';
 	import { Button, Input, Skeleton } from '@repo/ui';
 	import { instant } from '@repo/utils';
 	import humanFormat from 'human-format';
@@ -58,39 +58,51 @@
 		uploading = true;
 		uploadPercent = 0;
 
-		const response = await API.post('/upload/url', {
-			input,
-			url: selectedFormat?.url ?? input,
-			ext: selectedFormat?.ext,
-			title,
-			tags
-		});
+		try {
+			const response = await API.post('/upload/url', {
+				input,
+				url: selectedFormat?.url ?? input,
+				ext: selectedFormat?.ext,
+				title,
+				tags
+			});
 
-		const reader = response.body?.getReader();
-		if (!reader) return;
+			const reader = response.body?.getReader();
+			if (!reader) return;
 
-		//eslint-disable-next-line no-constant-condition
-		while (true) {
-			const data = await reader.read();
-			if (data.done) break;
+			//eslint-disable-next-line no-constant-condition
+			while (true) {
+				const data = await reader.read();
+				if (data.done) break;
 
-			const decoded = new TextDecoder()
-				.decode(data.value!)
-				.split('\n')
-				.map((d) => d.trim())
-				.filter(Boolean);
+				const decoded = new TextDecoder()
+					.decode(data.value!)
+					.split('\n')
+					.map((d) => d.trim())
+					.filter(Boolean);
 
-			for (const data of decoded) {
-				try {
-					const json = JSON.parse(data);
+				for (const data of decoded) {
+					try {
+						const json = JSON.parse(data);
 
-					if ('video' in json) continue;
-					if ('percent' in json) uploadPercent = Math.max(uploadPercent, json.percent);
+						if ('video' in json) continue;
+						if ('percent' in json) uploadPercent = Math.max(uploadPercent, json.percent);
 
-					uploadLog = [...uploadLog, json];
-				} catch (error) {
-					console.log('error decoding json:', data);
-					console.error(error);
+						uploadLog = [...uploadLog, json];
+					} catch (error) {
+						console.log('error decoding json:', data);
+						console.error(error);
+					}
+				}
+			}
+		} catch (error) {
+			if (!(error instanceof HttpError)) {
+				throw error;
+			}
+
+			if (error.code === 409 && error.type === ErrorType.MEDIA_ALREADY_EXISTS) {
+				if (confirm('A video with this url already exists. Do you want to upload it again?')) {
+					await upload();
 				}
 			}
 		}

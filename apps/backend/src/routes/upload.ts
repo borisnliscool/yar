@@ -57,9 +57,14 @@ router.post(
 	validateSchema(VideoUploadUrlSchema),
 	rateLimit({ window: 60 * 60, max: 5 }),
 	async (req: Request, res: Response) => {
-		// todo: either deny uploading videos with url's that already exist in the database, or show a warning
-
 		const body = req.body as RT.Static<typeof VideoUploadUrlSchema>;
+
+		if (
+			(await database.video.count({ where: { source_url: body.url.trim() } })) &&
+			!req.params.force
+		) {
+			return req.fail(ErrorType.MEDIA_ALREADY_EXISTS, 409, 'video already exists');
+		}
 
 		const videoDetails = await VideoDownloadService.getVideoInformation(body.input);
 		const stream = await VideoDownloadService.download(body.url);

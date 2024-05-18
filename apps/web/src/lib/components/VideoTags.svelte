@@ -22,7 +22,6 @@
 		value = '';
 	};
 
-	// TODO: do we want to use a fuzzy search here?
 	$: filteredTags = databaseTags
 		.filter((tag) => !tags.includes(tag) && tag.toLowerCase().includes(value.toLowerCase()))
 		.toSorted((a, b) => a.localeCompare(b));
