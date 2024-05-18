@@ -10,8 +10,10 @@
  * const click = instant(async (e: MouseEvent) => {
  * 	console.log("Click event triggered!", e);
  * });
+ *
+ * <Button on:click>Click me!</Button>
  */
 export const instant =
-	(func: (...args: any[]) => void | Promise<void>) =>
-	(...args: any[]) =>
+	(func: (...args: unknown[]) => void | Promise<void> | unknown) =>
+	(...args: unknown[]) =>
 		setTimeout(() => func(...args), 0);

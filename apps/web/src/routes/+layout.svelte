@@ -23,7 +23,7 @@
 
 <main class:dark={$theme == 'dark'}>
 	<div
-		class="white flex min-h-screen w-full flex-col bg-white text-black dark:bg-neutral-900 dark:text-white"
+		class="flex h-full min-h-screen w-full flex-col overflow-y-auto bg-white text-black dark:bg-neutral-900 dark:text-white"
 	>
 		<slot />
 	</div>
