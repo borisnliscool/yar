@@ -6,6 +6,7 @@
 	onMount(async () => {
 		try {
 			await API.post('/auth/logout');
+			API.authorizationToken = undefined;
 		} finally {
 			goto('/login');
 		}

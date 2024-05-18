@@ -69,4 +69,12 @@ export default class TokenService {
 			},
 		});
 	}
+
+	static deleteAllByUserId(userId: string) {
+		return database.user_refresh_token.deleteMany({
+			where: {
+				user_id: userId,
+			},
+		});
+	}
 }

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Header from '$components/Header.svelte';
 	import { notifications } from '$components/notifications';
 	import API from '$lib/api';
@@ -34,7 +35,7 @@
 	};
 
 	const loadSessions = async () => {
-		sessionsPromise = API.get('/auth/sessions').then((r) => r.json());
+		sessionsPromise = API.get('/sessions').then((r) => r.json());
 	};
 
 	const save = async () => {
@@ -70,11 +71,30 @@
 		}
 
 		try {
-			await API.delete('/auth/sessions/' + sessionId);
+			await API.delete('/sessions/' + sessionId);
 			await loadSessions();
 			notifications.success('Session revoked');
 		} catch (error) {
 			notifications.error('Failed to revoke session');
+			throw error;
+		}
+	};
+
+	const revokeAllSessions = async () => {
+		if (
+			!confirm(
+				'Are you sure you want to revoke all sessions? This will also revoke your current session and log you out.'
+			)
+		) {
+			return;
+		}
+
+		try {
+			await API.delete('/sessions');
+			notifications.success('Sessions revoked');
+			await goto('/logout');
+		} catch (error) {
+			notifications.error('Failed to revoke sessions');
 			throw error;
 		}
 	};
@@ -172,7 +192,14 @@
 				{/if}
 			</div>
 
-			<!-- TODO: revoking all sessions (log out all) -->
+			<Button
+				class="mx-auto mt-4 w-fit px-4"
+				variant="destructive"
+				size="sm"
+				on:click={revokeAllSessions}
+			>
+				Revoke All Sessions
+			</Button>
 		{:catch error}
 			<p class="text-red-500">{error}</p>
 		{/await}
