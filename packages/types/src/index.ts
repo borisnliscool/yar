@@ -125,6 +125,7 @@ type YtdlpVideo = Record<string, any> & {
 interface SessionDisplay {
 	id: string;
 	device_name: string;
+	current: boolean;
 	created_at: Date;
 }
 

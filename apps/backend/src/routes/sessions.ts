@@ -2,6 +2,7 @@ import { ErrorType, SessionDisplay } from '@repo/types';
 import { Request, Response, Router } from 'express';
 import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
+import JwtService from '../services/jwtService';
 import TokenService from '../services/tokenService';
 
 export const router = Router();
@@ -17,16 +18,29 @@ router.get('/', AuthenticationService.isAuthenticated, async (req: Request, res:
 		},
 	});
 
-	return res.json(
-		refreshTokens.map(
-			(t) =>
-				({
-					id: t.id,
-					device_name: t.device_name,
-					created_at: t.created_at,
-				}) as SessionDisplay
-		)
-	);
+	const suppliedRefreshToken = req.cookies['refreshToken'];
+	if (!suppliedRefreshToken) {
+		return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'refresh cookie missing');
+	}
+
+	try {
+		const decodedToken = JwtService.decodeToken(suppliedRefreshToken);
+		const storedToken = await TokenService.getByRefreshToken(decodedToken.jti);
+
+		return res.json(
+			refreshTokens.map(
+				(t) =>
+					({
+						id: t.id,
+						device_name: t.device_name,
+						created_at: t.created_at,
+						current: storedToken?.id === t.id,
+					}) as SessionDisplay
+			)
+		);
+	} catch (error) {
+		return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid refresh token');
+	}
 });
 
 router.delete(

@@ -5,7 +5,7 @@
 	import API from '$lib/api';
 	import { userStore } from '$lib/stores/user';
 	import type { SessionDisplay, User } from '@repo/types';
-	import { Button, Input, Skeleton } from '@repo/ui';
+	import { Button, Input, Skeleton, Tooltip } from '@repo/ui';
 	import { onMount } from 'svelte';
 
 	let user: User | undefined;
@@ -168,32 +168,57 @@
 			<Skeleton class="h-24 w-full max-w-lg" />
 			<Skeleton class="h-24 w-full max-w-lg" />
 		{:then sessions}
-			<p>Active Sessions</p>
+			<div class="flex flex-col gap-1">
+				<p>Sessions</p>
+				<p class="text-xs">
+					This is a list of devices that have logged into your account. Revoke any sessions that you
+					do not recognize.
+				</p>
+			</div>
 
 			<div class="flex flex-col gap-2">
 				{#if sessions}
 					{#each sessions as session}
 						<div
-							class="flex items-center justify-between rounded-lg border p-4 pl-5 dark:border-neutral-700"
+							class="flex items-center justify-between rounded-lg border py-3 pl-5 pr-4 dark:border-neutral-700"
 						>
 							<div>
-								<p class="text-sm font-medium">{session.device_name}</p>
+								<p class="flex items-center gap-2 text-sm font-medium">
+									{session.device_name}
+								</p>
 								<p class="text-xs text-neutral-700 dark:text-neutral-400">
-									{new Date(session.created_at).toLocaleString()}
+									{#if session.current}
+										Your current session
+									{:else}
+										Last accessed on {new Intl.DateTimeFormat(undefined, {
+											dateStyle: 'long',
+											timeStyle: 'short'
+										}).format(new Date(session.created_at))}
+									{/if}
 								</p>
 							</div>
 
-							<!-- TODO: don't allow to revoke when it's the current session -->
-							<Button variant="destructive" size="sm" on:click={() => revokeSession(session.id)}>
-								Revoke
-							</Button>
+							<div class="py-1">
+								<Button
+									variant="destructive"
+									disabled={session.current}
+									size="sm"
+									on:click={() => revokeSession(session.id)}
+								>
+									Revoke
+								</Button>
+							</div>
+
+							{#if session.current}
+								<Tooltip class="text-xs">Cannot revoke current session</Tooltip>
+							{/if}
 						</div>
 					{/each}
 				{/if}
 			</div>
 
 			<Button
-				class="mx-auto mt-4 w-fit px-4"
+				class="mx-auto w-fit px-4"
 				variant="destructive"
 				size="sm"
 				on:click={revokeAllSessions}
