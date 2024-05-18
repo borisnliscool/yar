@@ -4,7 +4,8 @@
 	import { notifications } from '$components/notifications';
 	import API from '$lib/api';
 	import { userStore } from '$lib/stores/user';
-	import type { SessionDisplay, User } from '@repo/types';
+	import Icon from '@iconify/svelte';
+	import { DeviceType, type SessionDisplay, type User } from '@repo/types';
 	import { Button, Input, Skeleton, Tooltip } from '@repo/ui';
 	import { onMount } from 'svelte';
 
@@ -180,8 +181,18 @@
 				{#if sessions}
 					{#each sessions as session}
 						<div
-							class="flex items-center justify-between rounded-lg border py-3 pl-5 pr-4 dark:border-neutral-700"
+							class="flex items-center gap-2 rounded-lg border py-3 pl-5 pr-4 dark:border-neutral-700"
 						>
+							<div
+								class="grid size-10 place-items-center text-xl text-neutral-700 dark:text-neutral-400"
+							>
+								{#if session.device_type === DeviceType.DESKTOP}
+									<Icon icon="fa6-solid:desktop" />
+								{:else}
+									<Icon icon="fa6-solid:mobile-screen" />
+								{/if}
+							</div>
+
 							<div>
 								<p class="flex items-center gap-2 text-sm font-medium">
 									{session.device_name}
@@ -198,7 +209,7 @@
 								</p>
 							</div>
 
-							<div class="py-1">
+							<div class="ml-auto py-1">
 								<Button
 									variant="destructive"
 									disabled={session.current}

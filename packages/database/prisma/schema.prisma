@@ -22,6 +22,12 @@ model user {
     user_refresh_token user_refresh_token[]
 }
 
+enum device_type {
+    DESKTOP
+    MOBILE
+    OTHER
+}
+
 model user_refresh_token {
     id String @id @unique @default(uuid())
 
@@ -33,6 +39,7 @@ model user_refresh_token {
 
     token       String
     device_name String
+    device_type device_type @default(DESKTOP)
 }
 
 model media {

@@ -35,6 +35,7 @@ router.get('/', AuthenticationService.isAuthenticated, async (req: Request, res:
 						device_name: t.device_name,
 						created_at: t.created_at,
 						current: storedToken?.id === t.id,
+						device_type: t.device_type,
 					}) as SessionDisplay
 			)
 		);

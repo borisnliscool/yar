@@ -1,8 +1,10 @@
-import { JwtTokenType } from '@repo/types';
+import { device_type } from '@repo/database';
+import { DeviceType, JwtTokenType } from '@repo/types';
 import ms from 'ms';
 import { database } from './databaseService';
 import JwtService from './jwtService';
 import StringGeneratorService from './stringGeneratorService';
+import UserAgentParser from './userAgentParser';
 
 export default class TokenService {
 	static ACCESS_TOKEN_EXPIRY = ms(
@@ -20,10 +22,17 @@ export default class TokenService {
 		});
 	}
 
-	static async refreshToken(userId: string, deviceName: string) {
+	static async refreshToken(
+		userId: string,
+		useragent: string,
+		deviceType: device_type = DeviceType.DESKTOP
+	) {
+		const deviceName = UserAgentParser.getDeviceName(useragent);
+
 		const data = {
 			user_id: userId,
 			device_name: deviceName,
+			device_type: deviceType,
 			expires_at: new Date(
 				new Date().getTime() +
 					new Date(

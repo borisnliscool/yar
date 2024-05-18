@@ -1,4 +1,4 @@
-import { ErrorType, SettingsKey, UserRole } from '@repo/types';
+import { DeviceType, ErrorType, SettingsKey, UserRole } from '@repo/types';
 import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response, Router } from 'express';
 import * as OTPAuth from 'otpauth';
@@ -9,7 +9,6 @@ import { database } from '../services/databaseService';
 import JwtService from '../services/jwtService';
 import SettingsService from '../services/settingsService';
 import TokenService from '../services/tokenService';
-import UserAgentParser from '../services/userAgentParser';
 
 export const router = Router();
 
@@ -17,6 +16,11 @@ const LoginSchema = RT.Record({
 	username: RT.String,
 	password: RT.String,
 	totp_code: RT.String.optional(),
+	device_type: RT.Union(
+		RT.Literal(DeviceType.DESKTOP),
+		RT.Literal(DeviceType.MOBILE),
+		RT.Literal(DeviceType.OTHER)
+	).optional(),
 });
 
 router.post(
@@ -59,7 +63,8 @@ router.post(
 
 		const refreshToken = await TokenService.refreshToken(
 			user.id,
-			UserAgentParser.getDeviceName(req.headers['user-agent']!)
+			req.headers['user-agent']!,
+			body.device_type
 		);
 		const accessToken = TokenService.accessToken(user.id);
 
@@ -99,7 +104,8 @@ router.post('/refresh', async (req: Request, res: Response) => {
 		const accessToken = TokenService.accessToken(storedToken.user_id);
 		const newRefreshToken = await TokenService.refreshToken(
 			storedToken.user_id,
-			UserAgentParser.getDeviceName(req.headers['user-agent']!)
+			req.headers['user-agent']!,
+			storedToken.device_type
 		);
 
 		res.cookie('refreshToken', newRefreshToken, {
@@ -135,6 +141,11 @@ router.post('/logout', async (req: Request, res: Response) => {
 const RegisterSchema = RT.Record({
 	username: RT.String,
 	password: RT.String,
+	device_type: RT.Union(
+		RT.Literal(DeviceType.DESKTOP),
+		RT.Literal(DeviceType.MOBILE),
+		RT.Literal(DeviceType.OTHER)
+	).optional(),
 });
 
 router.post(
@@ -168,7 +179,8 @@ router.post(
 
 		const refreshToken = await TokenService.refreshToken(
 			user.id,
-			UserAgentParser.getDeviceName(req.headers['user-agent']!)
+			req.headers['user-agent']!,
+			body.device_type
 		);
 		const accessToken = TokenService.accessToken(user.id);
 

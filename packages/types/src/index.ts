@@ -122,14 +122,21 @@ type YtdlpVideo = Record<string, any> & {
 	}>;
 };
 
+enum DeviceType {
+	DESKTOP = 'DESKTOP',
+	MOBILE = 'MOBILE',
+	OTHER = 'OTHER',
+}
+
 interface SessionDisplay {
 	id: string;
 	device_name: string;
 	current: boolean;
+	device_type: DeviceType;
 	created_at: Date;
 }
 
-export { ErrorType, JwtTokenType, SettingsKey, UserRole };
+export { DeviceType, ErrorType, JwtTokenType, SettingsKey, UserRole };
 export type {
 	Media,
 	MediaType,
