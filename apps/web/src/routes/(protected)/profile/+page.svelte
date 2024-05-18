@@ -187,7 +187,7 @@
 								class="grid size-10 place-items-center text-xl text-neutral-700 dark:text-neutral-400"
 							>
 								{#if session.device_type === DeviceType.DESKTOP}
-									<Icon icon="fa6-solid:desktop" />
+									<Icon icon="fa6-solid:display" />
 								{:else}
 									<Icon icon="fa6-solid:mobile-screen" />
 								{/if}
