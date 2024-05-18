@@ -57,7 +57,7 @@ router.post(
 				window: 2,
 			});
 
-			if (!isTokenValid) {
+			if (isTokenValid === null) {
 				return req.fail(ErrorType.TOTP_INVALID, 401, 'totp code invalid');
 			}
 		}

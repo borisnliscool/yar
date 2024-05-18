@@ -1,26 +1,56 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import API from '$lib/api';
-	import { SettingsKey } from '@repo/types';
+	import { notifications } from '$components/notifications';
+	import API, { HttpError } from '$lib/api';
+	import { ErrorType, SettingsKey } from '@repo/types';
 	import { Button, Input } from '@repo/ui';
 	import { onMount } from 'svelte';
 
 	let registrationEnabled = false;
+	let showTotpField = false;
+	let loading = false;
 
 	const formData = {
 		username: '',
-		password: ''
+		password: '',
+		totp_code: ''
 	};
 
 	const login = async () => {
-		const response = await API.post('/auth/login', formData, {
-			noAuth: true
-		});
+		loading = true;
 
-		const data: { accessToken: string } = await response.json();
-		API.authorizationToken = data.accessToken;
+		try {
+			const response = await API.post('/auth/login', formData, {
+				noAuth: true
+			});
 
-		await goto('/');
+			const data: { accessToken: string } = await response.json();
+			API.authorizationToken = data.accessToken;
+
+			await goto('/');
+		} catch (error) {
+			if (!(error instanceof HttpError)) {
+				throw error;
+			}
+
+			if (error.type === ErrorType.TOTP_REQUIRED) {
+				showTotpField = true;
+				return;
+			}
+
+			if (error.type === ErrorType.TOTP_INVALID) {
+				notifications.error('Invalid TOTP code');
+				formData.totp_code = '';
+				showTotpField = true;
+				return;
+			}
+
+			showTotpField = false;
+			notifications.error(`Failed to login: ${error.message}`);
+			console.error(error);
+		} finally {
+			loading = false;
+		}
 	};
 
 	const loadRegistrationEnabled = async () => {
@@ -58,22 +88,33 @@
 			<h1 class="pb-2 text-center text-xl font-semibold">Please log in</h1>
 
 			<div class=" flex flex-col gap-2">
-				<Input
-					class="dark:border-neutral-700"
-					placeholder="username"
-					name="username"
-					bind:value={formData.username}
-				/>
-				<Input
-					class="dark:border-neutral-700"
-					placeholder="password"
-					name="password"
-					type="password"
-					bind:value={formData.password}
-				/>
+				{#if !showTotpField}
+					<Input
+						class="dark:border-neutral-700"
+						placeholder="username"
+						name="username"
+						bind:value={formData.username}
+					/>
+					<Input
+						class="dark:border-neutral-700"
+						placeholder="password"
+						name="password"
+						type="password"
+						bind:value={formData.password}
+					/>
+				{:else}
+					<Input
+						class="dark:border-neutral-700"
+						placeholder="2FA code"
+						name="totp"
+						bind:value={formData.totp_code}
+					/>
+				{/if}
 			</div>
 
-			<Button type="submit" disabled={!formData.username || !formData.password}>Login</Button>
+			<Button type="submit" disabled={!formData.username || !formData.password || loading}>
+				Login
+			</Button>
 		</div>
 
 		{#if registrationEnabled}
