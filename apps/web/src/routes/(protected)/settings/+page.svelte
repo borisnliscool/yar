@@ -15,7 +15,7 @@
 	let loaded = false;
 
 	let usersPromise: Promise<User[]> | undefined;
-	let users: User[] = [];
+	let users: User[] | undefined;
 
 	let statsPromise: Promise<StatsResponse> | undefined;
 
@@ -78,7 +78,7 @@
 
 		try {
 			await API.delete('/users/' + user.id);
-			users = users.filter((u) => u.id !== user.id);
+			users = users?.filter((u) => u.id !== user.id);
 			notifications.success('User deleted');
 		} catch (err) {
 			console.error(err);
@@ -99,15 +99,15 @@
 			<p class="w-full">Instance Settings</p>
 
 			{#if !settingsPromise}
-				<Skeleton class="h-10 w-full max-w-lg" />
-				<Skeleton class="h-10 w-full max-w-lg" />
-				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full" />
+				<Skeleton class="h-10 w-full" />
+				<Skeleton class="h-10 w-full" />
 			{/if}
 
 			{#await settingsPromise}
-				<Skeleton class="h-10 w-full max-w-lg" />
-				<Skeleton class="h-10 w-full max-w-lg" />
-				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full" />
+				<Skeleton class="h-10 w-full" />
+				<Skeleton class="h-10 w-full" />
 			{:then _}
 				{#if settings}
 					<div class="flex w-full flex-col gap-2">
@@ -133,15 +133,16 @@
 			<p class="w-full">Instance Statistics</p>
 
 			{#if !statsPromise}
-				<Skeleton class="h-8 w-full max-w-lg" />
-				<Skeleton class="h-8 w-full max-w-lg" />
-				<Skeleton class="h-8 w-full max-w-lg" />
+				<div class="grid gap-2 md:grid-cols-2">
+					<Skeleton class="h-24 w-full" />
+					<Skeleton class="h-24 w-full" />
+				</div>
 			{/if}
 
 			{#await statsPromise}
-				<Skeleton class="h-8 w-full max-w-lg" />
-				<Skeleton class="h-8 w-full max-w-lg" />
-				<Skeleton class="h-8 w-full max-w-lg" />
+				<Skeleton class="h-8 w-full" />
+				<Skeleton class="h-8 w-full" />
+				<Skeleton class="h-8 w-full" />
 			{:then value}
 				{#if value}
 					<div class="grid gap-2 md:grid-cols-2">
@@ -183,17 +184,17 @@
 			<p class="w-full">Users</p>
 
 			{#if !usersPromise}
-				<Skeleton class="h-10 w-full max-w-lg" />
-				<Skeleton class="h-10 w-full max-w-lg" />
-				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full" />
+				<Skeleton class="h-10 w-full" />
+				<Skeleton class="h-10 w-full" />
 			{/if}
 
 			{#await usersPromise}
-				<Skeleton class="h-10 w-full max-w-lg" />
-				<Skeleton class="h-10 w-full max-w-lg" />
-				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full" />
+				<Skeleton class="h-10 w-full" />
+				<Skeleton class="h-10 w-full" />
 			{:then _}
-				{#if users}
+				{#if users && users.length}
 					<div class="w-full rounded-md border border-neutral-100 text-sm dark:border-neutral-800">
 						<div class="grid grid-cols-7 bg-neutral-100 px-4 py-2 dark:bg-neutral-800">
 							<p class="col-span-2">Name</p>
