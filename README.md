@@ -11,3 +11,4 @@ This repository contains a [turbo repo](https://turbo.build/repo) with the follo
 -   [`packages/ui`](./packages/ui): a svelte component library shared with frontend applications
 -   [`packages/types`](./packages/types): typescript definitions for backend and frontend applications
 -   [`packages/utils`](./packages/utils): helper functions for backend and frontend applications
+-   [`packages/database`](./packages/database): database access the backend

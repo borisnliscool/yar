@@ -51,7 +51,7 @@
 	<div class="relative" bind:this={inputParent}>
 		<Input placeholder="Video tags" bind:value bind:this={inputElement} on:keyup={keyup} />
 
-		{#if hasFocus}
+		{#if hasFocus && filteredTags.length}
 			<div
 				class="absolute left-0 top-full z-50 mt-1 max-h-48 w-full select-none overflow-y-auto rounded-md bg-white px-3 py-2 text-sm text-black shadow-md dark:bg-neutral-800 dark:text-white"
 				tabindex="-1"
