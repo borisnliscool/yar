@@ -7,7 +7,7 @@ services:
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
     ports:
-      - "80:80"
+      - "${EXTERNAL_PORT}:80"
     networks:
       - yar-network
     volumes:
