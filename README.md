@@ -2,7 +2,7 @@
 
 **Yar** is a self-hosted video archival application. It uses [yt-dlp](https://github.com/yt-dlp/yt-dlp) under the hood, allowing it to archive videos from any source accessible through it.
 
-### Development
+## Development
 
 This repository contains a [turbo repo](https://turbo.build/repo) with the following applications:
 
@@ -13,32 +13,40 @@ This repository contains a [turbo repo](https://turbo.build/repo) with the follo
 -   [`packages/utils`](./packages/utils): helper functions for backend and frontend applications
 -   [`packages/database`](./packages/database): database access for the backend
 
-#### Requirements
+### Requirements
 
+-   [node.js](https://nodejs.org/en/)
 -   [docker](https://www.docker.com/)
--   [pnpm](https://pnpm.io/) (`npm install -g pnpm`)
+-   [pnpm](https://pnpm.io/)
+    -   _or install with `npm install -g pnpm`_
 
-#### Setup
+### Setup
 
-1. Start the development database
+1. Copy the `.env.example` file to `.env.dev` and change the default credentials
+
+    - ```bash
+      cp .env.example .env.dev
+      ```
+
+2. Start the development database
 
     - ```bash
       docker compose -f dev-docker-compose.yml up -d
       ```
 
-2. Install dependencies
+3. Install dependencies
 
     - ```bash
         pnpm install
       ```
 
-3. Generate and push the database
+4. Generate and push the database
 
     - ```bash
       pnpm db:generate && pnpm db:push
       ```
 
-4. Start the development server
+5. Start the development server
 
     - ```bash
       pnpm dev
