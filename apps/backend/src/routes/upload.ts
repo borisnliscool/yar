@@ -60,7 +60,7 @@ router.post(
 
 		if (
 			(await database.video.count({ where: { source_url: body.url.trim() } })) &&
-			!req.params.force
+			req.query.force !== 'true'
 		) {
 			return req.fail(ErrorType.MEDIA_ALREADY_EXISTS, 409, 'video already exists');
 		}

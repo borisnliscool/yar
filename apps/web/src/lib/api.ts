@@ -2,10 +2,13 @@ import { goto } from '$app/navigation';
 import { ErrorType, type RequestError } from '@repo/types';
 
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+type ParamsType = string | string[][] | Record<string, string> | URLSearchParams | undefined;
+
 type Options = {
 	headers?: Headers;
 	noAuth?: boolean;
 	raw?: boolean;
+	params?: ParamsType;
 };
 
 export class HttpError extends Error {
@@ -91,7 +94,7 @@ export default class API {
 			headers.set('Content-Type', 'application/json');
 		}
 
-		const response = await this.fetch(this.buildUrl(url), {
+		const response = await this.fetch(this.buildUrl(url, options?.params ?? {}), {
 			method,
 			body: (options?.raw ? body : JSON.stringify(body)) as BodyInit, // I don't like this any type
 			headers,
@@ -113,7 +116,9 @@ export default class API {
 		return response;
 	}
 
-	static buildUrl(path: string) {
-		return '/api' + (path.startsWith('/') ? '' : '/') + path;
+	static buildUrl(path: string, params: ParamsType = {}) {
+		const paramString =
+			params && Object.keys(params).length ? '?' + new URLSearchParams(params).toString() : '';
+		return '/api' + (path.startsWith('/') ? '' : '/') + path + paramString;
 	}
 }

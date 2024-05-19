@@ -8,6 +8,7 @@
 	import VideoFormat from './VideoFormat.svelte';
 
 	import VideoTags from '$components/VideoTags.svelte';
+	import { modals } from '$components/modalService';
 	import dayjs from 'dayjs';
 	import duration from 'dayjs/plugin/duration';
 
@@ -53,19 +54,28 @@
 		});
 	});
 
-	const upload = async () => {
+	const upload = async ({ force }: { force?: boolean } = {}) => {
 		uploadLog = [];
 		uploading = true;
 		uploadPercent = 0;
 
+		let params: Record<string, string> = {};
+		if (force) params.force = 'true';
+
 		try {
-			const response = await API.post('/upload/url', {
-				input,
-				url: selectedFormat?.url ?? input,
-				ext: selectedFormat?.ext,
-				title,
-				tags
-			});
+			const response = await API.post(
+				'/upload/url',
+				{
+					input,
+					url: selectedFormat?.url ?? input,
+					ext: selectedFormat?.ext,
+					title,
+					tags
+				},
+				{
+					params
+				}
+			);
 
 			const reader = response.body?.getReader();
 			if (!reader) return;
@@ -101,9 +111,24 @@
 			}
 
 			if (error.code === 409 && error.type === ErrorType.MEDIA_ALREADY_EXISTS) {
-				if (confirm('A video with this url already exists. Do you want to upload it again?')) {
-					await upload();
-				}
+				modals.create('confirm', {
+					title: 'URL already exists',
+					contents: 'A video with this url already exists. Do you want to upload it again?',
+					buttons: [
+						{
+							label: 'Cancel',
+							variant: 'outline'
+						},
+						{
+							label: 'Upload Again',
+							variant: 'success',
+							onClick: async (hide) => {
+								hide();
+								await upload({ force: true });
+							}
+						}
+					]
+				});
 			}
 		}
 
@@ -129,9 +154,13 @@
 		{/if}
 
 		<div class="flex items-center gap-2">
-			<Input placeholder="Video URL" bind:value={input} on:paste={search} />
-			<Button class="px-4" on:click={search} disabled={searching}>Search</Button>
-			<Button class="px-4" on:click={upload} disabled={searching || !videoInfo || uploading}>
+			<Input placeholder="Video URL" bind:value={input} on:paste={() => search()} />
+			<Button class="px-4" on:click={() => search()} disabled={searching}>Search</Button>
+			<Button
+				class="px-4"
+				on:click={() => upload()}
+				disabled={searching || !videoInfo || uploading}
+			>
 				Upload
 			</Button>
 		</div>

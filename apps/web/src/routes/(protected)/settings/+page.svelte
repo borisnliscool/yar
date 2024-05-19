@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Header from '$components/Header.svelte';
+	import { modals } from '$components/modalService';
 	import { notifications } from '$components/notifications';
 	import API from '$lib/api';
 	import { userStore } from '$lib/stores/user';
@@ -72,18 +73,31 @@
 	}
 
 	const deleteUser = async (user: User) => {
-		if (!confirm('Are you sure you want to delete this user?')) {
-			return;
-		}
-
-		try {
-			await API.delete('/users/' + user.id);
-			users = users?.filter((u) => u.id !== user.id);
-			notifications.success('User deleted');
-		} catch (err) {
-			console.error(err);
-			notifications.error('Failed to delete user');
-		}
+		modals.create('delete-user', {
+			title: 'Delete User',
+			contents: 'Are you sure you want to delete this user? This action cannot be undone.',
+			buttons: [
+				{
+					label: 'Cancel',
+					variant: 'outline'
+				},
+				{
+					label: 'Delete',
+					variant: 'destructive',
+					onClick: async (hide) => {
+						try {
+							await API.delete('/users/' + user.id);
+							users = users?.filter((u) => u.id !== user.id);
+							notifications.success('User deleted');
+							hide();
+						} catch (err) {
+							console.error(err);
+							notifications.error('Failed to delete user');
+						}
+					}
+				}
+			]
+		});
 	};
 </script>
 

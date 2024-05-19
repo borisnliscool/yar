@@ -40,4 +40,10 @@ type Props = ButtonPrimitive.Props & {
 
 type Events = ButtonPrimitive.Events;
 
-export { Root as Button, buttonVariants, type Events as ButtonEvents, type Props as ButtonProps };
+export {
+	Root as Button,
+	buttonVariants,
+	type Events as ButtonEvents,
+	type Props as ButtonProps,
+	type Variant as ButtonVariant,
+};

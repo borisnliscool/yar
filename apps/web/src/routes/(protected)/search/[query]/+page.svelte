@@ -11,7 +11,11 @@
 
 	const loadVideos = (searchQuery: string) => {
 		videosPromise = new Promise<Video[]>(async (resolve) => {
-			const response = await API.get('/videos/search?query=' + encodeURIComponent(searchQuery));
+			const response = await API.get('/videos/search', {
+				params: {
+					query: encodeURIComponent(searchQuery)
+				}
+			});
 			const data: { videos: Video[] } = await response.json();
 			return resolve(data.videos);
 		});

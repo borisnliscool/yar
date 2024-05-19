@@ -1,11 +1,14 @@
 <script lang="ts">
 	import { cn } from '@repo/utils';
+	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { Button } from '../button';
 
 	export let shown = false;
 	export let closable = true;
 	export let title = '';
+
+	const dispatcher = createEventDispatcher();
 
 	let dialog: HTMLDialogElement;
 
@@ -16,6 +19,8 @@
 			behavior: 'instant',
 		});
 	}
+
+	$: if (!shown) dispatcher('close');
 </script>
 
 <slot name="trigger" showModal={() => (shown = true)} />

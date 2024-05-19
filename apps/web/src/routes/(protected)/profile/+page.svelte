@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Header from '$components/Header.svelte';
+	import { modals } from '$components/modalService';
 	import { notifications } from '$components/notifications';
 	import API, { HttpError } from '$lib/api';
 	import { userStore } from '$lib/stores/user';
@@ -76,62 +77,93 @@
 	};
 
 	const revokeSession = async (sessionId: string) => {
-		if (!confirm('Are you sure you want to revoke this session?')) {
-			return;
-		}
-
-		try {
-			await API.delete('/sessions/' + sessionId);
-			await loadSessions();
-			notifications.success('Session revoked');
-		} catch (error) {
-			notifications.error('Failed to revoke session');
-			throw error;
-		}
+		modals.create('revoke-session', {
+			title: 'Revoke Session',
+			contents: 'Are you sure you want to revoke this session?',
+			buttons: [
+				{
+					label: 'Cancel',
+					variant: 'outline'
+				},
+				{
+					label: 'Revoke Session',
+					variant: 'destructive',
+					onClick: async (hide) => {
+						try {
+							await API.delete('/sessions/' + sessionId);
+							await loadSessions();
+							notifications.success('Session revoked');
+							hide();
+						} catch (error) {
+							notifications.error('Failed to revoke session');
+							throw error;
+						}
+					}
+				}
+			]
+		});
 	};
 
 	const revokeAllSessions = async () => {
-		if (
-			!confirm(
-				'Are you sure you want to revoke all sessions? This will also revoke your current session and log you out.'
-			)
-		) {
-			return;
-		}
-
-		try {
-			await API.delete('/sessions');
-			notifications.success('Sessions revoked');
-			await goto('/logout');
-		} catch (error) {
-			notifications.error('Failed to revoke sessions');
-			throw error;
-		}
+		modals.create('revoke-all-sessions', {
+			title: 'Revoke All Sessions',
+			contents:
+				'Are you sure you want to revoke all sessions? This will also revoke your current session and log you out.',
+			buttons: [
+				{
+					label: 'Cancel',
+					variant: 'outline'
+				},
+				{
+					label: 'Revoke All Sessions',
+					variant: 'destructive',
+					onClick: async (hide) => {
+						try {
+							await API.delete('/sessions');
+							hide();
+							await goto('/logout');
+						} catch (error) {
+							notifications.error('Failed to revoke sessions');
+							throw error;
+						}
+					}
+				}
+			]
+		});
 	};
 
 	const disableTotp = async () => {
-		if (
-			!confirm(
-				'Are you sure you want to disable 2FA authentication? This will weaken your account security.'
-			)
-		) {
-			return;
-		}
-
-		try {
-			await API.delete('/auth/totp');
-			user!.totp_enabled = false;
-			notifications.success('2FA disabled');
-		} catch (error) {
-			notifications.error('Failed to disable 2FA');
-			throw error;
-		}
+		modals.create('disable-totp', {
+			title: 'Disable 2FA',
+			contents:
+				'Are you sure you want to disable 2FA authentication? This will weaken your account security, and is strongly advised against. You can re-enable 2FA at any time.',
+			buttons: [
+				{
+					label: 'Cancel',
+					variant: 'outline'
+				},
+				{
+					label: 'Disable 2FA',
+					variant: 'destructive',
+					onClick: async (hide) => {
+						try {
+							await API.delete('/auth/totp');
+							user!.totp_enabled = false;
+							notifications.success('2FA disabled');
+							hide();
+						} catch (error) {
+							notifications.error('Failed to disable 2FA');
+							throw error;
+						}
+					}
+				}
+			]
+		});
 	};
 
 	const enableTotp = async () => {
 		showEnableTotp = true;
-
-		newTotpSecret = randomstring(16);
+		newTotpSecret = randomstring(16, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567');
 		newTotpQrCode = `otpauth://totp/YAR - ${location.hostname}:${user?.username}?secret=${newTotpSecret}&issuer=YAR`;
 	};
 

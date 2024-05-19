@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import Header from '$components/Header.svelte';
 	import VideoTags from '$components/VideoTags.svelte';
+	import { modals } from '$components/modalService';
 	import { notifications } from '$components/notifications';
 	import API from '$lib/api';
 	import { userStore } from '$lib/stores/user';
@@ -63,17 +64,32 @@
 	};
 
 	const deleteVideo = async () => {
-		if (!confirm('Are you sure you want to delete this video?')) return;
-
-		isBusy = true;
-		try {
-			await API.delete('/videos/' + loadedVideo.id);
-			notifications.success('Video deleted');
-			goto('/');
-		} catch (err) {
-			console.error(err);
-		}
-		isBusy = false;
+		modals.create('delete-video', {
+			title: 'Delete Video',
+			contents: 'Are you sure you want to delete this video? This action cannot be undone.',
+			buttons: [
+				{
+					label: 'Cancel',
+					variant: 'outline'
+				},
+				{
+					label: 'Delete',
+					variant: 'destructive',
+					onClick: async (hide) => {
+						isBusy = true;
+						try {
+							await API.delete('/videos/' + loadedVideo.id);
+							notifications.success('Video deleted');
+							hide();
+							goto('/');
+						} catch (err) {
+							console.error(err);
+						}
+						isBusy = false;
+					}
+				}
+			]
+		});
 	};
 
 	$: loadVideo($page.params.id);

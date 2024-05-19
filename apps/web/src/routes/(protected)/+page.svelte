@@ -18,7 +18,12 @@
 		if (total && videos.length >= total) return;
 
 		videoPromise = new Promise(async (resolve) => {
-			const response = await API.get(`/videos?page=${page}&count=${count}`);
+			const response = await API.get(`/videos`, {
+				params: {
+					page: String(page),
+					count: String(count)
+				}
+			});
 			const data: { videos: Video[]; total: number } = await response.json();
 			total = data.total;
 			videos = [...videos, ...data.videos];
