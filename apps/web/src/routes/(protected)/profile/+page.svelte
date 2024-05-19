@@ -225,7 +225,25 @@
 								Save Changes
 							</Button>
 						</div>
+					</div>
+				{/if}
+			{:catch error}
+				<p class="text-red-500">{error}</p>
+			{/await}
+		{/key}
+	</div>
 
+	<div class="flex w-full max-w-lg flex-col gap-4">
+		{#key userPromise}
+			{#await userPromise}
+				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
+				<Skeleton class="h-10 w-full max-w-lg" />
+
+				<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
+			{:then _}
+				{#if user}
+					<div class="flex w-full max-w-lg flex-col gap-6">
 						<div class="flex flex-col gap-2">
 							<p>2FA authentication</p>
 
@@ -255,8 +273,6 @@
 						</div>
 					</div>
 				{/if}
-			{:catch error}
-				<p class="text-red-500">{error}</p>
 			{/await}
 		{/key}
 	</div>
