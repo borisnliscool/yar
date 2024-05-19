@@ -218,3 +218,45 @@ router.delete(
 		return res.sendStatus(200);
 	}
 );
+
+const TotpSchema = RT.Record({
+	secret: RT.String,
+	verify_code: RT.String,
+});
+
+router.post(
+	'/totp',
+	AuthenticationService.isAuthenticated,
+	validateSchema(TotpSchema),
+	async (req: Request, res: Response) => {
+		if (!!req.user!.totp_secret) {
+			return req.fail(ErrorType.INSUFFICIENT_PERMISSIONS, 403, 'totp already enabled');
+		}
+
+		const body = req.body as RT.Static<typeof TotpSchema>;
+
+		const totp = new OTPAuth.TOTP({
+			secret: body.secret,
+		});
+
+		if (
+			totp.validate({
+				token: body.verify_code,
+				window: 2,
+			}) === null
+		) {
+			return req.fail(ErrorType.TOTP_INVALID, 401, 'invalid totp code');
+		}
+
+		await database.user.update({
+			where: {
+				id: req.user!.id,
+			},
+			data: {
+				totp_secret: body.secret,
+			},
+		});
+
+		return res.sendStatus(200);
+	}
+);

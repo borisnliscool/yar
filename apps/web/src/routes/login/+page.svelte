@@ -104,7 +104,7 @@
 					/>
 				{:else}
 					<Input
-						class="dark:border-neutral-700"
+						class="text-center dark:border-neutral-700"
 						placeholder="2FA code"
 						name="totp"
 						bind:value={formData.totp_code}

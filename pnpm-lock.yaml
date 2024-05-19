@@ -280,6 +280,9 @@ importers:
       svelte-check:
         specifier: ^3.6.8
         version: 3.6.8(postcss@8.4.38)(sass@1.72.0)(svelte@4.2.12)
+      svelte-qrcode:
+        specifier: ^1.0.0
+        version: 1.0.0
       tailwindcss:
         specifier: ^3.4.3
         version: 3.4.3
@@ -4671,6 +4674,10 @@ packages:
       strip-indent: 3.0.0
       svelte: 4.2.12
       typescript: 5.4.5
+    dev: true
+
+  /svelte-qrcode@1.0.0:
+    resolution: {integrity: sha512-WrOvyyxtUzu32gVIDxcFMy0A7uUpbl/8yHaTNOsUaI8W5V4wa7AmReCjffhNY2aS42CqCLJ6qdwUoj/KxmeZzA==}
     dev: true
 
   /svelte@4.2.12:

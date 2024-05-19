@@ -2,12 +2,15 @@
 	import { goto } from '$app/navigation';
 	import Header from '$components/Header.svelte';
 	import { notifications } from '$components/notifications';
-	import API from '$lib/api';
+	import API, { HttpError } from '$lib/api';
 	import { userStore } from '$lib/stores/user';
 	import Icon from '@iconify/svelte';
 	import { DeviceType, type SessionDisplay, type User } from '@repo/types';
-	import { Button, Input, Skeleton, Tooltip } from '@repo/ui';
+	import { Button, Input, Modal, Skeleton, Tooltip } from '@repo/ui';
+	import { randomstring } from '@repo/utils';
 	import { onMount } from 'svelte';
+	//@ts-ignore svelte-qrcode is not typed, so we have to do this
+	import QrCode from 'svelte-qrcode';
 
 	let user: User | undefined;
 	let userPromise: Promise<User>;
@@ -19,6 +22,12 @@
 	};
 
 	let sessionsPromise: Promise<SessionDisplay[]>;
+	let showEnableTotp = false;
+
+	let newTotpSecret: string | undefined;
+	let newTotpQrCode: string | undefined;
+	let newTotpVerification: string | undefined;
+	let savingNewTotp = false;
 
 	const loadUser = () => {
 		userPromise = (async () => {
@@ -119,6 +128,36 @@
 		}
 	};
 
+	const enableTotp = async () => {
+		showEnableTotp = true;
+
+		newTotpSecret = randomstring(16);
+		newTotpQrCode = `otpauth://totp/YAR - ${location.hostname}:${user?.username}?secret=${newTotpSecret}&issuer=YAR`;
+	};
+
+	const saveTotp = async (cb: () => void) => {
+		savingNewTotp = true;
+
+		try {
+			await API.post('/auth/totp', {
+				secret: newTotpSecret,
+				verify_code: newTotpVerification
+			});
+
+			user!.totp_enabled = true;
+			notifications.success('2FA enabled');
+
+			cb();
+		} catch (error) {
+			if (error instanceof HttpError) {
+				notifications.error('Failed to enable 2FA: ' + error.message);
+			}
+			throw error;
+		}
+
+		savingNewTotp = false;
+	};
+
 	onMount(() => {
 		loadUser();
 		loadSessions();
@@ -209,8 +248,9 @@
 									security.
 								</p>
 
-								<!-- TODO: Implement -->
-								<Button size="sm" disabled={true} class="h-fit w-fit px-2 py-1.5">Set up</Button>
+								<Button size="sm" on:click={enableTotp} class="h-fit w-fit px-2 py-1.5">
+									Set up
+								</Button>
 							{/if}
 						</div>
 					</div>
@@ -299,3 +339,49 @@
 		{/await}
 	</div>
 </div>
+
+<Modal title="Set up 2FA" bind:shown={showEnableTotp}>
+	<p class="text-sm text-neutral-700 dark:text-neutral-400">
+		Scan the QR code below with your preferred 2FA app, then enter the code below to finish setting
+		up 2FA.
+	</p>
+
+	<div class="mx-auto w-fit rounded bg-white p-4">
+		<QrCode value={newTotpQrCode} />
+	</div>
+
+	<p class="text-center text-xs text-neutral-700 dark:text-neutral-400">
+		Or, use this secret: <span class="rounded-sm bg-neutral-100 p-1 font-mono dark:bg-neutral-800"
+			>{newTotpSecret}</span
+		>
+	</p>
+
+	<Input
+		bind:value={newTotpVerification}
+		placeholder="Enter 6-digit code"
+		class="mx-auto w-full max-w-48 text-center dark:border-neutral-700"
+	/>
+
+	<svelte:fragment slot="footer" let:hideModal>
+		<hr class="border-t dark:border-neutral-800" />
+		<div class="flex w-full items-center justify-end gap-2">
+			<Button
+				variant="outline"
+				class="h-fit px-4 py-2 dark:border-neutral-700"
+				size="sm"
+				on:click={() => hideModal()}
+			>
+				Close
+			</Button>
+
+			<Button
+				class="h-fit px-4 py-2"
+				size="sm"
+				disabled={savingNewTotp || newTotpVerification?.length !== 6}
+				on:click={() => saveTotp(hideModal)}
+			>
+				Save
+			</Button>
+		</div>
+	</svelte:fragment>
+</Modal>
