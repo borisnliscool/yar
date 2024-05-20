@@ -79,7 +79,7 @@
 	const revokeSession = async (sessionId: string) => {
 		modals.create('revoke-session', {
 			title: 'Revoke Session',
-			contents: 'Are you sure you want to revoke this session?',
+			contents: 'Are you sure you want to revoke this session? This device will be logged out.',
 			buttons: [
 				{
 					label: 'Cancel',
