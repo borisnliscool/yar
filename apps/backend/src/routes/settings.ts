@@ -17,7 +17,7 @@ router.get('/', AuthenticationService.isAuthenticated, async (_: Request, res: R
 router.get('/:key', async (req: Request, res: Response) => {
 	const key = req.params.key as unknown as SettingsKey;
 
-	if (!SettingsService.isPublic(key)) {
+	if (!SettingsService.isPublic(key) && !req.user) {
 		return req.fail(ErrorType.UNAUTHORIZED, 401, 'unauthorized');
 	}
 

@@ -5,10 +5,10 @@ import { database } from './databaseService';
 import JwtService from './jwtService';
 
 export default class AuthenticationService {
-	static async isAuthenticated(req: Request, res: Response, next: NextFunction) {
+	static async checkAuthentication(req: Request, res: Response, next: NextFunction) {
 		const authorizationToken = req.headers.authorization?.replace('Bearer ', '');
 		if (!authorizationToken) {
-			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'authorization header not found');
+			return next();
 		}
 
 		let decodedToken!: Record<string, any>;
@@ -27,7 +27,7 @@ export default class AuthenticationService {
 		}
 
 		if (decodedToken.type !== 'access' || !decodedToken.sub) {
-			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'invalid authorization token');
+			return next();
 		}
 
 		const user = await database.user.findFirst({
@@ -35,11 +35,20 @@ export default class AuthenticationService {
 				id: decodedToken.sub,
 			},
 		});
-		if (!user) {
-			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'failed to find user');
+
+		req.user = user ? user : undefined;
+		return next();
+	}
+
+	static async isAuthenticated(req: Request, res: Response, next: NextFunction) {
+		const authorizationToken = req.headers.authorization?.replace('Bearer ', '');
+		if (!authorizationToken) {
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'authorization header not found');
 		}
 
-		req.user = user;
+		if (!req.user) {
+			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'failed to find user');
+		}
 
 		return next();
 	}

@@ -13,6 +13,7 @@ import { errorHandler } from '../middleware/errors';
 import { methodsMiddleware } from '../middleware/methods';
 import { notFoundHandler } from '../middleware/notFound';
 import { router } from '../routes';
+import AuthenticationService from './authenticationService';
 import LoggerService from './loggerService';
 
 export default class WebServerService {
@@ -37,6 +38,7 @@ export default class WebServerService {
 		this.app.use(compression());
 		this.app.use(cookieParser());
 		this.app.use(methodsMiddleware());
+		this.app.use(AuthenticationService.checkAuthentication);
 
 		this.logger('Applied middlewares');
 	}
