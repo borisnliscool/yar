@@ -3,6 +3,8 @@ import { Setting, SettingsKey } from '@repo/types';
 import { Cache } from '../utility/cache';
 import { database } from './databaseService';
 
+const PUBLIC_SETTINGS: Array<SettingsKey> = [SettingsKey.ENABLE_REGISTRATION];
+
 const DEFAULT_SETTINGS: Record<SettingsKey, Setting> = {
 	[SettingsKey.ENABLE_REGISTRATION]: {
 		value: true,
@@ -92,6 +94,10 @@ export default class SettingsService {
 			ret[key as unknown as SettingsKey] = value;
 		}
 		return ret;
+	}
+
+	static isPublic(key: SettingsKey) {
+		return PUBLIC_SETTINGS.includes(key);
 	}
 
 	private static setDefaultSettings() {
