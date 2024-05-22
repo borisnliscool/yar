@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Header from '$components/Header.svelte';
 	import InfiniteList from '$components/InfiniteList.svelte';
+	import Motd from '$components/Motd.svelte';
 	import VideoThumbnail from '$components/videoCards/VideoThumbnailMain.svelte';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
@@ -43,6 +44,7 @@
 </svelte:head>
 
 <Header />
+<Motd />
 
 <div class="grid grid-cols-1 gap-4 p-2 md:grid-cols-2 lg:grid-cols-3 lg:p-6 2xl:grid-cols-4">
 	<InfiniteList items={videos} on:loadmore={loadVideos} let:item>

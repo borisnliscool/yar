@@ -60,6 +60,7 @@ enum ErrorType {
 
 enum SettingsKey {
 	ENABLE_REGISTRATION = 'ENABLE_REGISTRATION',
+	MOTD = 'MOTD',
 }
 
 type SettingValueType = string | boolean | number;

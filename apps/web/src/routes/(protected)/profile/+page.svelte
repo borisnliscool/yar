@@ -45,7 +45,7 @@
 		return userPromise;
 	};
 
-	const loadSessions = async () => {
+	const loadSessions = () => {
 		sessionsPromise = API.get('/sessions').then((r) => r.json());
 	};
 

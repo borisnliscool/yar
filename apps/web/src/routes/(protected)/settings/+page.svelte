@@ -124,17 +124,29 @@
 				<Skeleton class="h-10 w-full" />
 			{:then _}
 				{#if settings}
-					<div class="flex w-full flex-col gap-2">
+					<div class="flex w-full flex-col gap-4">
 						{#each settings as s}
-							<div class="flex items-center gap-4">
-								<svelte:component
-									this={getInputForSetting(s.setting)}
-									bind:value={s.setting.value}
-									type={s.setting.type.toLowerCase()}
-								/>
+							{#if s.setting.type == 'BOOLEAN'}
+								<div class="flex items-center gap-4">
+									<svelte:component
+										this={getInputForSetting(s.setting)}
+										bind:value={s.setting.value}
+										type={s.setting.type.toLowerCase()}
+									/>
 
-								<p class="text-sm">{s.setting.label}</p>
-							</div>
+									<p class="text-sm">{s.setting.label}</p>
+								</div>
+							{:else}
+								<div class="flex flex-col gap-1">
+									<p class="text-sm">{s.setting.label}</p>
+
+									<svelte:component
+										this={getInputForSetting(s.setting)}
+										bind:value={s.setting.value}
+										type={s.setting.type.toLowerCase()}
+									/>
+								</div>
+							{/if}
 						{/each}
 					</div>
 				{/if}

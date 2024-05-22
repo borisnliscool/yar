@@ -4,10 +4,15 @@ import { Cache } from '../utility/cache';
 import { database } from './databaseService';
 
 const DEFAULT_SETTINGS: Record<SettingsKey, Setting> = {
-	ENABLE_REGISTRATION: {
+	[SettingsKey.ENABLE_REGISTRATION]: {
 		value: true,
-		type: 'boolean',
+		type: 'BOOLEAN',
 		label: 'Enable registration',
+	},
+	[SettingsKey.MOTD]: {
+		value: 'Welcome to YAR! Change this message in settings.',
+		type: 'STRING',
+		label: 'MOTD (Message of the day)',
 	},
 };
 
