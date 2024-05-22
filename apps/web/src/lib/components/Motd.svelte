@@ -11,8 +11,7 @@
 		API.get('/settings/motd')
 			.then((r) => r.json())
 			.then((data) => {
-				if (!data.motd) return;
-				content = data.motd;
+				if (data.MOTD) return (content = data.MOTD);
 			})
 			.catch();
 	});

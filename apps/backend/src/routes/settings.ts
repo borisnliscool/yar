@@ -15,14 +15,14 @@ router.get('/', AuthenticationService.isAuthenticated, async (_: Request, res: R
 // Some settings are public, for example the registration setting.
 // For this reason, this route doesn't require authentication.
 router.get('/:key', async (req: Request, res: Response) => {
-	const key = req.params.key as unknown as SettingsKey;
+	const key = (req.params.key as string).toUpperCase() as SettingsKey;
 
 	if (!SettingsService.isPublic(key) && !req.user) {
 		return req.fail(ErrorType.UNAUTHORIZED, 401, 'unauthorized');
 	}
 
 	return res.json({
-		[req.params.key]: await SettingsService.getSetting(key),
+		[key]: await SettingsService.getSetting(key),
 	});
 });
 
