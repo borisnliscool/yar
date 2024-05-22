@@ -24,7 +24,7 @@ router.get('/', rateLimit(), async (req: Request, res: Response) => {
 
 	const databaseVideos = await database.video.findMany({
 		take: count,
-		skip: count * page,
+		skip: Math.max(count * page, 0),
 		include: {
 			author: true,
 			thumbnail: true,
