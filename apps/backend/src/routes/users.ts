@@ -1,4 +1,4 @@
-import { user } from '@repo/database';
+import type { user } from '@prisma/client';
 import { ErrorType, UserRole } from '@repo/types';
 import { compareSync, hashSync } from 'bcrypt';
 import { Request, Response, Router } from 'express';

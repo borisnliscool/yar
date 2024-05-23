@@ -1,4 +1,4 @@
-import { device_type } from '@repo/database';
+import type { device_type } from '@prisma/client';
 import { DeviceType, JwtTokenType } from '@repo/types';
 import ms from 'ms';
 import { database } from './databaseService';

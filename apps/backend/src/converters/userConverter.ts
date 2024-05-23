@@ -1,4 +1,4 @@
-import { user } from '@repo/database';
+import type { user } from '@prisma/client';
 import { User, UserRole } from '@repo/types';
 import Converter from '../classes/converter';
 

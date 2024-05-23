@@ -1,4 +1,4 @@
-import { media, user, video } from '@repo/database';
+import type { media, user, video } from '@prisma/client';
 import { UserRole, Video } from '@repo/types';
 import Converter from '../classes/converter';
 import MediaConverter from './mediaConverter';

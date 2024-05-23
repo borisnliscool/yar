@@ -1,4 +1,4 @@
-import { user } from '@repo/database';
+import type { user } from '@prisma/client';
 import { ErrorType } from '@repo/types';
 
 declare global {

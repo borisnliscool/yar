@@ -1,4 +1,4 @@
-import { setting_value_type } from '@repo/database';
+import type { setting_value_type } from '@prisma/client';
 import { Setting, SettingsKey } from '@repo/types';
 import { Cache } from '../utility/cache';
 import { database } from './databaseService';

@@ -1,4 +1,4 @@
-import { media } from '@repo/database';
+import type { media } from '@prisma/client';
 import { Media } from '@repo/types';
 import Converter from '../classes/converter';
 import MediaService from '../services/mediaService';

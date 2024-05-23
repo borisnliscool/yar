@@ -1,4 +1,4 @@
-import { media } from '@repo/database';
+import type { media } from '@prisma/client';
 import { JwtTokenType } from '@repo/types';
 import FileService from './fileService';
 import JwtService from './jwtService';

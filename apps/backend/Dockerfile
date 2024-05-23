@@ -24,6 +24,7 @@ WORKDIR /app
 COPY .gitignore .gitignore
 COPY --from=installer /app/out/json/ .
 COPY --from=installer /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+
 RUN pnpm install --frozen-lockfile
 RUN pnpm add -g turbo
 
@@ -43,4 +44,4 @@ USER nodejs
 
 COPY --from=builder /app .
 
-CMD node apps/backend/dist/index.js
+CMD prisma migrate deploy && node apps/backend/dist/index.js
