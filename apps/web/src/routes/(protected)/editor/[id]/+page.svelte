@@ -9,6 +9,7 @@
 	import { userStore } from '$lib/stores/user';
 	import type { Video } from '@repo/types';
 	import { Button, Input, Skeleton, Textarea } from '@repo/ui';
+	import { get } from 'svelte/store';
 
 	let videoPromise: Promise<Video>;
 	let loadedVideo: Video;
@@ -17,15 +18,19 @@
 	let thumbnailInput: HTMLInputElement;
 	let thumbnails: FileList | null = null;
 
+	const redirect = () => {
+		notifications.error('You are not allowed to edit this video');
+		return goto('/');
+	};
+
 	const loadVideo = (videoId: string) => {
 		videoPromise = new Promise<Video>(async (resolve, reject) => {
 			const response = await API.get('/videos/' + videoId);
 			const data: Video = await response.json();
 			loadedVideo = data;
 
-			if (loadedVideo.author.id !== $userStore.id) {
-				notifications.error('You are not allowed to edit this video');
-				return reject(goto('/'));
+			if (loadedVideo.author.id !== get(userStore)?.id) {
+				return reject(redirect());
 			}
 
 			return resolve(data);
@@ -34,6 +39,7 @@
 
 	const save = async () => {
 		isBusy = true;
+
 		try {
 			if (thumbnails && thumbnails.length) {
 				const data = new FormData();
@@ -46,20 +52,18 @@
 				thumbnails = null;
 			}
 
-			videoPromise = (
-				await API.put('/videos/' + loadedVideo.id, {
-					title: loadedVideo.title,
-					description: loadedVideo.description,
-					tags: loadedVideo.tags
-				})
-			).json();
+			await API.put('/videos/' + loadedVideo.id, {
+				title: loadedVideo.title,
+				description: loadedVideo.description,
+				tags: loadedVideo.tags
+			});
 
-			videoPromise
-				.then(() => notifications.success('Video saved'))
-				.catch(() => notifications.error('Failed to save video'));
+			loadVideo(loadedVideo.id);
 		} catch (err) {
 			console.error(err);
+			notifications.error('Failed to save video');
 		}
+
 		isBusy = false;
 	};
 
@@ -93,6 +97,7 @@
 	};
 
 	$: loadVideo($page.params.id);
+	$: $userStore && loadedVideo && loadedVideo.author.id !== $userStore.id && redirect();
 </script>
 
 <svelte:head>
