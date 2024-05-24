@@ -6,8 +6,9 @@
 	"scripts": {
 		"dev": "nodemon",
 		"build": "tsc",
-		"db:generate": "prisma generate",
-		"db:push": "prisma db push --skip-generate"
+		"db:generate": "prisma generate --schema=./prisma/schema.prisma",
+		"db:push": "prisma db push --skip-generate",
+		"db:migrate": "dotenv -e ../../.env.dev -- prisma migrate dev"
 	},
 	"dependencies": {
 		"@prisma/client": "^5.14.0",
