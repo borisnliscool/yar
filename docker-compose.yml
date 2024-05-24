@@ -1,6 +1,7 @@
 services:
   traefik:
     image: traefik:v2.2
+    restart: unless-stopped
     command:
       - "--api.insecure=true"
       - "--api.dashboard=false"
@@ -15,18 +16,28 @@ services:
 
   database:
     image: mariadb
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env
     networks:
       - yar-network
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/usr/local/bin/healthcheck.sh",
+          "--su-mysql",
+          "--connect",
+          "--innodb_initialized"
+        ]
 
   backend:
     build:
       context: .
       dockerfile: ./apps/backend/Dockerfile
+    restart: unless-stopped
     env_file:
       - .env
     depends_on:
@@ -47,6 +58,7 @@ services:
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
+    restart: unless-stopped
     env_file:
       - .env
     depends_on:
