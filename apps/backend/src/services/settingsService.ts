@@ -1,5 +1,5 @@
 import type { setting_value_type } from '@prisma/client';
-import { Setting, SettingsKey } from '@repo/types';
+import { Setting, SettingsKey, SettingValueType } from '@repo/types';
 import { Cache } from '../utility/cache';
 import { database } from './databaseService';
 
@@ -29,7 +29,7 @@ export default class SettingsService {
 		for (const setting of settings) {
 			this.settingsCache.set(setting.key as unknown as SettingsKey, {
 				type: setting.value_type,
-				value: setting.value as unknown as setting_value_type,
+				value: this.parseValue(setting.value, setting.value_type),
 				label: setting.label ?? setting.key,
 			});
 		}
@@ -37,7 +37,7 @@ export default class SettingsService {
 		return this.settingsCache.getAll() as Map<SettingsKey, Setting>;
 	}
 
-	static async getSetting(key: SettingsKey) {
+	static async getSetting(key: SettingsKey): Promise<SettingValueType | null> {
 		if (this.settingsCache.get(key)) {
 			return this.settingsCache.get(key)!.value;
 		}
@@ -49,12 +49,15 @@ export default class SettingsService {
 		});
 
 		if (setting) {
+			const parsed = this.parseValue(setting.value, setting.value_type);
+
 			this.settingsCache.set(key, {
 				type: setting.value_type,
-				value: setting.value as unknown as setting_value_type,
+				value: parsed,
 				label: setting.label ?? setting.key,
 			});
-			return setting.value;
+
+			return parsed;
 		}
 
 		return null;
@@ -63,9 +66,11 @@ export default class SettingsService {
 	static async setSetting(key: SettingsKey, value: string, _label?: string) {
 		const label = _label ?? DEFAULT_SETTINGS[key].label ?? key;
 
+		const valueType = this.getValueType(value);
+
 		this.settingsCache.set(key, {
-			type: this.getValueType(value),
-			value: value as unknown as setting_value_type,
+			type: valueType,
+			value: this.parseValue(value, valueType),
 			label,
 		});
 
@@ -75,12 +80,12 @@ export default class SettingsService {
 			},
 			create: {
 				key: key as unknown as string,
-				value_type: this.getValueType(value),
+				value_type: valueType,
 				value: String(value),
 				label,
 			},
 			update: {
-				value_type: this.getValueType(value),
+				value_type: valueType,
 				value: String(value),
 			},
 		});
@@ -115,6 +120,18 @@ export default class SettingsService {
 			case 'string':
 			default:
 				return 'STRING';
+		}
+	}
+
+	private static parseValue(value: string, type: setting_value_type) {
+		switch (type) {
+			case 'INTEGER':
+				return parseInt(value);
+			case 'BOOLEAN':
+				return value === 'true';
+			case 'STRING':
+			default:
+				return value;
 		}
 	}
 }
