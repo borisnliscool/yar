@@ -3,13 +3,21 @@ import { Setting, SettingsKey, SettingValueType } from '@repo/types';
 import { Cache } from '../utility/cache';
 import { database } from './databaseService';
 
-const PUBLIC_SETTINGS: Array<SettingsKey> = [SettingsKey.ENABLE_REGISTRATION];
+const PUBLIC_SETTINGS: Array<SettingsKey> = [
+	SettingsKey.ENABLE_REGISTRATION,
+	SettingsKey.MIN_PASSWORD_STRENGTH,
+];
 
 const DEFAULT_SETTINGS: Record<SettingsKey, Setting> = {
 	[SettingsKey.ENABLE_REGISTRATION]: {
 		value: true,
 		type: 'BOOLEAN',
 		label: 'Enable registration',
+	},
+	[SettingsKey.MIN_PASSWORD_STRENGTH]: {
+		value: 3,
+		type: 'INTEGER',
+		label: 'Minimum password strength (zxcvbn)',
 	},
 	[SettingsKey.MOTD]: {
 		value: 'Welcome to YAR! Change this message in settings.',

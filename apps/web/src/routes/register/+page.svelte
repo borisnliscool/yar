@@ -5,6 +5,9 @@
 	import { SettingsKey } from '@repo/types';
 	import { Button, Input } from '@repo/ui';
 	import { onMount } from 'svelte';
+	import zxcvbn from 'zxcvbn';
+
+	let MIN_PASSWORD_STRENGTH = 0;
 
 	const formData = {
 		username: '',
@@ -42,7 +45,18 @@
 		}
 	};
 
-	onMount(loadRegistrationEnabled);
+	const loadMinPasswordStrength = async () => {
+		const response = await API.get('settings/' + SettingsKey.MIN_PASSWORD_STRENGTH, {
+			noAuth: true
+		});
+
+		const data = await response.json();
+		MIN_PASSWORD_STRENGTH = data[SettingsKey.MIN_PASSWORD_STRENGTH] as number;
+	};
+
+	$: passwordStrength = zxcvbn(formData.password);
+
+	onMount(() => Promise.all([loadRegistrationEnabled(), loadMinPasswordStrength()]));
 </script>
 
 <svelte:head>
@@ -74,16 +88,29 @@
 					name="username"
 					bind:value={formData.username}
 				/>
+
 				<Input
-					class="dark:border-neutral-700"
+					class="dark:border-neutral-700 {formData.password &&
+					passwordStrength.score < MIN_PASSWORD_STRENGTH
+						? '!border-red-500 !ring-red-500/50'
+						: ''}"
 					placeholder="password"
 					name="password"
 					type="password"
 					bind:value={formData.password}
 				/>
+
+				{#if formData.password && passwordStrength.score < MIN_PASSWORD_STRENGTH}
+					<p class="text-xs text-red-500">This password is too weak</p>
+				{/if}
 			</div>
 
-			<Button type="submit" disabled={!formData.username || !formData.password}>
+			<Button
+				type="submit"
+				disabled={!formData.username ||
+					!formData.password ||
+					passwordStrength.score < MIN_PASSWORD_STRENGTH}
+			>
 				Create account
 			</Button>
 		</div>

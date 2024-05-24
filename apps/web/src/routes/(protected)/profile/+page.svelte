@@ -6,12 +6,15 @@
 	import API, { HttpError } from '$lib/api';
 	import { userStore } from '$lib/stores/user';
 	import Icon from '@iconify/svelte';
-	import { DeviceType, type SessionDisplay, type User } from '@repo/types';
+	import { DeviceType, SettingsKey, type SessionDisplay, type User } from '@repo/types';
 	import { Button, Input, Modal, Skeleton, Tooltip } from '@repo/ui';
 	import { randomstring } from '@repo/utils';
 	import { onMount } from 'svelte';
 	//@ts-ignore svelte-qrcode is not typed, so we have to do this
 	import QrCode from 'svelte-qrcode';
+	import zxcvbn from 'zxcvbn';
+
+	let MIN_PASSWORD_STRENGTH = 0;
 
 	let user: User | undefined;
 	let userPromise: Promise<User>;
@@ -190,10 +193,18 @@
 		savingNewTotp = false;
 	};
 
-	onMount(() => {
-		loadUser();
-		loadSessions();
-	});
+	const loadMinPasswordStrength = async () => {
+		const response = await API.get('settings/' + SettingsKey.MIN_PASSWORD_STRENGTH, {
+			noAuth: true
+		});
+
+		const data = await response.json();
+		MIN_PASSWORD_STRENGTH = data[SettingsKey.MIN_PASSWORD_STRENGTH] as number;
+	};
+
+	$: passwordStrength = zxcvbn(passwordUpdate.newPassword);
+
+	onMount(() => Promise.all([loadUser(), loadSessions(), loadMinPasswordStrength()]));
 </script>
 
 <svelte:head>
@@ -238,12 +249,27 @@
 								class="dark:border-neutral-700"
 							/>
 
-							<Input
+							<!-- <Input
 								bind:value={passwordUpdate.newPassword}
 								type="password"
 								placeholder="New password"
 								class="dark:border-neutral-700"
+							/> -->
+
+							<Input
+								class="dark:border-neutral-700 {passwordUpdate.newPassword &&
+								passwordStrength.score < MIN_PASSWORD_STRENGTH
+									? '!border-red-500 !ring-red-500/50'
+									: ''}"
+								placeholder="password"
+								name="password"
+								type="password"
+								bind:value={passwordUpdate.newPassword}
 							/>
+
+							{#if passwordUpdate.newPassword && passwordStrength.score < MIN_PASSWORD_STRENGTH}
+								<p class="text-xs text-red-500">This password is too weak</p>
+							{/if}
 						</div>
 
 						<div class="flex w-full items-center justify-end gap-2">
