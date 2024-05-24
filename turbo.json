@@ -2,7 +2,7 @@
 	"$schema": "https://turbo.build/schema.json",
 	"pipeline": {
 		"build": {
-			"dependsOn": ["^lint", "^db:generate", "^build"],
+			"dependsOn": ["^lint", "^build"],
 			"outputs": [".svelte-kit/**", "dist", "build"],
 			"dotEnv": [".env"]
 		},
