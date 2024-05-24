@@ -12,9 +12,12 @@ export default class VideoDownloadService {
 		(async () => {
 			const executablePath = path.join(
 				FileService.getDirectoryPath('binaries'),
-				'yt-dlp.exe'
+				'yt-dlp' + (process.platform == 'win32' ? '.exe' : '')
 			);
-			if (!existsSync(executablePath)) await YTDlpWrap.downloadFromGithub(executablePath);
+
+			if (!existsSync(executablePath)) {
+				await YTDlpWrap.downloadFromGithub(executablePath, undefined, process.platform);
+			}
 
 			this.ytdlp.setBinaryPath(executablePath);
 			this.ready = true;

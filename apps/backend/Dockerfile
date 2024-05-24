@@ -6,7 +6,6 @@ RUN corepack enable
 
 FROM base AS installer
 RUN apk add --no-cache libc6-compat
-RUN apk update
 
 WORKDIR /app
 RUN pnpm add -g turbo
@@ -40,6 +39,7 @@ RUN turbo run build --filter=backend...
 FROM base AS runner
 WORKDIR /app
 
+RUN apk add python3
 RUN pnpm add -g prisma
 
 RUN addgroup --system --gid 1001 nodejs
