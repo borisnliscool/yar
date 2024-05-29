@@ -12,9 +12,8 @@
 	import { onMount } from 'svelte';
 	//@ts-ignore svelte-qrcode is not typed, so we have to do this
 	import QrCode from 'svelte-qrcode';
-	import zxcvbn from 'zxcvbn';
 
-	let MIN_PASSWORD_STRENGTH = 0;
+	let MIN_PASSWORD_LENGTH = 0;
 
 	let user: User | undefined;
 	let userPromise: Promise<User>;
@@ -194,15 +193,13 @@
 	};
 
 	const loadMinPasswordStrength = async () => {
-		const response = await API.get('settings/' + SettingsKey.MIN_PASSWORD_STRENGTH, {
+		const response = await API.get('settings/' + SettingsKey.MIN_PASSWORD_LENGTH, {
 			noAuth: true
 		});
 
 		const data = await response.json();
-		MIN_PASSWORD_STRENGTH = data[SettingsKey.MIN_PASSWORD_STRENGTH] as number;
+		MIN_PASSWORD_LENGTH = data[SettingsKey.MIN_PASSWORD_LENGTH] as number;
 	};
-
-	$: passwordStrength = zxcvbn(passwordUpdate.newPassword);
 
 	onMount(() => Promise.all([loadUser(), loadSessions(), loadMinPasswordStrength()]));
 </script>
@@ -249,16 +246,9 @@
 								class="dark:border-neutral-700"
 							/>
 
-							<!-- <Input
-								bind:value={passwordUpdate.newPassword}
-								type="password"
-								placeholder="New password"
-								class="dark:border-neutral-700"
-							/> -->
-
 							<Input
 								class="dark:border-neutral-700 {passwordUpdate.newPassword &&
-								passwordStrength.score < MIN_PASSWORD_STRENGTH
+								passwordUpdate.newPassword.length < MIN_PASSWORD_LENGTH
 									? '!border-red-500 !ring-red-500/50'
 									: ''}"
 								placeholder="password"
@@ -267,7 +257,7 @@
 								bind:value={passwordUpdate.newPassword}
 							/>
 
-							{#if passwordUpdate.newPassword && passwordStrength.score < MIN_PASSWORD_STRENGTH}
+							{#if passwordUpdate.newPassword && passwordUpdate.newPassword.length < MIN_PASSWORD_LENGTH}
 								<p class="text-xs text-red-500">This password is too weak</p>
 							{/if}
 						</div>

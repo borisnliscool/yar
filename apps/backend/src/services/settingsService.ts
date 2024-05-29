@@ -5,7 +5,7 @@ import { database } from './databaseService';
 
 const PUBLIC_SETTINGS: Array<SettingsKey> = [
 	SettingsKey.ENABLE_REGISTRATION,
-	SettingsKey.MIN_PASSWORD_STRENGTH,
+	SettingsKey.MIN_PASSWORD_LENGTH,
 ];
 
 const DEFAULT_SETTINGS: Record<SettingsKey, Setting> = {
@@ -14,10 +14,10 @@ const DEFAULT_SETTINGS: Record<SettingsKey, Setting> = {
 		type: 'BOOLEAN',
 		label: 'Enable registration',
 	},
-	[SettingsKey.MIN_PASSWORD_STRENGTH]: {
-		value: 3,
+	[SettingsKey.MIN_PASSWORD_LENGTH]: {
+		value: 8,
 		type: 'INTEGER',
-		label: 'Minimum password strength (zxcvbn)',
+		label: 'Minimum password length',
 	},
 	[SettingsKey.MOTD]: {
 		value: 'Welcome to YAR! Change this message in settings.',
