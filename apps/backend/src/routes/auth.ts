@@ -72,7 +72,7 @@ router.post(
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
-			maxAge: TokenService.REFRESH_TOKEN_EXPIRY * 1000,
+			maxAge: await TokenService.getRefreshTokenExpiration(),
 			path: '/',
 		});
 
@@ -112,7 +112,7 @@ router.post('/refresh', async (req: Request, res: Response) => {
 		res.cookie('refreshToken', newRefreshToken, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
-			maxAge: TokenService.REFRESH_TOKEN_EXPIRY * 1000,
+			maxAge: await TokenService.getRefreshTokenExpiration(),
 			path: '/',
 		});
 
@@ -188,7 +188,7 @@ router.post(
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
-			maxAge: TokenService.REFRESH_TOKEN_EXPIRY * 1000,
+			maxAge: await TokenService.getRefreshTokenExpiration(),
 			path: '/',
 		});
 

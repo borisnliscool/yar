@@ -2,6 +2,7 @@ import type { setting_value_type } from '@prisma/client';
 import { Setting, SettingsKey, SettingValueType } from '@repo/types';
 import { Cache } from '../utility/cache';
 import { database } from './databaseService';
+import LoggerService from './loggerService';
 
 const PUBLIC_SETTINGS: Array<SettingsKey> = [
 	SettingsKey.ENABLE_REGISTRATION,
@@ -24,15 +25,25 @@ const DEFAULT_SETTINGS: Record<SettingsKey, Setting> = {
 		type: 'STRING',
 		label: 'MOTD (Message of the day)',
 	},
+	[SettingsKey.REFRESH_TOKEN_EXPIRY_DURATION]: {
+		value: '7d',
+		type: 'string',
+		label: 'Refresh token expiration duration',
+	},
 };
 
 export default class SettingsService {
 	private static settingsCache = new Cache<Setting, SettingsKey>(DEFAULT_SETTINGS);
 
+	static {
+		this.getSettings().then(() => LoggerService.log('settings', 'Initialized settings'));
+	}
+
 	static async getSettings() {
-		const settings = await database.setting.findMany();
 		this.settingsCache.clear();
 		this.setDefaultSettings();
+
+		const settings = await database.setting.findMany();
 
 		for (const setting of settings) {
 			this.settingsCache.set(setting.key as unknown as SettingsKey, {

@@ -1,19 +1,22 @@
 import type { device_type } from '@prisma/client';
-import { DeviceType, JwtTokenType } from '@repo/types';
+import { DeviceType, JwtTokenType, SettingsKey } from '@repo/types';
 import ms from 'ms';
 import { database } from './databaseService';
 import JwtService from './jwtService';
+import SettingsService from './settingsService';
 import StringGeneratorService from './stringGeneratorService';
 import UserAgentParser from './userAgentParser';
 
 export default class TokenService {
-	static ACCESS_TOKEN_EXPIRY = ms(
-		process.env.TOKEN_EXPIRY_ACCESS ? process.env.TOKEN_EXPIRY_ACCESS : '15m'
-	);
+	static ACCESS_TOKEN_EXPIRY = ms('15m');
 
-	static REFRESH_TOKEN_EXPIRY = ms(
-		process.env.TOKEN_EXPIRY_REFRESH ? process.env.TOKEN_EXPIRY_REFRESH : '7d'
-	);
+	static async getRefreshTokenExpiration() {
+		const settingValue = await SettingsService.getSetting(
+			SettingsKey.REFRESH_TOKEN_EXPIRY_DURATION
+		);
+
+		return ms((settingValue as string | undefined) ?? '7d');
+	}
 
 	static accessToken(userId: string) {
 		return JwtService.encodeToken({}, JwtTokenType.ACCESS, {
@@ -34,12 +37,7 @@ export default class TokenService {
 			device_name: deviceName,
 			device_type: deviceType,
 			expires_at: new Date(
-				new Date().getTime() +
-					new Date(
-						process.env.TOKEN_EXPIRY_REFRESH
-							? ms(process.env.TOKEN_EXPIRY_REFRESH)
-							: ms('7d')
-					).getTime()
+				new Date().getTime() + new Date(await this.getRefreshTokenExpiration()).getTime()
 			),
 			token: StringGeneratorService.generate(16),
 		};
@@ -49,7 +47,7 @@ export default class TokenService {
 		});
 
 		return JwtService.encodeToken({}, JwtTokenType.REFRESH, {
-			expiresIn: this.REFRESH_TOKEN_EXPIRY,
+			expiresIn: await this.getRefreshTokenExpiration(),
 			subject: userId,
 			jwtid: data.token,
 		});
