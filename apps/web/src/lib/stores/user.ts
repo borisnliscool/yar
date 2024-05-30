@@ -1,4 +1,4 @@
 import type { User } from '@repo/types';
 import { writable } from 'svelte/store';
 
-export const userStore = writable<User>(undefined);
+export const userStore = writable<User | undefined>(undefined);
