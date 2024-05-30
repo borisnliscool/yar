@@ -250,14 +250,14 @@
 											variant="destructive"
 											class="h-fit rounded-sm px-1 py-0.5 text-xs"
 											size="sm"
-											disabled={$userStore.id === user.id}
+											disabled={$userStore && $userStore.id === user.id}
 											on:click={() => deleteUser(user)}
 										>
 											Delete
 										</Button>
 									</div>
 
-									{#if $userStore.id === user.id}
+									{#if $userStore && $userStore.id === user.id}
 										<Tooltip class="text-xs">You can't delete yourself</Tooltip>
 									{/if}
 								</div>

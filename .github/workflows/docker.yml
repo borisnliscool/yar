@@ -24,6 +24,18 @@ jobs:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+            - name: Bump package version
+              run: node .github/actions/bump-manifest-version.js
+              env:
+                  VERSION: ${{ github.ref_name }}
+
+            - name: Push manifest change
+              uses: EndBug/add-and-commit@v9
+              with:
+                  add: package.json
+                  push: true
+                  message: 'chore: bump package version to ${{ github.ref_name }}'
+
             - name: Build and push (backend)
               uses: docker/build-push-action@v3
               with:
