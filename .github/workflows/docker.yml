@@ -30,7 +30,7 @@ jobs:
                   context: .
                   file: ./apps/backend/Dockerfile
                   push: true
-                  tags: borisnl/yar:backend
+                  tags: borisnl/yar-backend:${{ github.ref_name }}
 
             - name: Build and push (web)
               uses: docker/build-push-action@v3
@@ -38,4 +38,4 @@ jobs:
                   context: .
                   file: ./apps/web/Dockerfile
                   push: true
-                  tags: borisnl/yar:web
+                  tags: borisnl/yar-web:${{ github.ref_name }}
