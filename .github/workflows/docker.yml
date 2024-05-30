@@ -10,7 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Check out code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Bump package version
               run: node .github/actions/bump-package-version.js
@@ -18,7 +18,7 @@ jobs:
                   VERSION: ${{ github.ref_name }}
 
             - name: Push manifest change
-              uses: EndBug/add-and-commit@v8
+              uses: EndBug/add-and-commit@v9
               with:
                   add: package.json
                   push: true
