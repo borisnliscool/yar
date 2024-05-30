@@ -1,23 +1,24 @@
 {
-	"private": true,
-	"scripts": {
-		"build": "turbo run build",
-		"dev": "dotenv -e .env.dev -- turbo run dev",
-		"lint": "turbo run lint",
-		"format": "prettier --write .",
-		"db:generate": "dotenv -e .env.dev -- turbo run db:generate",
-		"db:push": "dotenv -e .env.dev -- turbo run db:push"
-	},
-	"devDependencies": {
-		"@repo/eslint-config": "workspace:*",
-		"dotenv-cli": "^7.4.1",
-		"eslint": "^8.57.0",
-		"prettier": "^3.2.5",
-		"prettier-plugin-svelte": "^3.2.2",
-		"turbo": "^1.13.3"
-	},
-	"packageManager": "pnpm@8.9.0",
-	"engines": {
-		"node": ">=18"
-	}
+    "private": true,
+    "scripts": {
+        "build": "turbo run build",
+        "dev": "dotenv -e .env.dev -- turbo run dev",
+        "lint": "turbo run lint",
+        "format": "prettier --write .",
+        "db:generate": "dotenv -e .env.dev -- turbo run db:generate",
+        "db:push": "dotenv -e .env.dev -- turbo run db:push"
+    },
+    "devDependencies": {
+        "@repo/eslint-config": "workspace:*",
+        "dotenv-cli": "^7.4.1",
+        "eslint": "^8.57.0",
+        "prettier": "^3.2.5",
+        "prettier-plugin-svelte": "^3.2.2",
+        "turbo": "^1.13.3"
+    },
+    "packageManager": "pnpm@8.9.0",
+    "engines": {
+        "node": ">=18"
+    },
+    "version": "v0.0.15"
 }
