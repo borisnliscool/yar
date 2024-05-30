@@ -49,7 +49,7 @@
 						<h1 class="flex w-full items-center justify-between text-2xl font-semibold">
 							{video.title}
 
-							{#if video.author.id == $userStore.id}
+							{#if $userStore && video.author.id == $userStore.id}
 								<Button variant="ghost" href="/editor/{video.id}">
 									<Icon icon="fa6-solid:pen" />
 								</Button>

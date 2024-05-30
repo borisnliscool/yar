@@ -37,7 +37,7 @@ router.get('/', rateLimit(), async (req: Request, res: Response) => {
 
 	return res.json({
 		videos: databaseVideos.map(VideoConverter.convert),
-		page: page,
+		page: Math.max(page, 0),
 		total: total,
 	});
 });
