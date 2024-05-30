@@ -8,23 +8,28 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        permissions:
+            contents: write
         steps:
             - name: Check out code
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  ref: ${{ github.event.repository.default_branch }}
 
             - name: Bump package version
               run: node .github/actions/bump-package-version.js
               env:
                   VERSION: ${{ github.ref_name }}
 
-            - name: Push manifest change
-              uses: EndBug/add-and-commit@v9
+            - name: Push package change
+              uses: stefanzweifel/git-auto-commit-action@v5
               with:
-                  add: package.json
-                  push: true
-                  author_name: Package Bumper
-                  author_email: 41898282+github-actions[bot]@users.noreply.github.com
-                  message: 'chore: bump package version to ${{ github.ref_name }}'
+                  branch: ${{ github.event.repository.default_branch }}
+                  commit_message: 'chore: bump package version to ${{ github.ref_name }}'
+                  commit_user_name: Package Bumper
+                  commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+                  file_pattern: package.json
 
             - name: Set up QEMU
               uses: docker/setup-qemu-action@v2
