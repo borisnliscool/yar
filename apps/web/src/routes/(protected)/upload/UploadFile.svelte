@@ -5,10 +5,32 @@
 	import Icon from '@iconify/svelte';
 	import type { Media } from '@repo/types';
 	import { Button, Input } from '@repo/ui';
+	import { onMount } from 'svelte';
 
 	let files: FileList | undefined;
 	let title = '';
 	let tags: string[] = [];
+
+	let dragOver = false;
+	let label: HTMLLabelElement;
+
+	const handleDragOver = (event: DragEvent) => {
+		event.preventDefault();
+		dragOver = true;
+	};
+
+	const handleDragLeave = () => {
+		dragOver = false;
+	};
+
+	const handleDrop = (event: DragEvent) => {
+		event.preventDefault();
+		dragOver = false;
+
+		if (event.dataTransfer) {
+			files = event.dataTransfer.files;
+		}
+	};
 
 	const upload = async () => {
 		const file = files?.[0];
@@ -49,20 +71,33 @@
 			notifications.error('Failed to upload video');
 		}
 	};
+
+	onMount(() => {
+		// For some reason, 'on:drop' doesn't work on the label element. This is a workaround.
+		label.addEventListener('drop', handleDrop);
+		return () => label.removeEventListener('drop', handleDrop);
+	});
+
+	$: if (files && files.length && !title.length) title = files[0].name;
 </script>
 
-<div class="grid min-h-full grid-cols-2 gap-4">
-	<div class="flex max-w-md flex-col gap-4">
+<div class="grid min-h-full place-items-center gap-4">
+	<div class="flex w-full max-w-lg flex-col gap-4">
 		<label
-			class="hover:border-primary-500 dark:hover:border-primary-500 hover:bg-primary-500/10 dark:hover:bg-primary-500/10 grid aspect-video w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-neutral-300 transition-all dark:border-neutral-700"
+			bind:this={label}
+			on:dragover={handleDragOver}
+			on:dragleave={handleDragLeave}
+			class="hover:dragging hover:border-primary-500 hover:dark:border-primary-500 hover:bg-primary-500/10 hover:dark:bg-primary-500/10 grid aspect-video w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-neutral-300 p-8 transition-all dark:border-neutral-700"
+			class:dragging={dragOver}
 		>
 			<div class="flex flex-col gap-2 text-center text-neutral-500 dark:text-neutral-400">
 				{#if files}
+					<p class="font-semibold">Selected:</p>
 					{#each Array.from(files) as file}
 						<p>{file.name}</p>
 					{/each}
 				{:else}
-					<span class="grid place-items-center text-xl">
+					<span class="grid place-items-center text-xl" class:animate-bounce={dragOver}>
 						<Icon icon="fa6-solid:cloud-arrow-up" />
 					</span>
 					<p class="text-sm">Drag and drop files here</p>
@@ -77,3 +112,9 @@
 		<Button disabled={!files || !title.length} on:click={upload}>Upload</Button>
 	</div>
 </div>
+
+<style lang="scss">
+	:global(.dragging) {
+		@apply border-primary-500 dark:border-primary-500 bg-primary-500/10 dark:bg-primary-500/10;
+	}
+</style>
