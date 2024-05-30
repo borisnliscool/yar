@@ -36,11 +36,6 @@ jobs:
                   push: true
                   message: 'chore: bump package version to ${{ github.ref_name }}'
 
-            - name: Update tag ref
-              uses: EndBug/latest-tag@latest
-              with:
-                  ref: ${{ github.ref_name }}
-
             - name: Build and push (backend)
               uses: docker/build-push-action@v3
               with:
