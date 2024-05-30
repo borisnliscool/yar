@@ -30,10 +30,12 @@ jobs:
                   VERSION: ${{ github.ref_name }}
 
             - name: Push manifest change
-              uses: EndBug/add-and-commit@v9
+              uses: EndBug/add-and-commit@v8
               with:
                   add: package.json
                   push: true
+                  author_name: Package Bumper
+                  author_email: 41898282+github-actions[bot]@users.noreply.github.com
                   message: 'chore: bump package version to ${{ github.ref_name }}'
 
             - name: Build and push (backend)
