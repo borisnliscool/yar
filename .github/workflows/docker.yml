@@ -12,18 +12,6 @@ jobs:
             - name: Check out code
               uses: actions/checkout@v3
 
-            - name: Set up QEMU
-              uses: docker/setup-qemu-action@v2
-
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v2
-
-            - name: Login to Docker Hub
-              uses: docker/login-action@v2
-              with:
-                  username: ${{ secrets.DOCKERHUB_USERNAME }}
-                  password: ${{ secrets.DOCKERHUB_TOKEN }}
-
             - name: Bump package version
               run: node .github/actions/bump-package-version.js
               env:
@@ -37,6 +25,18 @@ jobs:
                   author_name: Package Bumper
                   author_email: 41898282+github-actions[bot]@users.noreply.github.com
                   message: 'chore: bump package version to ${{ github.ref_name }}'
+
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v2
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+
+            - name: Login to Docker Hub
+              uses: docker/login-action@v2
+              with:
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  password: ${{ secrets.DOCKERHUB_TOKEN }}
 
             - name: Build and push (backend)
               uses: docker/build-push-action@v3
