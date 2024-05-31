@@ -6,5 +6,5 @@ const packagePath = 'package.json';
 const package = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
 package.version = version;
 
-fs.writeFileSync(packagePath, JSON.stringify(package, null, 4));
+fs.writeFileSync(packagePath, JSON.stringify(package, null, 4).replaceAll('    ', '\t') + '\n');
 console.log(`Bumped package version to ${version}.`);
