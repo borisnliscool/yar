@@ -34,3 +34,28 @@ router.get('/image/:url', async (req: Request, res: Response) => {
 	const buffer = await blob.arrayBuffer();
 	return res.send(Buffer.from(buffer));
 });
+
+router.get('/latest-version', async (req: Request, res: Response) => {
+	const response = await fetch('https://api.github.com/repos/borisnliscool/yar/git/refs/tags');
+
+	if (!response.ok) {
+		return req.fail(ErrorType.INTERNAL_SERVER_ERROR, 500, 'failed to get latest version');
+	}
+
+	const json = await response.json();
+
+	const latest = json.at(-1) as {
+		ref: string;
+		node_id: string;
+		url: string;
+		object: {
+			sha: string;
+			type: string;
+			url: string;
+		};
+	};
+
+	return res.json({
+		version: latest.ref.replace('refs/tags/', ''),
+	});
+});

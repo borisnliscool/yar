@@ -11,6 +11,8 @@
 	import prettyMilliseconds from 'pretty-ms';
 	import { onMount } from 'svelte';
 
+	import { version } from '../../../../../../package.json';
+
 	let settingsPromise: Promise<Record<SettingsKey, Setting>> | undefined;
 	let settings: { key: SettingsKey; setting: Setting }[];
 	let loaded = false;
@@ -19,6 +21,8 @@
 	let users: User[] | undefined;
 
 	let statsPromise: Promise<StatsResponse> | undefined;
+
+	let latestVersionPromise: Promise<{ version: string }> | undefined;
 
 	const load = async () => {
 		await API.get('/users/me')
@@ -40,6 +44,8 @@
 		usersPromise.then((data) => (users = data));
 
 		statsPromise = API.get('/stats').then((r) => r.json());
+
+		latestVersionPromise = API.get('/proxy/latest-version').then((r) => r.json());
 	};
 
 	onMount(load);
@@ -267,6 +273,36 @@
 				{/if}
 			{:catch error}
 				<p class="text-red-500">{error}</p>
+			{/await}
+		</div>
+
+		<div class="text-center text-xs text-neutral-700 dark:text-neutral-400">
+			<p>
+				Current version:
+				<a
+					target="_blank"
+					class="text-black dark:text-white"
+					href={'https://github.com/borisnliscool/yar/releases/tag/' + version}
+				>
+					{version}
+				</a>
+			</p>
+
+			{#await latestVersionPromise}
+				<Skeleton class="h-4 w-full" />
+			{:then value}
+				<p>
+					Latest version:
+					<a
+						target="_blank"
+						class="text-black dark:text-white"
+						href={'https://github.com/borisnliscool/yar/releases/tag/' + value?.version}
+					>
+						{value?.version}
+					</a>
+				</p>
+			{:catch error}
+				<p class="text-red-500">Failed to load latest version: {error}</p>
 			{/await}
 		</div>
 	</div>

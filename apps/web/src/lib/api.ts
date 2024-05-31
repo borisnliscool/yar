@@ -9,6 +9,7 @@ type Options = {
 	noAuth?: boolean;
 	raw?: boolean;
 	params?: ParamsType;
+	removeBaseUrl?: boolean;
 };
 
 export class HttpError extends Error {
@@ -94,12 +95,15 @@ export default class API {
 			headers.set('Content-Type', 'application/json');
 		}
 
-		const response = await this.fetch(this.buildUrl(url, options?.params ?? {}), {
-			method,
-			body: (options?.raw ? body : JSON.stringify(body)) as BodyInit, // I don't like this any type
-			headers,
-			credentials: 'include'
-		});
+		const response = await this.fetch(
+			options?.removeBaseUrl ? url : this.buildUrl(url, options?.params ?? {}),
+			{
+				method,
+				body: (options?.raw ? body : JSON.stringify(body)) as BodyInit, // I don't like this any type
+				headers,
+				credentials: 'include'
+			}
+		);
 
 		if (!response.ok) {
 			const data: RequestError = await response.json();
