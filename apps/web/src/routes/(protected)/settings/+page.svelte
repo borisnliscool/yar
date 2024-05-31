@@ -288,22 +288,26 @@
 				</a>
 			</p>
 
-			{#await latestVersionPromise}
+			{#if latestVersionPromise}
+				{#await latestVersionPromise}
+					<Skeleton class="h-4 w-full" />
+				{:then value}
+					<p>
+						Latest version:
+						<a
+							target="_blank"
+							class="text-black dark:text-white"
+							href={'https://github.com/borisnliscool/yar/releases/tag/' + value?.version}
+						>
+							{value?.version}
+						</a>
+					</p>
+				{:catch error}
+					<p class="text-red-500">Failed to load latest version: {error}</p>
+				{/await}
+			{:else}
 				<Skeleton class="h-4 w-full" />
-			{:then value}
-				<p>
-					Latest version:
-					<a
-						target="_blank"
-						class="text-black dark:text-white"
-						href={'https://github.com/borisnliscool/yar/releases/tag/' + value?.version}
-					>
-						{value?.version}
-					</a>
-				</p>
-			{:catch error}
-				<p class="text-red-500">Failed to load latest version: {error}</p>
-			{/await}
+			{/if}
 		</div>
 	</div>
 </div>
