@@ -154,8 +154,15 @@ interface StatsResponse {
 	};
 }
 
+interface ImportFile {
+	name: string;
+	type: 'file' | 'directory';
+	children?: ImportFile[];
+}
+
 export { DeviceType, ErrorType, JwtTokenType, SettingsKey, UserRole };
 export type {
+	ImportFile,
 	Media,
 	MediaType,
 	RequestError,

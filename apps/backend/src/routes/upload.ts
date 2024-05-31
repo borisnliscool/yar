@@ -1,4 +1,4 @@
-import { ErrorType } from '@repo/types';
+import { ErrorType, UserRole, type ImportFile } from '@repo/types';
 import { Request, Response, Router } from 'express';
 import { merge } from 'lodash';
 import crypto from 'node:crypto';
@@ -305,3 +305,36 @@ router.post('/file/:mediaId/cancel', async (req: Request, res: Response) => {
 		success: true,
 	});
 });
+
+const getFileList = (directory: string) => {
+	const files: ImportFile[] = [];
+	const dir = FileService.readDir(directory);
+
+	for (const fileName of dir) {
+		const file = FileService.stat(directory, fileName);
+
+		if (file.isDirectory()) {
+			files.push({
+				name: fileName,
+				type: 'directory',
+				children: getFileList(directory + '/' + fileName),
+			});
+		} else {
+			files.push({
+				name: fileName,
+				type: 'file',
+			});
+		}
+	}
+
+	return files;
+};
+
+router.get(
+	'/import/available',
+	AuthenticationService.hasRoles([UserRole.ADMIN]),
+	async (req: Request, res: Response) => {
+		const dir = getFileList('import');
+		return res.json({ files: dir });
+	}
+);
