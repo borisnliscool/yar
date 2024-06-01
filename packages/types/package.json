@@ -5,7 +5,7 @@
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"devDependencies": {
-		"@repo/typescript-config": "*",
+		"@repo/typescript-config": "workspace:*",
 		"typescript": "^5.4.5"
 	},
 	"scripts": {
