@@ -11,7 +11,7 @@
 
 	const click = () => {
 		if (file.type == 'directory') open = !open;
-		dispatcher('click', file);
+		else dispatcher('click', file);
 	};
 </script>
 
@@ -42,11 +42,11 @@
 	<div class="w-full pl-4">
 		{#if file.children?.length}
 			{#each file.children.filter((f) => f.type == 'directory') as child}
-				<svelte:self file={child} />
+				<svelte:self on:click file={child} />
 			{/each}
 
 			{#each file.children.filter((f) => f.type == 'file') as child}
-				<svelte:self file={child} />
+				<svelte:self on:click file={child} />
 			{/each}
 		{:else}
 			<p class="pl-6 text-sm text-neutral-400 dark:text-neutral-700">&lt;empty directory&gt;</p>
