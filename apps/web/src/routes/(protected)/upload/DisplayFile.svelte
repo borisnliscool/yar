@@ -3,7 +3,6 @@
 	import type { ImportFile } from '@repo/types';
 	import { Button } from '@repo/ui';
 	import { createEventDispatcher } from 'svelte';
-	import { slide } from 'svelte/transition';
 
 	export let file: ImportFile;
 	let open = false;
@@ -39,14 +38,18 @@
 	<p>{file.name}</p>
 </Button>
 
-{#if file.type == 'directory' && file.children && open}
-	<div class="w-full pl-4" transition:slide>
-		{#each file.children.filter((f) => f.type == 'directory') as child}
-			<svelte:self file={child} />
-		{/each}
+{#if file.type == 'directory' && open}
+	<div class="w-full pl-4">
+		{#if file.children?.length}
+			{#each file.children.filter((f) => f.type == 'directory') as child}
+				<svelte:self file={child} />
+			{/each}
 
-		{#each file.children.filter((f) => f.type == 'file') as child}
-			<svelte:self file={child} />
-		{/each}
+			{#each file.children.filter((f) => f.type == 'file') as child}
+				<svelte:self file={child} />
+			{/each}
+		{:else}
+			<p class="pl-6 text-sm text-neutral-400 dark:text-neutral-700">&lt;empty directory&gt;</p>
+		{/if}
 	</div>
 {/if}
