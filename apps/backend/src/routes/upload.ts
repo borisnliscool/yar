@@ -167,6 +167,7 @@ router.post(
 const VideoUploadFileSchema = RT.Record({
 	ext: RT.String,
 	title: RT.String,
+	url: RT.String.optional(),
 	tags: RT.Array(RT.String),
 });
 
@@ -264,6 +265,7 @@ router.post(
 					.map((t) => t.trim())
 					.filter(Boolean)
 					.join(','),
+				source_url: body.url,
 			},
 			include: {
 				media: true,

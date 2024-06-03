@@ -9,6 +9,7 @@
 
 	let files: FileList | undefined;
 	let title = '';
+	let url = '';
 	let tags: string[] = [];
 
 	let dragOver = false;
@@ -39,7 +40,8 @@
 		const videoBody = {
 			ext: file.name.split('.').pop(),
 			title,
-			tags
+			tags,
+			url
 		};
 
 		const response = await API.post('/upload/file', videoBody);
@@ -107,6 +109,7 @@
 		</label>
 
 		<Input placeholder="Title" bind:value={title} />
+		<Input placeholder="Source URL (optional)" bind:value={url} />
 		<VideoTags bind:tags />
 
 		<Button disabled={!files || !title.length} on:click={upload}>Upload</Button>
