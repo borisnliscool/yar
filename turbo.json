@@ -1,23 +1,38 @@
 {
-	"$schema": "https://turbo.build/schema.json",
-	"pipeline": {
-		"build": {
-			"dependsOn": ["^lint", "^build"],
-			"outputs": [".svelte-kit/**", "dist", "build"],
-			"dotEnv": [".env"]
-		},
-		"lint": {},
-		"dev": {
-			"dependsOn": ["^db:generate"],
-			"cache": false,
-			"persistent": true,
-			"dotEnv": [".env.dev"]
-		},
-		"db:generate": {
-			"cache": false
-		},
-		"db:push": {
-			"cache": false
-		}
-	}
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "^lint",
+        "^build"
+      ],
+      "outputs": [
+        ".svelte-kit/**",
+        "dist",
+        "build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env"
+      ]
+    },
+    "lint": {},
+    "dev": {
+      "dependsOn": [
+        "^db:generate"
+      ],
+      "cache": false,
+      "persistent": true,
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env.dev"
+      ]
+    },
+    "db:generate": {
+      "cache": false
+    },
+    "db:push": {
+      "cache": false
+    }
+  }
 }
