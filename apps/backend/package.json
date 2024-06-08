@@ -4,7 +4,7 @@
 	"main": "dist/index.js",
 	"private": true,
 	"scripts": {
-		"dev": "nodemon",
+		"dev": "dotenv -e ../../.env.dev -- nodemon",
 		"build": "prisma generate && tsc",
 		"db:generate": "prisma generate --schema=./prisma/schema.prisma",
 		"db:push": "prisma db push --skip-generate",
