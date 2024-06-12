@@ -9,10 +9,12 @@
 
 	let files: FileList | undefined;
 	let title = '';
+	let url = '';
 	let tags: string[] = [];
 
 	let dragOver = false;
 	let label: HTMLLabelElement;
+	let isUploading = false;
 
 	const handleDragOver = (event: DragEvent) => {
 		event.preventDefault();
@@ -36,10 +38,13 @@
 		const file = files?.[0];
 		if (!file) return;
 
+		isUploading = true;
+
 		const videoBody = {
 			ext: file.name.split('.').pop(),
 			title,
-			tags
+			tags,
+			url
 		};
 
 		const response = await API.post('/upload/file', videoBody);
@@ -70,6 +75,8 @@
 			await API.post(`/upload/file/${media.id}/cancel`);
 			notifications.error('Failed to upload video');
 		}
+
+		isUploading = false;
 	};
 
 	onMount(() => {
@@ -107,9 +114,10 @@
 		</label>
 
 		<Input placeholder="Title" bind:value={title} />
+		<Input placeholder="Source URL (optional)" bind:value={url} />
 		<VideoTags bind:tags />
 
-		<Button disabled={!files || !title.length} on:click={upload}>Upload</Button>
+		<Button disabled={!files || !title.length || isUploading} on:click={upload}>Upload</Button>
 	</div>
 </div>
 

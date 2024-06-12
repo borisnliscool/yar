@@ -2,12 +2,14 @@ import { ErrorType } from '@repo/types';
 import crypto from 'crypto';
 import { Request, Response, Router } from 'express';
 import multer from 'multer';
+import path from 'path';
 import * as RT from 'runtypes';
 import VideoConverter from '../converters/videoConverter';
 import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
 import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
+import FFmpegService from '../services/ffmpegService';
 import FileService from '../services/fileService';
 import MediaService from '../services/mediaService';
 
@@ -219,18 +221,25 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 	}
 
 	const thumbnailId = crypto.randomUUID();
-	const thumbnailExtension = file.originalname.split('.').at(-1)!;
+	const thumbnailFileName = thumbnailId + '.' + file.originalname.split('.').at(-1)!;
 
-	// TODO: converting the file to the correct format, like webp or png
-	FileService.writeFile('media', thumbnailId + '.' + thumbnailExtension, file.buffer);
+	FileService.writeFile('temp', thumbnailFileName, file.buffer);
+
+	const convertedFile = await FFmpegService.convertFile(
+		path.join(FileService.getDirectoryPath('temp'), thumbnailFileName),
+		path.join(FileService.getDirectoryPath('media'), thumbnailId + '.webp'),
+		['-vf scale=720:-1']
+	);
+
+	FileService.deleteFile('temp', thumbnailFileName);
 
 	const thumbnailMedia = await database.media.create({
 		data: {
 			id: thumbnailId,
-			extension: thumbnailExtension,
+			extension: 'webp',
 			type: 'IMAGE',
-			mime_type: file.mimetype,
-			file_size: file.size,
+			mime_type: 'image/webp',
+			file_size: convertedFile.size,
 		},
 	});
 
@@ -244,6 +253,71 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 	});
 
 	return res.json(VideoConverter.convert(video));
+});
+
+router.post('/:videoId/thumbnail/regenerate', async (req: Request, res: Response) => {
+	const video = await database.video.findUnique({
+		where: {
+			id: req.params.videoId,
+		},
+		include: {
+			author: true,
+			thumbnail: true,
+			media: true,
+		},
+	});
+
+	if (!video) {
+		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+	}
+
+	if (video.author.id !== req.user!.id) {
+		return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
+	}
+
+	const videoFilePath = path.join(
+		FileService.getDirectoryPath('media'),
+		video.media.id + '.' + video.media.extension
+	);
+
+	const newThumbnailId = crypto.randomUUID();
+	const newThumbnailFilePath = path.join(
+		FileService.getDirectoryPath('media'),
+		newThumbnailId + '.webp'
+	);
+
+	const newThumbnailFile = await FFmpegService.generateThumbnail(
+		videoFilePath,
+		newThumbnailFilePath
+	);
+
+	const newThumbnailMedia = await database.media.create({
+		data: {
+			id: newThumbnailId,
+			extension: 'webp',
+			type: 'IMAGE',
+			mime_type: 'image/webp',
+			file_size: newThumbnailFile.size,
+		},
+	});
+
+	const updatedVideo = await database.video.update({
+		where: {
+			id: video.id,
+		},
+		data: {
+			thumbnail_id: newThumbnailMedia.id,
+		},
+		include: {
+			author: true,
+			thumbnail: true,
+			media: true,
+		},
+	});
+
+	if (video.thumbnail) MediaService.deleteMediaFile(video.thumbnail);
+
+	return res.json(VideoConverter.convert(updatedVideo));
 });
 
 router.delete('/:videoId', async (req: Request, res: Response) => {

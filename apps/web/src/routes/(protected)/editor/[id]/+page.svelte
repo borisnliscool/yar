@@ -96,6 +96,16 @@
 		});
 	};
 
+	const regenerateThumbnail = async () => {
+		try {
+			await API.post('/videos/' + loadedVideo.id + '/thumbnail/regenerate');
+			loadVideo(loadedVideo.id);
+		} catch (err) {
+			console.error(err);
+			notifications.error('Failed to regenerate thumbnail');
+		}
+	};
+
 	$: loadVideo($page.params.id);
 	$: $userStore && loadedVideo && loadedVideo.author.id !== $userStore.id && redirect();
 </script>
@@ -152,16 +162,22 @@
 						{/if}
 					</Button>
 
-					{#if thumbnails && thumbnails.length > 0}
-						<Button
-							class="ml-auto w-fit"
-							size="sm"
-							variant="outline"
-							on:click={() => (thumbnails = null)}
-						>
-							Clear thumbnail
+					<div class="flex items-center justify-between">
+						<Button class="w-fit" size="sm" on:click={regenerateThumbnail}>
+							Regenerate thumbnail
 						</Button>
-					{/if}
+
+						{#if thumbnails && thumbnails.length > 0}
+							<Button
+								class="w-fit"
+								size="sm"
+								variant="outline"
+								on:click={() => (thumbnails = null)}
+							>
+								Clear thumbnail
+							</Button>
+						{/if}
+					</div>
 
 					<div>
 						<p class="mb-0.5 text-sm text-neutral-400">Title</p>

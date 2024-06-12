@@ -66,7 +66,7 @@
 		{#if videos.length === 0}
 			<div class="col-span-full grid h-48 place-items-center">
 				<div class="flex items-center justify-center text-red-500">
-					<p>No videos found</p>
+					<p>No videos found, upload some!</p>
 				</div>
 			</div>
 		{/if}

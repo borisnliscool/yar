@@ -114,21 +114,30 @@ router.post(
 				.split('.')
 				.at(-1)!
 				.replace(/\?.*/, '');
+
 			const thumbnailFileName = thumbnailId + '.' + thumbnailExtension;
 
 			FileService.writeFile(
-				'media',
+				'temp',
 				thumbnailFileName,
 				await VideoDownloadService.thumbnail(videoDetails.thumbnail)
 			);
 
+			const convertedFile = await FFmpegService.convertFile(
+				path.join(FileService.getDirectoryPath('temp'), thumbnailFileName),
+				path.join(FileService.getDirectoryPath('media'), thumbnailId + '.webp'),
+				['-vf scale=720:-1']
+			);
+
+			FileService.deleteFile('temp', thumbnailFileName);
+
 			const thumbnailMedia = await database.media.create({
 				data: {
 					id: thumbnailId,
-					extension: thumbnailExtension,
+					extension: 'webp',
 					type: 'IMAGE',
-					mime_type: 'image/' + thumbnailExtension,
-					file_size: FileService.getFileSize('media', thumbnailFileName),
+					mime_type: 'image/webp',
+					file_size: convertedFile.size,
 				},
 			});
 
@@ -167,6 +176,7 @@ router.post(
 const VideoUploadFileSchema = RT.Record({
 	ext: RT.String,
 	title: RT.String,
+	url: RT.String.optional(),
 	tags: RT.Array(RT.String),
 });
 
@@ -238,10 +248,11 @@ router.post(
 			return req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
 		}
 
-		const ffprobeData = await FFmpegService.probe(
-			path.join(FileService.getDirectoryPath('media'), media.id + '.' + media.extension),
-			false
+		const videoFilePath = path.join(
+			FileService.getDirectoryPath('media'),
+			media.id + '.' + media.extension
 		);
+		const ffprobeData = await FFmpegService.probe(videoFilePath, false);
 
 		const duration = ffprobeData?.streams[0].duration ?? null;
 		media.duration = duration ? +duration : null;
@@ -255,6 +266,27 @@ router.post(
 			data: media,
 		});
 
+		const thumbnailId = crypto.randomUUID();
+		const thumbnailFilePath = path.join(
+			FileService.getDirectoryPath('media'),
+			thumbnailId + '.webp'
+		);
+
+		const thumbnailFile = await FFmpegService.generateThumbnail(
+			videoFilePath,
+			thumbnailFilePath
+		);
+
+		const thumbnailMedia = await database.media.create({
+			data: {
+				id: thumbnailId,
+				extension: 'webp',
+				type: 'IMAGE',
+				mime_type: 'image/webp',
+				file_size: thumbnailFile.size,
+			},
+		});
+
 		const video = await database.video.create({
 			data: {
 				title: body.title,
@@ -264,6 +296,8 @@ router.post(
 					.map((t) => t.trim())
 					.filter(Boolean)
 					.join(','),
+				source_url: body.url,
+				thumbnail_id: thumbnailMedia.id,
 			},
 			include: {
 				media: true,
@@ -271,8 +305,6 @@ router.post(
 				author: true,
 			},
 		});
-
-		// TODO: get thumbnail from body, or generate one from the video
 
 		return res.json(videoConverter.convert(video));
 	}
