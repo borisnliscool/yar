@@ -225,7 +225,7 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 
 	FileService.writeFile('temp', thumbnailFileName, file.buffer);
 
-	await FFmpegService.convertFile(
+	const convertedFile = await FFmpegService.convertFile(
 		path.join(FileService.getDirectoryPath('temp'), thumbnailFileName),
 		path.join(FileService.getDirectoryPath('media'), thumbnailId + '.webp'),
 		['-vf scale=720:-1']
@@ -238,8 +238,8 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 			id: thumbnailId,
 			extension: 'webp',
 			type: 'IMAGE',
-			mime_type: file.mimetype,
-			file_size: file.size,
+			mime_type: 'image/webp',
+			file_size: convertedFile.size,
 		},
 	});
 

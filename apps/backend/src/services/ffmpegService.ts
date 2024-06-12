@@ -2,6 +2,8 @@ import ffmpeg, { FfprobeData } from 'fluent-ffmpeg';
 
 import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg';
 import { path as ffprobePath } from '@ffprobe-installer/ffprobe';
+
+import fs, { Stats } from 'fs';
 import { promisify } from 'util';
 
 export default class FFmpegService {
@@ -36,9 +38,11 @@ export default class FFmpegService {
 	}
 
 	static async convertFile(filePath: string, outputPath: string, outputOptions: string[] = []) {
-		return new Promise<void>((resolve, reject) => {
+		return new Promise<Stats>((resolve, reject) => {
 			ffmpeg(filePath)
-				.on('end', () => resolve())
+				.on('end', () => {
+					return resolve(fs.statSync(outputPath));
+				})
 				.on('error', (err) => reject(err))
 				.addOutputOptions(outputOptions)
 				.output(outputPath)

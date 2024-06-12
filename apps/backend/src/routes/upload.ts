@@ -114,21 +114,30 @@ router.post(
 				.split('.')
 				.at(-1)!
 				.replace(/\?.*/, '');
+
 			const thumbnailFileName = thumbnailId + '.' + thumbnailExtension;
 
 			FileService.writeFile(
-				'media',
+				'temp',
 				thumbnailFileName,
 				await VideoDownloadService.thumbnail(videoDetails.thumbnail)
 			);
 
+			const convertedFile = await FFmpegService.convertFile(
+				path.join(FileService.getDirectoryPath('temp'), thumbnailFileName),
+				path.join(FileService.getDirectoryPath('media'), thumbnailId + '.webp'),
+				['-vf scale=720:-1']
+			);
+
+			FileService.deleteFile('temp', thumbnailFileName);
+
 			const thumbnailMedia = await database.media.create({
 				data: {
 					id: thumbnailId,
-					extension: thumbnailExtension,
+					extension: 'webp',
 					type: 'IMAGE',
-					mime_type: 'image/' + thumbnailExtension,
-					file_size: FileService.getFileSize('media', thumbnailFileName),
+					mime_type: 'image/webp',
+					file_size: convertedFile.size,
 				},
 			});
 
