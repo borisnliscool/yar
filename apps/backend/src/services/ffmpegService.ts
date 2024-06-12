@@ -23,4 +23,15 @@ export default class FFmpegService {
 			return undefined;
 		}
 	}
+
+	static async generateThumbnail(filePath: string, outputPath: string) {
+		return new Promise<void>((resolve, reject) => {
+			ffmpeg(filePath)
+				.on('end', () => resolve())
+				.on('error', (err) => reject(err))
+				.addOutputOptions(['-ss 00:00:01.000', '-vf scale=720:-1', '-frames:v 1'])
+				.output(outputPath)
+				.run();
+		});
+	}
 }

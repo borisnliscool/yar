@@ -239,10 +239,11 @@ router.post(
 			return req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
 		}
 
-		const ffprobeData = await FFmpegService.probe(
-			path.join(FileService.getDirectoryPath('media'), media.id + '.' + media.extension),
-			false
+		const videoFilePath = path.join(
+			FileService.getDirectoryPath('media'),
+			media.id + '.' + media.extension
 		);
+		const ffprobeData = await FFmpegService.probe(videoFilePath, false);
 
 		const duration = ffprobeData?.streams[0].duration ?? null;
 		media.duration = duration ? +duration : null;
@@ -256,6 +257,24 @@ router.post(
 			data: media,
 		});
 
+		const thumbnailId = crypto.randomUUID();
+		const thumbnailFilePath = path.join(
+			FileService.getDirectoryPath('media'),
+			thumbnailId + '.jpg'
+		);
+
+		await FFmpegService.generateThumbnail(videoFilePath, thumbnailFilePath);
+
+		const thumbnailMedia = await database.media.create({
+			data: {
+				id: thumbnailId,
+				extension: 'jpg',
+				type: 'IMAGE',
+				mime_type: 'image/jpg',
+				file_size: FileService.getFileSize('media', thumbnailId + '.jpg'),
+			},
+		});
+
 		const video = await database.video.create({
 			data: {
 				title: body.title,
@@ -266,6 +285,7 @@ router.post(
 					.filter(Boolean)
 					.join(','),
 				source_url: body.url,
+				thumbnail_id: thumbnailMedia.id,
 			},
 			include: {
 				media: true,
