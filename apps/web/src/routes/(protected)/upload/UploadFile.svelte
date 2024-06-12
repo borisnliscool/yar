@@ -14,6 +14,7 @@
 
 	let dragOver = false;
 	let label: HTMLLabelElement;
+	let isUploading = false;
 
 	const handleDragOver = (event: DragEvent) => {
 		event.preventDefault();
@@ -36,6 +37,8 @@
 	const upload = async () => {
 		const file = files?.[0];
 		if (!file) return;
+
+		isUploading = true;
 
 		const videoBody = {
 			ext: file.name.split('.').pop(),
@@ -72,6 +75,8 @@
 			await API.post(`/upload/file/${media.id}/cancel`);
 			notifications.error('Failed to upload video');
 		}
+
+		isUploading = false;
 	};
 
 	onMount(() => {
@@ -112,7 +117,7 @@
 		<Input placeholder="Source URL (optional)" bind:value={url} />
 		<VideoTags bind:tags />
 
-		<Button disabled={!files || !title.length} on:click={upload}>Upload</Button>
+		<Button disabled={!files || !title.length || isUploading} on:click={upload}>Upload</Button>
 	</div>
 </div>
 

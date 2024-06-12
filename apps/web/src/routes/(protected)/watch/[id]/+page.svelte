@@ -33,7 +33,7 @@
 	<div class="col-span-5">
 		{#await videoPromise}
 			<Skeleton class="aspect-video w-full" />
-			<Skeleton class="h-16 w-full" />
+			<Skeleton class="mt-4 h-16 w-full" />
 		{:then video}
 			{#if video}
 				<div class="flex w-full flex-col xl:gap-4">

@@ -52,7 +52,7 @@
 
 		{#if hasFocus && filteredTags.length}
 			<div
-				class="absolute left-0 top-full z-50 mt-1 max-h-48 w-full select-none overflow-y-auto rounded-md bg-white px-3 py-2 text-sm text-black shadow-md dark:bg-neutral-800 dark:text-white"
+				class="absolute left-0 top-full z-50 max-h-48 w-full select-none overflow-y-auto rounded-lg border bg-white p-2 text-sm text-black shadow-lg dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
 				tabindex="-1"
 			>
 				{#each filteredTags as tag}
