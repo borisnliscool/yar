@@ -255,6 +255,71 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 	return res.json(VideoConverter.convert(video));
 });
 
+router.post('/:videoId/thumbnail/regenerate', async (req: Request, res: Response) => {
+	const video = await database.video.findUnique({
+		where: {
+			id: req.params.videoId,
+		},
+		include: {
+			author: true,
+			thumbnail: true,
+			media: true,
+		},
+	});
+
+	if (!video) {
+		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+	}
+
+	if (video.author.id !== req.user!.id) {
+		return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
+	}
+
+	const videoFilePath = path.join(
+		FileService.getDirectoryPath('media'),
+		video.media.id + '.' + video.media.extension
+	);
+
+	const newThumbnailId = crypto.randomUUID();
+	const newThumbnailFilePath = path.join(
+		FileService.getDirectoryPath('media'),
+		newThumbnailId + '.webp'
+	);
+
+	const newThumbnailFile = await FFmpegService.generateThumbnail(
+		videoFilePath,
+		newThumbnailFilePath
+	);
+
+	const newThumbnailMedia = await database.media.create({
+		data: {
+			id: newThumbnailId,
+			extension: 'webp',
+			type: 'IMAGE',
+			mime_type: 'image/webp',
+			file_size: newThumbnailFile.size,
+		},
+	});
+
+	const updatedVideo = await database.video.update({
+		where: {
+			id: video.id,
+		},
+		data: {
+			thumbnail_id: newThumbnailMedia.id,
+		},
+		include: {
+			author: true,
+			thumbnail: true,
+			media: true,
+		},
+	});
+
+	if (video.thumbnail) MediaService.deleteMediaFile(video.thumbnail);
+
+	return res.json(VideoConverter.convert(updatedVideo));
+});
+
 router.delete('/:videoId', async (req: Request, res: Response) => {
 	const video = await database.video.findUnique({
 		where: {

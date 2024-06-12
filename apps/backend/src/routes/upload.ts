@@ -269,18 +269,21 @@ router.post(
 		const thumbnailId = crypto.randomUUID();
 		const thumbnailFilePath = path.join(
 			FileService.getDirectoryPath('media'),
-			thumbnailId + '.jpg'
+			thumbnailId + '.webp'
 		);
 
-		await FFmpegService.generateThumbnail(videoFilePath, thumbnailFilePath);
+		const thumbnailFile = await FFmpegService.generateThumbnail(
+			videoFilePath,
+			thumbnailFilePath
+		);
 
 		const thumbnailMedia = await database.media.create({
 			data: {
 				id: thumbnailId,
-				extension: 'jpg',
+				extension: 'webp',
 				type: 'IMAGE',
-				mime_type: 'image/jpg',
-				file_size: FileService.getFileSize('media', thumbnailId + '.jpg'),
+				mime_type: 'image/webp',
+				file_size: thumbnailFile.size,
 			},
 		});
 
