@@ -34,4 +34,15 @@ export default class FFmpegService {
 				.run();
 		});
 	}
+
+	static async convertFile(filePath: string, outputPath: string, outputOptions: string[] = []) {
+		return new Promise<void>((resolve, reject) => {
+			ffmpeg(filePath)
+				.on('end', () => resolve())
+				.on('error', (err) => reject(err))
+				.addOutputOptions(outputOptions)
+				.output(outputPath)
+				.run();
+		});
+	}
 }

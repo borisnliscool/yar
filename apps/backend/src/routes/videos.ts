@@ -2,12 +2,14 @@ import { ErrorType } from '@repo/types';
 import crypto from 'crypto';
 import { Request, Response, Router } from 'express';
 import multer from 'multer';
+import path from 'path';
 import * as RT from 'runtypes';
 import VideoConverter from '../converters/videoConverter';
 import { rateLimit } from '../middleware/rateLimit';
 import { validateSchema } from '../middleware/schemaValidation';
 import AuthenticationService from '../services/authenticationService';
 import { database } from '../services/databaseService';
+import FFmpegService from '../services/ffmpegService';
 import FileService from '../services/fileService';
 import MediaService from '../services/mediaService';
 
@@ -219,15 +221,22 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 	}
 
 	const thumbnailId = crypto.randomUUID();
-	const thumbnailExtension = file.originalname.split('.').at(-1)!;
+	const thumbnailFileName = thumbnailId + '.' + file.originalname.split('.').at(-1)!;
 
-	// TODO: converting the file to the correct format, like webp or png
-	FileService.writeFile('media', thumbnailId + '.' + thumbnailExtension, file.buffer);
+	FileService.writeFile('temp', thumbnailFileName, file.buffer);
+
+	await FFmpegService.convertFile(
+		path.join(FileService.getDirectoryPath('temp'), thumbnailFileName),
+		path.join(FileService.getDirectoryPath('media'), thumbnailId + '.webp'),
+		['-vf scale=720:-1']
+	);
+
+	FileService.deleteFile('temp', thumbnailFileName);
 
 	const thumbnailMedia = await database.media.create({
 		data: {
 			id: thumbnailId,
-			extension: thumbnailExtension,
+			extension: 'webp',
 			type: 'IMAGE',
 			mime_type: file.mimetype,
 			file_size: file.size,

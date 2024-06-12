@@ -294,8 +294,6 @@ router.post(
 			},
 		});
 
-		// TODO: get thumbnail from body, or generate one from the video
-
 		return res.json(videoConverter.convert(video));
 	}
 );
