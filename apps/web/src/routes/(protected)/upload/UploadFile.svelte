@@ -8,7 +8,7 @@
 	import { onMount } from 'svelte';
 
 	let files: FileList | undefined;
-	let title = '';
+	let title: string;
 	let url = '';
 	let tags: string[] = [];
 	let extraTags = '';
@@ -92,7 +92,7 @@
 		return () => label.removeEventListener('drop', handleDrop);
 	});
 
-	$: if (files && files.length && !title.length) title = files[0].name;
+	$: if (files && files.length) title = title ?? files[0].name;
 </script>
 
 <div class="grid min-h-full place-items-center gap-4">
