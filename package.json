@@ -8,7 +8,8 @@
 		"lint": "turbo run lint",
 		"format": "prettier --write .",
 		"db:generate": "dotenv -e .env.dev -- turbo run db:generate",
-		"db:push": "dotenv -e .env.dev -- turbo run db:push"
+		"db:push": "dotenv -e .env.dev -- turbo run db:push",
+		"postinstall": "pnpm run db:generate"
 	},
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",

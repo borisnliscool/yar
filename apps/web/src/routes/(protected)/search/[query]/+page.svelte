@@ -25,6 +25,10 @@
 	onMount(() => loadVideos($page.params.query));
 </script>
 
+<svelte:head>
+	<title>Results for "{$page.params.query}" - YAR</title>
+</svelte:head>
+
 <Header />
 
 <div class="mx-auto flex w-full max-w-4xl flex-col gap-4 p-6 xl:p-10">

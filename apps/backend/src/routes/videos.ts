@@ -51,32 +51,19 @@ router.get(
 		window: 5_000,
 	}),
 	async (req: Request, res: Response) => {
-		const { query } = req.query;
-		if (!query) return res.json({ videos: [] });
+		if (!req.query.query) return res.json({ videos: [] });
+		const query = `%${(req.query.query as string).split(' ').join('%')}%`;
+
+		const videosIds = (
+			(await database.$queryRaw`SELECT v.id FROM video v JOIN media m ON v.media_id = m.id WHERE (v.title LIKE ${query} OR v.description LIKE ${query} OR v.tags LIKE ${query}) AND m.processing = false LIMIT 10;`) as {
+				id: string;
+			}[]
+		).map((v) => v.id);
 
 		const videos = await database.video.findMany({
 			where: {
-				OR: [
-					{
-						title: {
-							contains: query as string,
-						},
-					},
-					{
-						description: {
-							contains: query as string,
-						},
-					},
-					{
-						tags: {
-							contains: query as string,
-						},
-					},
-				],
-				media: {
-					NOT: {
-						processing: true,
-					},
+				id: {
+					in: videosIds,
 				},
 			},
 			include: {
