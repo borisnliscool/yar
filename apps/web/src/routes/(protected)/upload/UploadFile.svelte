@@ -16,6 +16,7 @@
 	let dragOver = false;
 	let label: HTMLLabelElement;
 	let isUploading = false;
+	let uploadingPercent = 0;
 
 	const handleDragOver = (event: DragEvent) => {
 		event.preventDefault();
@@ -58,9 +59,12 @@
 		try {
 			const body = await file.arrayBuffer();
 			const maxPartSize = 10 * 1024 * 1024;
+			uploadingPercent = 0;
 
 			for (let i = 0; i < body.byteLength; i += maxPartSize) {
 				const text = body.slice(i, i + maxPartSize);
+
+				uploadingPercent = Math.floor((i / body.byteLength) * 100);
 
 				await API.post(`/upload/file/${media.id}/part`, text, {
 					headers: new Headers({
@@ -93,6 +97,15 @@
 
 <div class="grid min-h-full place-items-center gap-4">
 	<div class="flex w-full max-w-lg flex-col gap-4">
+		{#if isUploading}
+			<div class="h-6 w-full rounded bg-neutral-200 dark:bg-neutral-900">
+				<div
+					class="h-full rounded bg-green-500 transition-all"
+					style="width: {uploadingPercent}%"
+				></div>
+			</div>
+		{/if}
+
 		<label
 			bind:this={label}
 			on:dragover={handleDragOver}
@@ -121,8 +134,6 @@
 		<VideoTags bind:tags bind:value={extraTags} />
 
 		<Button disabled={!files || !title.length || isUploading} on:click={upload}>Upload</Button>
-
-		<!-- Upload progress bar -->
 	</div>
 </div>
 
