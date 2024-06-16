@@ -47,7 +47,8 @@ router.get('/', rateLimit(), async (req: Request, res: Response) => {
 router.get(
 	'/search',
 	rateLimit({
-		max: 3,
+		max: 5,
+		window: 5_000,
 	}),
 	async (req: Request, res: Response) => {
 		const { query } = req.query;

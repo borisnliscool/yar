@@ -254,7 +254,7 @@ router.post(
 		);
 		const ffprobeData = await FFmpegService.probe(videoFilePath, false);
 
-		const duration = ffprobeData?.streams[0].duration ?? null;
+		const duration = ffprobeData?.streams.find((s) => s.duration)?.duration ?? null;
 		media.duration = duration ? +duration : null;
 		media.processing = false;
 		media.file_size = FileService.getFileSize('media', media.id + '.' + media.extension);
