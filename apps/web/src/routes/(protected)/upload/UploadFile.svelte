@@ -11,6 +11,7 @@
 	let title = '';
 	let url = '';
 	let tags: string[] = [];
+	let extraTags = '';
 
 	let dragOver = false;
 	let label: HTMLLabelElement;
@@ -42,10 +43,12 @@
 
 		const videoBody = {
 			ext: file.name.split('.').pop(),
+			tags: [...new Set([...tags, ...extraTags.split(',').filter(Boolean)])],
 			title,
-			tags,
 			url
 		};
+
+		extraTags = '';
 
 		const response = await API.post('/upload/file', videoBody);
 
@@ -115,9 +118,11 @@
 
 		<Input placeholder="Title" bind:value={title} />
 		<Input placeholder="Source URL (optional)" bind:value={url} />
-		<VideoTags bind:tags />
+		<VideoTags bind:tags bind:value={extraTags} />
 
 		<Button disabled={!files || !title.length || isUploading} on:click={upload}>Upload</Button>
+
+		<!-- Upload progress bar -->
 	</div>
 </div>
 

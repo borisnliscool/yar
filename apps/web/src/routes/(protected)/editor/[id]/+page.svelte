@@ -13,6 +13,7 @@
 
 	let videoPromise: Promise<Video>;
 	let loadedVideo: Video;
+	let extraTags = '';
 
 	let isBusy = false;
 	let thumbnailInput: HTMLInputElement;
@@ -55,8 +56,10 @@
 			await API.put('/videos/' + loadedVideo.id, {
 				title: loadedVideo.title,
 				description: loadedVideo.description,
-				tags: loadedVideo.tags
+				tags: [...new Set([...loadedVideo.tags, ...extraTags.split(',').filter(Boolean)])]
 			});
+
+			extraTags = '';
 
 			loadVideo(loadedVideo.id);
 		} catch (err) {
@@ -195,7 +198,7 @@
 
 					<div>
 						<p class="mb-0.5 text-sm text-neutral-400">Video Tags</p>
-						<VideoTags bind:tags={loadedVideo.tags} />
+						<VideoTags bind:tags={loadedVideo.tags} bind:value={extraTags} />
 					</div>
 				</div>
 

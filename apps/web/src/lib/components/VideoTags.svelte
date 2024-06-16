@@ -6,7 +6,7 @@
 	import { SvelteComponent, onMount } from 'svelte';
 
 	export let tags: string[];
-	let value: string = '';
+	export let value: string = '';
 
 	let databaseTags: string[] = [];
 	let filteredTags: string[] = [];

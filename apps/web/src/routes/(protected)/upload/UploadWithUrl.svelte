@@ -25,6 +25,7 @@
 	let selectedFormat: YtdlpFormat | undefined;
 	let title = '';
 	let tags: string[] = [];
+	let extraTags = '';
 
 	const search = instant(async () => {
 		let url: URL;
@@ -69,13 +70,15 @@
 					input,
 					url: selectedFormat?.url ?? input,
 					ext: selectedFormat?.ext,
-					title,
-					tags
+					tags: [...new Set([...tags, ...extraTags.split(',').filter(Boolean)])],
+					title
 				},
 				{
 					params
 				}
 			);
+
+			extraTags = '';
 
 			const reader = response.body?.getReader();
 			if (!reader) return;
@@ -180,7 +183,7 @@
 						<Input bind:value={title} placeholder="Title" />
 					</h1>
 
-					<VideoTags bind:tags />
+					<VideoTags bind:tags bind:value={extraTags} />
 
 					<div class="flex flex-col">
 						{#if videoData.duration}
