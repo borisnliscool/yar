@@ -52,10 +52,14 @@ router.get(
 	}),
 	async (req: Request, res: Response) => {
 		if (!req.query.query) return res.json({ videos: [] });
-		const query = `%${(req.query.query as string).split(' ').join('%')}%`;
+
+		const page: number = (req.query.page && +req.query.page) || 0;
+		const query = `%${decodeURIComponent(req.query.query as string)
+			.split(' ')
+			.join('%')}%`;
 
 		const videosIds = (
-			(await database.$queryRaw`SELECT v.id FROM video v JOIN media m ON v.media_id = m.id WHERE (v.title LIKE ${query} OR v.description LIKE ${query} OR v.tags LIKE ${query}) AND m.processing = false LIMIT 10;`) as {
+			(await database.$queryRaw`SELECT v.id FROM video v JOIN media m ON v.media_id = m.id WHERE (v.title LIKE ${query} OR v.description LIKE ${query} OR v.tags LIKE ${query}) AND m.processing = false ORDER BY v.created_at LIMIT 10 OFFSET ${Math.max(page * 10, 0)};`) as {
 				id: string;
 			}[]
 		).map((v) => v.id);
