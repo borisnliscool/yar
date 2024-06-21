@@ -62,6 +62,8 @@
 			uploadingPercent = 0;
 
 			for (let i = 0; i < body.byteLength; i += maxPartSize) {
+				if (!isUploading) throw new Error('Upload canceled');
+
 				const text = body.slice(i, i + maxPartSize);
 
 				uploadingPercent = Math.floor((i / body.byteLength) * 100);
@@ -83,6 +85,10 @@
 			notifications.error('Failed to upload video');
 		}
 
+		isUploading = false;
+	};
+
+	const cancelUpload = async () => {
 		isUploading = false;
 	};
 
@@ -134,6 +140,14 @@
 		<VideoTags bind:tags bind:value={extraTags} />
 
 		<Button disabled={!files || !title.length || isUploading} on:click={upload}>Upload</Button>
+
+		{#if isUploading}
+			<Button
+				variant="outline"
+				class="border-neutral-300 dark:border-neutral-700"
+				on:click={cancelUpload}>Cancel</Button
+			>
+		{/if}
 	</div>
 </div>
 
