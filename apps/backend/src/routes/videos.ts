@@ -47,7 +47,7 @@ router.get('/', rateLimit(), async (req: Request, res: Response) => {
 router.get(
 	'/search',
 	rateLimit({
-		max: 5,
+		max: 10,
 		window: 5_000,
 	}),
 	async (req: Request, res: Response) => {
@@ -77,7 +77,15 @@ router.get(
 			},
 		});
 
-		return res.json({ videos: videos.map(VideoConverter.convert) });
+		const total =
+			(await database.$queryRaw`SELECT COUNT(v.id) as video_count FROM video v JOIN media m ON v.media_id = m.id WHERE (v.title LIKE ${query} OR v.description LIKE ${query} OR v.tags LIKE ${query}) AND m.processing = false ORDER BY v.created_at;`) as {
+				video_count: number;
+			}[];
+
+		return res.json({
+			videos: videos.map(VideoConverter.convert),
+			total: Number(total[0].video_count),
+		});
 	}
 );
 

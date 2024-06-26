@@ -63,7 +63,7 @@
 		{/each}
 		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 	{:then _}
-		{#if videos.length === 0}
+		{#if !videos.length}
 			<div class="col-span-full grid h-48 place-items-center">
 				<div class="flex items-center justify-center text-red-500">
 					<p>No videos found, upload some!</p>

@@ -1,28 +1,39 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import Header from '$components/Header.svelte';
+	import InfiniteList from '$components/InfiniteList.svelte';
 	import VideoThumbnailSearch from '$components/videoCards/VideoThumbnailSearch.svelte';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
-	import { Skeleton } from '@repo/ui';
-	import { onMount } from 'svelte';
+	import { Button, Skeleton } from '@repo/ui';
 
-	let videosPromise: Promise<Video[]>;
+	let videos: Video[] = [];
+	let videosPromise: Promise<Video[]> | null = null;
+	let searchPage = 0;
+	let total = 0;
 
-	const loadVideos = (searchQuery: string) => {
+	const loadVideos = async (searchQuery: string) => {
+		if (total && videos.length >= total) return;
+
 		videosPromise = new Promise<Video[]>(async (resolve) => {
 			const response = await API.get('/videos/search', {
 				params: {
-					query: encodeURIComponent(searchQuery)
+					query: encodeURIComponent(searchQuery),
+					page: String(searchPage)
 				}
 			});
-			const data: { videos: Video[] } = await response.json();
-			return resolve(data.videos);
+			const data: { videos: Video[]; total: number } = await response.json();
+			videos = [...videos, ...data.videos];
+			total = data.total;
+			resolve(data.videos);
 		});
+
+		searchPage++;
+		await videosPromise;
+		videosPromise = null;
 	};
 
 	$: loadVideos($page.params.query);
-	onMount(() => loadVideos($page.params.query));
 </script>
 
 <svelte:head>
@@ -32,6 +43,12 @@
 <Header />
 
 <div class="mx-auto flex w-full max-w-4xl flex-col gap-4 p-6 xl:p-10">
+	<InfiniteList items={videos} on:loadmore={() => loadVideos($page.params.query)} let:item>
+		<Button class="h-fit w-full p-0" variant="ghost" href="/watch/{item.id}">
+			<VideoThumbnailSearch video={item} />
+		</Button>
+	</InfiniteList>
+
 	{#await videosPromise}
 		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 		{#each Array(6) as _}
@@ -44,14 +61,8 @@
 				</div>
 			</div>
 		{/each}
-	{:then videos}
-		{#if videos && videos.length > 0}
-			{#each videos as video}
-				<a href="/watch/{video.id}">
-					<VideoThumbnailSearch {video} />
-				</a>
-			{/each}
-		{:else}
+	{:then _}
+		{#if !videos.length}
 			<div class="grid h-48 place-items-center">
 				<div class="flex items-center justify-center text-red-500">
 					<p>No results found for &quot;{$page.params.query}&quot;</p>
