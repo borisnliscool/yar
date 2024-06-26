@@ -11,8 +11,16 @@
 	let videosPromise: Promise<Video[]> | null = null;
 	let searchPage = 0;
 	let total = 0;
+	let lastSearch = '';
 
 	const loadVideos = async (searchQuery: string) => {
+		if (lastSearch !== searchQuery) {
+			videos = [];
+			searchPage = 0;
+			total = 0;
+			lastSearch = searchQuery;
+		}
+
 		if (total && videos.length >= total) return;
 
 		videosPromise = new Promise<Video[]>(async (resolve) => {
