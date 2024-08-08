@@ -48,7 +48,7 @@
 	<title>Results for "{$page.params.query}" - YAR</title>
 </svelte:head>
 
-<Header />
+<Header searchQuery={lastSearch} />
 
 <div class="mx-auto flex w-full max-w-4xl flex-col gap-4 p-6 xl:p-10">
 	<InfiniteList items={videos} on:loadmore={() => loadVideos($page.params.query)} let:item>

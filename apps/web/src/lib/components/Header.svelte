@@ -6,14 +6,14 @@
 	import { UserRole } from '@repo/types';
 	import { Button, Input } from '@repo/ui';
 
-	let searchValue = '';
+	export let searchQuery = '';
 	let mobileMenu = false;
 
 	const input = (event: KeyboardEvent) => {
 		if (event.key == 'Enter') {
-			const search = searchValue.trim();
+			const search = searchQuery.trim();
 			if (!search) return;
-			return goto('/search/' + searchValue);
+			return goto('/search/' + searchQuery);
 		}
 	};
 </script>
@@ -43,7 +43,7 @@
 			type="search"
 			class="w-full rounded-full px-4"
 			placeholder="Search for videos"
-			bind:value={searchValue}
+			bind:value={searchQuery}
 			on:keyup={input}
 		/>
 	</div>
