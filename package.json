@@ -1,6 +1,6 @@
 {
 	"name": "yar",
-	"version": "v0.0.33",
+	"version": "v0.0.34",
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
