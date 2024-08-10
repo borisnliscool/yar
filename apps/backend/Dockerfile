@@ -50,4 +50,4 @@ USER nodejs
 COPY --from=builder /app .
 
 
-CMD prisma migrate deploy && node apps/backend/dist/index.js
+CMD pnpm exec prisma migrate deploy && node apps/backend/dist/index.js
