@@ -7,6 +7,7 @@ import LoggerService from './loggerService';
 const PUBLIC_SETTINGS: Array<SettingsKey> = [
 	SettingsKey.ENABLE_REGISTRATION,
 	SettingsKey.MIN_PASSWORD_LENGTH,
+	SettingsKey.AUTH_BACKGROUND_URL,
 ];
 
 const DEFAULT_SETTINGS: Record<SettingsKey, Setting> = {
@@ -29,6 +30,11 @@ const DEFAULT_SETTINGS: Record<SettingsKey, Setting> = {
 		value: '7d',
 		type: 'string',
 		label: 'Refresh token expiration duration',
+	},
+	[SettingsKey.AUTH_BACKGROUND_URL]: {
+		value: '/img/login-background.webp',
+		type: 'STRING',
+		label: 'Login background image',
 	},
 };
 
