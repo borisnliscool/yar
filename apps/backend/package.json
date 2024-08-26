@@ -7,7 +7,7 @@
 		"dev": "dotenv -e ../../.env.dev -- nodemon",
 		"build": "prisma generate && tsc",
 		"db:generate": "prisma generate --schema=./prisma/schema.prisma",
-		"db:push": "prisma db push --skip-generate",
+		"db:push": "dotenv -e ../../.env.dev -- prisma db push --skip-generate",
 		"db:migrate": "dotenv -e ../../.env.dev -- prisma migrate dev"
 	},
 	"dependencies": {

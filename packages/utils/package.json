@@ -16,7 +16,7 @@
 		}
 	},
 	"devDependencies": {
-		"@repo/typescript-config": "*",
+		"@repo/typescript-config": "workspace:*",
 		"@types/node": "^20.12.7",
 		"clsx": "^2.1.0",
 		"tailwind-merge": "^2.2.1",

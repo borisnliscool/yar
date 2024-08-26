@@ -12,11 +12,12 @@
 	},
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",
+		"@types/node": "^20.12.7",
 		"dotenv-cli": "^7.4.2",
 		"eslint": "^8.57.0",
 		"prettier": "^3.3.2",
 		"prettier-plugin-svelte": "^3.2.5",
-		"turbo": "^2.0.6"
+		"turbo": "^2.0.14"
 	},
 	"packageManager": "pnpm@9.2.0",
 	"engines": {
