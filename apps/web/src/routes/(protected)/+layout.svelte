@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import Spinner from '$components/Spinner.svelte';
 	import API from '$lib/api';
 	import { userStore } from '$lib/stores/user';
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+
+	let promise = Promise.resolve();
 
 	const getCurrentUser = async () => {
 		try {
@@ -16,7 +20,18 @@
 		}
 	};
 
-	onMount(getCurrentUser);
+	onMount(() => (promise = getCurrentUser()));
 </script>
 
-<slot />
+{#await promise}
+	<div
+		transition:fade={{ duration: 150 }}
+		class="fixed inset-0 z-50 grid h-screen w-screen place-items-center"
+	>
+		<Spinner size={32} />
+	</div>
+{:then _}
+	<div transition:fade={{ duration: 150, delay: 150 }}>
+		<slot />
+	</div>
+{/await}
