@@ -193,8 +193,8 @@ importers:
         specifier: ^5.0.20
         version: 5.0.20
       '@iconify/svelte':
-        specifier: ^3.1.6
-        version: 3.1.6(svelte@4.2.19)
+        specifier: ^4.0.2
+        version: 4.0.2(svelte@4.2.19)
       '@repo/config':
         specifier: workspace:*
         version: link:../../packages/config
@@ -333,8 +333,8 @@ importers:
   packages/ui:
     devDependencies:
       '@iconify/svelte':
-        specifier: ^3.1.6
-        version: 3.1.6(svelte@4.2.19)
+        specifier: ^4.0.2
+        version: 4.0.2(svelte@4.2.19)
       '@popperjs/core':
         specifier: ^2.11.8
         version: 2.11.8
@@ -684,10 +684,10 @@ packages:
     resolution: {integrity: sha512-6EwiSjwWYP7pTckG6I5eyFANjPhmPjUX9JRLUSfNPC7FX7zK9gyZAfUEaECL6ALTpGX5AjnBq3C9XmVWPitNpw==}
     deprecated: Use @eslint/object-schema instead
 
-  '@iconify/svelte@3.1.6':
-    resolution: {integrity: sha512-yLSrlkOx5J6xXU5GDLPBV/MdVBVEZhd36onfqSbxQobp1XBoWQbMPLNZyCAmTKCPnmzXSowGy79agl8FQ3kj6A==}
+  '@iconify/svelte@4.0.2':
+    resolution: {integrity: sha512-6BSrU85FzGfhQD3bTXpnkCCvBAglEt8T9QednVnXAYm4C+d3464y+pYMzhQNJm5mPId2cuiw+2wXlDflXllHDw==}
     peerDependencies:
-      svelte: '*'
+      svelte: '>4.0.0'
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -3360,7 +3360,7 @@ snapshots:
 
   '@humanwhocodes/object-schema@2.0.2': {}
 
-  '@iconify/svelte@3.1.6(svelte@4.2.19)':
+  '@iconify/svelte@4.0.2(svelte@4.2.19)':
     dependencies:
       '@iconify/types': 2.0.0
       svelte: 4.2.19
