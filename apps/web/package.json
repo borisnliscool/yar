@@ -32,7 +32,7 @@
 		"@typescript-eslint/eslint-plugin": "^8.3.0",
 		"@typescript-eslint/parser": "^6.21.0",
 		"autoprefixer": "^10.4.20",
-		"dayjs": "^1.11.10",
+		"dayjs": "^1.11.13",
 		"eslint": "^8.57.0",
 		"filesize": "^10.1.2",
 		"human-format": "^1.2.0",
