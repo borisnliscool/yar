@@ -19,7 +19,7 @@
 		"@repo/eslint-config": "workspace:*",
 		"@repo/utils": "workspace:*",
 		"@types/lodash-es": "^4.17.12",
-		"autoprefixer": "^10.4.17",
+		"autoprefixer": "^10.4.20",
 		"bits-ui": "^0.21.13",
 		"lodash-es": "^4.17.21",
 		"postcss": "^8.4.35",
