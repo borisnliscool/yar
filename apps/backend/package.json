@@ -63,7 +63,7 @@
 		"range-parser": "^1.2.1",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.5.4",
-		"ua-parser-js": "^1.0.37"
+		"ua-parser-js": "^1.0.38"
 	},
 	"nodemonConfig": {
 		"watch": [
