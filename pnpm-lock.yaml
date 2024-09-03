@@ -33,7 +33,7 @@ importers:
   apps/backend:
     dependencies:
       '@prisma/client':
-        specifier: ^5.19.0
+        specifier: ^5.19.1
         version: 5.19.1(prisma@5.19.1)
       '@repo/utils':
         specifier: workspace:*
