@@ -125,6 +125,7 @@
 			{#await videoPromise}
 				<div class="w-full max-w-2xl">
 					<Skeleton class="aspect-video w-full" />
+					<Skeleton class="h-16" />
 				</div>
 				<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 			{:then _}

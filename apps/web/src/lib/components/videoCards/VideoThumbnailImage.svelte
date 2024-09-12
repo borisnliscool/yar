@@ -14,7 +14,7 @@
 
 <div
 	class={cn(
-		'relative z-0 mb-1 aspect-video w-full overflow-hidden rounded-md bg-neutral-300 dark:bg-neutral-700',
+		'relative z-0 aspect-video w-full overflow-hidden rounded-md bg-neutral-300 dark:bg-neutral-700',
 		className
 	)}
 >

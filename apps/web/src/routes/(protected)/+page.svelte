@@ -2,7 +2,7 @@
 	import Header from '$components/Header.svelte';
 	import InfiniteList from '$components/InfiniteList.svelte';
 	import Motd from '$components/Motd.svelte';
-	import VideoThumbnail from '$components/videoCards/VideoThumbnailMain.svelte';
+	import VideoThumbnailMain from '$components/videoCards/VideoThumbnailMain.svelte';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
 	import { Button, Skeleton } from '@repo/ui';
@@ -46,10 +46,10 @@
 <Header />
 <Motd />
 
-<div class="grid grid-cols-1 gap-4 p-2 md:grid-cols-2 lg:grid-cols-3 lg:p-6 2xl:grid-cols-4">
+<div class="grid grid-cols-1 gap-2 p-2 md:grid-cols-2 lg:grid-cols-3 lg:p-4 2xl:grid-cols-4">
 	<InfiniteList items={videos} on:loadmore={loadVideos} let:item>
 		<Button class="h-fit w-full p-0" variant="ghost" href="/watch/{item.id}">
-			<VideoThumbnail video={item} />
+			<VideoThumbnailMain video={item} />
 		</Button>
 	</InfiniteList>
 
@@ -58,7 +58,6 @@
 		{#each { length: Math.min(count, (total ?? 100) - count * Math.max(page, 1)) } as _}
 			<div class="flex flex-col gap-2">
 				<Skeleton class="aspect-video w-full" />
-				<Skeleton class="h-8 w-full" />
 			</div>
 		{/each}
 		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->

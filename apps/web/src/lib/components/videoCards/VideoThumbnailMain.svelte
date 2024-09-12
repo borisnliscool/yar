@@ -10,11 +10,13 @@
 	export let video: Video;
 </script>
 
-<div class="w-full">
+<div class="group relative w-full overflow-hidden rounded-md">
 	<VideoThumbnailImage {video} />
 
-	<div>
-		<p class="mb-1 line-clamp-2 font-medium">{video.title}</p>
+	<div
+		class="absolute -bottom-full w-full bg-black/75 p-1 px-3 pb-2 backdrop-blur-lg transition-all group-hover:bottom-0"
+	>
+		<p class="line-clamp-2 font-medium">{video.title}</p>
 		<div class="flex items-center justify-between text-xs">
 			<p>{video.author.username}</p>
 			<p class="italic">{dayjs(video.created_at).fromNow()}</p>
