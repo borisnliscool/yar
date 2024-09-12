@@ -46,7 +46,6 @@
 						src={video.media.url}
 						controls
 						autoplay
-						muted
 						class="aspect-video w-full bg-black object-contain shadow xl:rounded-lg"
 					/>
 				{/if}

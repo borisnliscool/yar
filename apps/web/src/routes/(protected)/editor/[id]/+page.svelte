@@ -123,7 +123,7 @@
 	<div class="flex w-full flex-col items-center gap-4 py-8">
 		{#key videoPromise}
 			{#await videoPromise}
-				<div class="w-full max-w-2xl">
+				<div class="flex w-full max-w-2xl flex-col gap-4">
 					<Skeleton class="aspect-video w-full" />
 					<Skeleton class="h-16" />
 				</div>
