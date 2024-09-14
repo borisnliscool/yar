@@ -24,7 +24,7 @@
 </script>
 
 <svelte:head>
-	<title>{loadedVideo ? loadedVideo.title : 'Loading...'} - YAR</title>
+	<title>{loadedVideo ? loadedVideo.title : 'Loading...'}</title>
 </svelte:head>
 
 <Header />

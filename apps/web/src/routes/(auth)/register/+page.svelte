@@ -57,7 +57,7 @@
 </script>
 
 <svelte:head>
-	<title>Register - YAR</title>
+	<title>Register</title>
 </svelte:head>
 
 <form on:submit|preventDefault|stopPropagation={register} class="flex w-full flex-col gap-4">

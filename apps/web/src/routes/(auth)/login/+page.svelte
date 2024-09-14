@@ -66,7 +66,7 @@
 </script>
 
 <svelte:head>
-	<title>Login - YAR</title>
+	<title>Login</title>
 </svelte:head>
 
 <form on:submit|preventDefault|stopPropagation={login} class="flex w-full flex-col gap-4">

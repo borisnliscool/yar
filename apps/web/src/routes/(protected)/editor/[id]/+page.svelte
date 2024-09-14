@@ -114,7 +114,7 @@
 </script>
 
 <svelte:head>
-	<title>{loadedVideo ? 'Editing - ' + loadedVideo.title : 'Loading...'} - YAR</title>
+	<title>{loadedVideo ? 'Editing - ' + loadedVideo.title : 'Loading...'}</title>
 </svelte:head>
 
 <Header />

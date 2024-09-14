@@ -1,13 +1,17 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import API from '$lib/api';
 	import { theme } from '$lib/stores/theme';
 	import { userStore } from '$lib/stores/user';
 	import Icon from '@iconify/svelte';
-	import { UserRole } from '@repo/types';
+	import { SettingsKey, UserRole } from '@repo/types';
 	import { Button, Input } from '@repo/ui';
+	import { onMount } from 'svelte';
 
 	export let searchQuery = '';
 	let mobileMenu = false;
+
+	let instanceTitle = '';
 
 	const input = (event: KeyboardEvent) => {
 		if (event.key == 'Enter') {
@@ -16,6 +20,15 @@
 			return goto('/search/' + searchQuery);
 		}
 	};
+
+	const loadInstanceTitleSetting = async () => {
+		const response = await API.get('settings/' + SettingsKey.INSTANCE_TITLE);
+
+		const data = await response.json();
+		instanceTitle = data[SettingsKey.INSTANCE_TITLE] as string;
+	};
+
+	onMount(loadInstanceTitleSetting);
 </script>
 
 <div class="h-16"></div>
@@ -30,11 +43,13 @@
 				<img class="max-h-8" src="/logo.png" alt="Youtube Archive Logo" loading="eager" />
 			</picture>
 
-			<p
-				class="bg-gradient-to-br from-orange-500 to-purple-500 bg-clip-text font-medium transition-colors group-hover:text-transparent"
-			>
-				Youtube Archive
-			</p>
+			{#if instanceTitle.length}
+				<p
+					class="bg-gradient-to-br from-orange-500 to-purple-500 bg-clip-text font-medium transition-colors group-hover:text-transparent"
+				>
+					{instanceTitle}
+				</p>
+			{/if}
 		</a>
 	</div>
 

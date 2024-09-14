@@ -14,7 +14,7 @@
 </script>
 
 <svelte:head>
-	<title>Logout - YAR</title>
+	<title>Logout</title>
 </svelte:head>
 
 <div class="grid h-screen w-full place-items-center">

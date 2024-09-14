@@ -215,7 +215,7 @@ importers:
         version: 2.5.2
       tailwind-variants:
         specifier: ^0.2.1
-        version: 0.2.1(tailwindcss@3.4.11(ts-node@10.9.2(@types/node@22.5.4)))
+        version: 0.2.1(tailwindcss@3.4.11(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.6.2)))
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -288,7 +288,7 @@ importers:
         version: 1.0.0
       tailwindcss:
         specifier: ^3.4.11
-        version: 3.4.11(ts-node@10.9.2(@types/node@22.5.4))
+        version: 3.4.11(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.6.2))
       tslib:
         specifier: ^2.7.0
         version: 2.7.0
@@ -364,10 +364,10 @@ importers:
         version: 4.2.19
       tailwind-variants:
         specifier: ^0.2.1
-        version: 0.2.1(tailwindcss@3.4.11(ts-node@10.9.2(@types/node@22.5.4)))
+        version: 0.2.1(tailwindcss@3.4.11(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.6.2)))
       tailwindcss:
         specifier: ^3.4.11
-        version: 3.4.11(ts-node@10.9.2(@types/node@22.5.4))
+        version: 3.4.11(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.6.2))
 
   packages/utils:
     devDependencies:
@@ -5002,7 +5002,7 @@ snapshots:
       postcss: 8.4.44
       ts-node: 10.9.2(@types/node@22.5.4)(typescript@5.6.2)
 
-  postcss-load-config@4.0.2(postcss@8.4.45)(ts-node@10.9.2(@types/node@22.5.4)):
+  postcss-load-config@4.0.2(postcss@8.4.45)(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.6.2)):
     dependencies:
       lilconfig: 3.1.1
       yaml: 2.3.4
@@ -5420,12 +5420,12 @@ snapshots:
 
   tailwind-merge@2.5.2: {}
 
-  tailwind-variants@0.2.1(tailwindcss@3.4.11(ts-node@10.9.2(@types/node@22.5.4))):
+  tailwind-variants@0.2.1(tailwindcss@3.4.11(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.6.2))):
     dependencies:
       tailwind-merge: 2.2.2
-      tailwindcss: 3.4.11(ts-node@10.9.2(@types/node@22.5.4))
+      tailwindcss: 3.4.11(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.6.2))
 
-  tailwindcss@3.4.11(ts-node@10.9.2(@types/node@22.5.4)):
+  tailwindcss@3.4.11(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.6.2)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -5444,7 +5444,7 @@ snapshots:
       postcss: 8.4.45
       postcss-import: 15.1.0(postcss@8.4.45)
       postcss-js: 4.0.1(postcss@8.4.45)
-      postcss-load-config: 4.0.2(postcss@8.4.45)(ts-node@10.9.2(@types/node@22.5.4))
+      postcss-load-config: 4.0.2(postcss@8.4.45)(ts-node@10.9.2(@types/node@22.5.4)(typescript@5.6.2))
       postcss-nested: 6.0.1(postcss@8.4.45)
       postcss-selector-parser: 6.1.2
       resolve: 1.22.8

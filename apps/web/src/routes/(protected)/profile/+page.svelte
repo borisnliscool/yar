@@ -205,7 +205,7 @@
 </script>
 
 <svelte:head>
-	<title>Update Profile - YAR</title>
+	<title>Update Profile</title>
 </svelte:head>
 
 <Header />

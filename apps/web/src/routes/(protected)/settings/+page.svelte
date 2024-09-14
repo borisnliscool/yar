@@ -108,7 +108,7 @@
 </script>
 
 <svelte:head>
-	<title>Instance Settings - YAR</title>
+	<title>Instance Settings</title>
 </svelte:head>
 
 <Header />

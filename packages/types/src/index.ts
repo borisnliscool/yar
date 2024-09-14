@@ -64,6 +64,7 @@ enum SettingsKey {
 	MOTD = 'MOTD',
 	REFRESH_TOKEN_EXPIRY_DURATION = 'REFRESH_TOKEN_EXPIRY_DURATION',
 	AUTH_BACKGROUND_URL = 'AUTH_BACKGROUND_URL',
+	INSTANCE_TITLE = 'INSTANCE_TITLE',
 }
 
 type SettingValueType = string | boolean | number;

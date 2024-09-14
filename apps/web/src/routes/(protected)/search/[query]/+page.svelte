@@ -45,7 +45,7 @@
 </script>
 
 <svelte:head>
-	<title>Results for "{$page.params.query}" - YAR</title>
+	<title>Results for "{$page.params.query}"</title>
 </svelte:head>
 
 <Header searchQuery={lastSearch} />

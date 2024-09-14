@@ -36,6 +36,11 @@ const DEFAULT_SETTINGS: Record<SettingsKey, Setting> = {
 		type: 'STRING',
 		label: 'Login background image',
 	},
+	[SettingsKey.INSTANCE_TITLE]: {
+		value: 'Youtube Archive',
+		type: 'STRING',
+		label: 'Instance title',
+	},
 };
 
 export default class SettingsService {
