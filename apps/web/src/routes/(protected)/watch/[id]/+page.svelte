@@ -3,6 +3,7 @@
 	import Header from '$components/Header.svelte';
 	import API from '$lib/api';
 	import { userStore } from '$lib/stores/user';
+	import { createVolumeStore } from '$lib/stores/volume';
 	import Icon from '@iconify/svelte';
 	import type { Video } from '@repo/types';
 	import { Button, Skeleton } from '@repo/ui';
@@ -10,6 +11,8 @@
 
 	let videoPromise: Promise<Video>;
 	let loadedVideo: Video;
+
+	const volumeStore = createVolumeStore();
 
 	const loadVideo = (videoId: string) => {
 		videoPromise = new Promise<Video>(async (resolve) => {
@@ -30,7 +33,9 @@
 <Header />
 
 <div class="mx-auto flex flex-col">
-	<div class="grid w-full grid-cols-3 gap-4 overflow-hidden xl:grid-cols-7 xl:gap-6 xl:p-4">
+	<div
+		class="grid w-full grid-cols-3 gap-4 overflow-hidden xl:grid-cols-7 xl:gap-6 xl:p-4 dark:bg-neutral-950"
+	>
 		{#await videoPromise}
 			<div class="col-span-full xl:col-span-5">
 				<Skeleton class="aspect-video w-full" />
@@ -47,6 +52,7 @@
 						controls
 						autoplay
 						class="aspect-video w-full bg-black object-contain shadow xl:rounded-lg"
+						bind:volume={$volumeStore}
 					/>
 				{/if}
 			</div>
@@ -88,9 +94,7 @@
 		{/await}
 	</div>
 
-	<div class="px-4 py-2">
-		<hr class="dark:border-neutral-700" />
-	</div>
+	<div class="h-6 bg-gradient-to-b dark:from-neutral-950 dark:to-neutral-900"></div>
 
 	<div class="grid grid-cols-1 gap-2 p-2 md:grid-cols-2 lg:grid-cols-3 lg:p-4 2xl:grid-cols-4">
 		<VideoSidebar hiddenVideos={[loadedVideo]} />

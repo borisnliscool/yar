@@ -14,7 +14,7 @@
 	<VideoThumbnailImage {video} />
 
 	<div
-		class="absolute -bottom-full w-full bg-black/75 p-1 px-3 pb-2 backdrop-blur-lg transition-all group-hover:bottom-0"
+		class="absolute -bottom-full w-full bg-black/75 p-1 px-3 pb-2 text-white backdrop-blur-lg transition-all group-hover:bottom-0"
 	>
 		<p class="line-clamp-2 font-medium">{video.title}</p>
 		<div class="flex items-center justify-between text-xs">
