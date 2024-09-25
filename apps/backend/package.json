@@ -52,7 +52,7 @@
 		"@types/range-parser": "^1.2.7",
 		"@types/request-ip": "^0.0.41",
 		"@types/ua-parser-js": "^0.7.39",
-		"@typescript-eslint/eslint-plugin": "^8.6.0",
+		"@typescript-eslint/eslint-plugin": "^8.7.0",
 		"@typescript-eslint/parser": "^8.6.0",
 		"eslint": "^8.57.0",
 		"fluent-ffmpeg": "^2.1.3",
