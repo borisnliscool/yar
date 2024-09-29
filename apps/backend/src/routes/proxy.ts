@@ -11,12 +11,14 @@ router.get('/image/:url', async (req: Request, res: Response) => {
 	try {
 		new URL(url);
 	} catch (err) {
-		return req.fail(ErrorType.INVALID_URL, 400, 'invalid url');
+		req.fail(ErrorType.INVALID_URL, 400, 'invalid url');
+		return;
 	}
 
 	const response = await fetch(url);
 	if (!response.ok) {
-		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
+		req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
+		return;
 	}
 
 	const addHeader = (name: string) => {
@@ -32,14 +34,15 @@ router.get('/image/:url', async (req: Request, res: Response) => {
 	res.type(blob.type);
 
 	const buffer = await blob.arrayBuffer();
-	return res.send(Buffer.from(buffer));
+	res.send(Buffer.from(buffer));
 });
 
 router.get('/latest-version', async (req: Request, res: Response) => {
 	const response = await fetch('https://api.github.com/repos/borisnliscool/yar/git/refs/tags');
 
 	if (!response.ok) {
-		return req.fail(ErrorType.INTERNAL_SERVER_ERROR, 500, 'failed to get latest version');
+		req.fail(ErrorType.INTERNAL_SERVER_ERROR, 500, 'failed to get latest version');
+		return;
 	}
 
 	const json = await response.json();
@@ -55,7 +58,7 @@ router.get('/latest-version', async (req: Request, res: Response) => {
 		};
 	};
 
-	return res.json({
+	res.json({
 		version: latest.ref.replace('refs/tags/', ''),
 	});
 });

@@ -14,7 +14,7 @@ export const router = Router();
 router.use(AuthenticationService.isAuthenticated);
 
 router.get('/me', async (req: Request, res: Response) => {
-	return res.json({
+	res.json({
 		...userConverter.convert(req.user!),
 		totp_enabled: !!req.user!.totp_secret,
 	});
@@ -30,11 +30,12 @@ router.put('/me', validateSchema(ProfileUpdateSchema), async (req: Request, res:
 	const body: RT.Static<typeof ProfileUpdateSchema> = req.body;
 
 	if (!req.user) {
-		return req.fail(ErrorType.UNAUTHORIZED, 401, 'unauthorized');
+		req.fail(ErrorType.UNAUTHORIZED, 401, 'unauthorized');
+		return;
 	}
 
 	if (!!body.oldPassword !== !!body.newPassword) {
-		return req.fail(
+		req.fail(
 			ErrorType.INVALID_CREDENTIALS,
 			401,
 			'oldPassword and newPassword must be provided together'
@@ -46,7 +47,8 @@ router.put('/me', validateSchema(ProfileUpdateSchema), async (req: Request, res:
 
 	if (body.oldPassword && body.newPassword) {
 		if (!compareSync(body.oldPassword, req.user.password_hash)) {
-			return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid credentials');
+			req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid credentials');
+			return;
 		}
 
 		updateUser.password_hash = hashSync(body.newPassword, 12);
@@ -59,7 +61,7 @@ router.put('/me', validateSchema(ProfileUpdateSchema), async (req: Request, res:
 		data: updateUser,
 	});
 
-	return res.json(userConverter.convert(user));
+	res.json(userConverter.convert(user));
 });
 
 router.get(
@@ -71,7 +73,7 @@ router.get(
 				created_at: 'desc',
 			},
 		});
-		return res.json(users.map(userConverter.convert));
+		res.json(users.map(userConverter.convert));
 	}
 );
 
@@ -94,11 +96,13 @@ router.delete(
 		});
 
 		if (!user) {
-			return req.fail(ErrorType.UNKNOWN, 404, 'user not found');
+			req.fail(ErrorType.UNKNOWN, 404, 'user not found');
+			return;
 		}
 
 		if (user.id === req.user!.id) {
-			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'cannot delete yourself');
+			req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'cannot delete yourself');
+			return;
 		}
 
 		for (const upload of user.uploads) {
@@ -145,6 +149,6 @@ router.delete(
 			},
 		});
 
-		return res.json({});
+		res.json({});
 	}
 );

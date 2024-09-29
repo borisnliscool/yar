@@ -38,7 +38,7 @@ router.post(
 			res.setHeader('Cache-Control', 'max-age=3600');
 			res.send(videoInfo);
 		} catch (error) {
-			return req.fail(ErrorType.INVALID_URL, 400, 'invalid url');
+			req.fail(ErrorType.INVALID_URL, 400, 'invalid url');
 		}
 	}
 );
@@ -62,7 +62,8 @@ router.post(
 			(await database.video.count({ where: { source_url: body.url.trim() } })) &&
 			req.query.force !== 'true'
 		) {
-			return req.fail(ErrorType.MEDIA_ALREADY_EXISTS, 409, 'video already exists');
+			req.fail(ErrorType.MEDIA_ALREADY_EXISTS, 409, 'video already exists');
+			return;
 		}
 
 		const videoDetails = await VideoDownloadService.getVideoInformation(body.input);
@@ -80,7 +81,8 @@ router.post(
 				videoUpload: err.message,
 			});
 
-			return req.fail(ErrorType.INTERNAL_SERVER_ERROR, 500, 'failed to upload video');
+			req.fail(ErrorType.INTERNAL_SERVER_ERROR, 500, 'failed to upload video');
+			return;
 		});
 
 		stream.on('data', (data) => FileService.appendFile('media', fileName, data));
@@ -201,7 +203,7 @@ router.post(
 
 		FileService.writeFile('media', fileName, '');
 
-		return res.json(mediaConverter.convert(media));
+		res.json(mediaConverter.convert(media));
 	}
 );
 
@@ -213,17 +215,19 @@ router.post('/file/:mediaId/part', BodyParsers.raw, async (req: Request, res: Re
 	});
 
 	if (!media) {
-		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
+		req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
+		return;
 	}
 
 	if (!media.processing) {
-		return req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
+		req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
+		return;
 	}
 
 	const fileName = `${media.id}.${media.extension}`;
 	FileService.appendFile('media', fileName, req.body);
 
-	return res.json({
+	res.json({
 		success: true,
 	});
 });
@@ -241,11 +245,13 @@ router.post(
 		});
 
 		if (!media) {
-			return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
+			req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
+			return;
 		}
 
 		if (!media.processing) {
-			return req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
+			req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
+			return;
 		}
 
 		const videoFilePath = path.join(
@@ -306,7 +312,7 @@ router.post(
 			},
 		});
 
-		return res.json(videoConverter.convert(video));
+		res.json(videoConverter.convert(video));
 	}
 );
 
@@ -318,11 +324,13 @@ router.post('/file/:mediaId/cancel', async (req: Request, res: Response) => {
 	});
 
 	if (!media) {
-		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
+		req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
+		return;
 	}
 
 	if (!media.processing) {
-		return req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
+		req.fail(ErrorType.MEDIA_NOT_PROCESSING, 400, 'media not processing');
+		return;
 	}
 
 	await database.media.delete({
@@ -333,7 +341,7 @@ router.post('/file/:mediaId/cancel', async (req: Request, res: Response) => {
 
 	FileService.deleteFile('media', `${media.id}.${media.extension}`);
 
-	return res.json({
+	res.json({
 		success: true,
 	});
 });

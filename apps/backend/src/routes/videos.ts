@@ -37,7 +37,7 @@ router.get('/', rateLimit(), async (req: Request, res: Response) => {
 		},
 	});
 
-	return res.json({
+	res.json({
 		videos: databaseVideos.map(VideoConverter.convert),
 		page: Math.max(page, 0),
 		total: total,
@@ -51,7 +51,10 @@ router.get(
 		window: 5_000,
 	}),
 	async (req: Request, res: Response) => {
-		if (!req.query.query) return res.json({ videos: [] });
+		if (!req.query.query) {
+			res.json({ videos: [] });
+			return;
+		}
 
 		const page: number = (req.query.page && +req.query.page) || 0;
 		const query = `%${decodeURIComponent(req.query.query as string)
@@ -84,7 +87,7 @@ router.get(
 				video_count: number;
 			}[];
 
-		return res.json({
+		res.json({
 			videos: videos.map(VideoConverter.convert),
 			total: Number(total[0].video_count),
 		});
@@ -99,7 +102,7 @@ router.get('/tags', async (_: Request, res: Response) => {
 		},
 	});
 
-	return res.json({
+	res.json({
 		tags: [
 			...new Set(
 				tags.flatMap((t) =>
@@ -126,10 +129,11 @@ router.get('/:videoId', async (req: Request, res: Response) => {
 	});
 
 	if (!video) {
-		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+		req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+		return;
 	}
 
-	return res.json(VideoConverter.convert(video));
+	res.json(VideoConverter.convert(video));
 });
 
 const VideoUpdateSchema = RT.Record({
@@ -157,11 +161,13 @@ router.put(
 		});
 
 		if (!video) {
-			return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+			req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+			return;
 		}
 
 		if (video.author.id !== req.user!.id) {
-			return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
+			req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
+			return;
 		}
 
 		await database.video.update({
@@ -178,7 +184,7 @@ router.put(
 			},
 		});
 
-		return res.json(VideoConverter.convert(video));
+		res.json(VideoConverter.convert(video));
 	}
 );
 
@@ -199,16 +205,19 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 	});
 
 	if (!video) {
-		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+		req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+		return;
 	}
 
 	if (video.author.id !== req.user!.id) {
-		return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
+		req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
+		return;
 	}
 
 	const thumbnail = req.files && Object.values(req.files)[0];
 	if (!thumbnail) {
-		return req.fail(ErrorType.INVALID_MEDIA, 400, 'invalid media');
+		req.fail(ErrorType.INVALID_MEDIA, 400, 'invalid media');
+		return;
 	}
 
 	const file = thumbnail as Express.Multer.File;
@@ -254,7 +263,7 @@ router.put('/:videoId/thumbnail', upload.any(), async (req: Request, res: Respon
 		},
 	});
 
-	return res.json(VideoConverter.convert(video));
+	res.json(VideoConverter.convert(video));
 });
 
 router.post('/:videoId/thumbnail/regenerate', async (req: Request, res: Response) => {
@@ -270,11 +279,13 @@ router.post('/:videoId/thumbnail/regenerate', async (req: Request, res: Response
 	});
 
 	if (!video) {
-		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+		req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+		return;
 	}
 
 	if (video.author.id !== req.user!.id) {
-		return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
+		req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
+		return;
 	}
 
 	const videoFilePath = path.join(
@@ -319,7 +330,7 @@ router.post('/:videoId/thumbnail/regenerate', async (req: Request, res: Response
 
 	if (video.thumbnail) MediaService.deleteMediaFile(video.thumbnail);
 
-	return res.json(VideoConverter.convert(updatedVideo));
+	res.json(VideoConverter.convert(updatedVideo));
 });
 
 router.delete('/:videoId', async (req: Request, res: Response) => {
@@ -335,11 +346,13 @@ router.delete('/:videoId', async (req: Request, res: Response) => {
 	});
 
 	if (!video) {
-		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+		req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'video not found');
+		return;
 	}
 
 	if (video.author.id !== req.user!.id) {
-		return req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
+		req.fail(ErrorType.UNAUTHORIZED, 403, 'unauthorized');
+		return;
 	}
 
 	const mediasToDelete = [video.media_id];
@@ -363,7 +376,7 @@ router.delete('/:videoId', async (req: Request, res: Response) => {
 	MediaService.deleteMediaFile(video.media);
 	if (video.thumbnail) MediaService.deleteMediaFile(video.thumbnail);
 
-	return res.json({
+	res.json({
 		success: true,
 	});
 });

@@ -20,14 +20,15 @@ router.get('/', AuthenticationService.isAuthenticated, async (req: Request, res:
 
 	const suppliedRefreshToken = req.cookies['refreshToken'];
 	if (!suppliedRefreshToken) {
-		return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'refresh cookie missing');
+		req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'refresh cookie missing');
+		return;
 	}
 
 	try {
 		const decodedToken = JwtService.decodeToken(suppliedRefreshToken);
 		const storedToken = await TokenService.getByRefreshToken(decodedToken.jti);
 
-		return res.json(
+		res.json(
 			refreshTokens.map(
 				(t) =>
 					({
@@ -40,7 +41,7 @@ router.get('/', AuthenticationService.isAuthenticated, async (req: Request, res:
 			)
 		);
 	} catch (error) {
-		return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid refresh token');
+		req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid refresh token');
 	}
 });
 
@@ -52,15 +53,16 @@ router.delete(
 		const storedToken = await TokenService.getById(sessionId);
 
 		if (!storedToken || storedToken.user_id !== req.user!.id) {
-			return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid session id');
+			req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid session id');
+			return;
 		}
 
 		await TokenService.deleteRefreshTokenById(storedToken.id);
-		return res.sendStatus(200);
+		res.sendStatus(200);
 	}
 );
 
 router.delete('/', AuthenticationService.isAuthenticated, async (req: Request, res: Response) => {
 	await TokenService.deleteAllByUserId(req.user!.id);
-	return res.sendStatus(200);
+	res.sendStatus(200);
 });

@@ -40,12 +40,14 @@ router.post(
 		});
 
 		if (!user || !compareSync(body.password, user.password_hash)) {
-			return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid credentials');
+			req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid credentials');
+			return;
 		}
 
 		if (user.totp_secret) {
 			if (!body.totp_code) {
-				return req.fail(ErrorType.TOTP_REQUIRED, 401, 'totp code required');
+				req.fail(ErrorType.TOTP_REQUIRED, 401, 'totp code required');
+				return;
 			}
 
 			const totp = new OTPAuth.TOTP({
@@ -58,7 +60,8 @@ router.post(
 			});
 
 			if (isTokenValid === null) {
-				return req.fail(ErrorType.TOTP_INVALID, 401, 'totp code invalid');
+				req.fail(ErrorType.TOTP_INVALID, 401, 'totp code invalid');
+				return;
 			}
 		}
 
@@ -76,7 +79,7 @@ router.post(
 			path: '/',
 		});
 
-		return res.json({
+		res.json({
 			accessToken,
 		});
 	}
@@ -85,7 +88,8 @@ router.post(
 router.post('/refresh', async (req: Request, res: Response) => {
 	const suppliedRefreshToken = req.cookies['refreshToken'];
 	if (!suppliedRefreshToken) {
-		return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'refresh cookie missing');
+		req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'refresh cookie missing');
+		return;
 	}
 
 	try {
@@ -97,7 +101,8 @@ router.post('/refresh', async (req: Request, res: Response) => {
 			storedToken.expires_at < new Date() ||
 			storedToken.user_id !== decodedToken.sub
 		) {
-			return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid refresh token');
+			req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid refresh token');
+			return;
 		}
 
 		await TokenService.deleteRefreshTokenById(storedToken.id);
@@ -116,11 +121,11 @@ router.post('/refresh', async (req: Request, res: Response) => {
 			path: '/',
 		});
 
-		return res.json({
+		res.json({
 			accessToken,
 		});
 	} catch (error) {
-		return req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'failed to verify refresh token');
+		req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'failed to verify refresh token');
 	}
 });
 
@@ -136,7 +141,7 @@ router.post('/logout', async (req: Request, res: Response) => {
 	}
 
 	res.clearCookie('refreshToken');
-	return res.sendStatus(200);
+	res.sendStatus(200);
 });
 
 const RegisterSchema = RT.Record({
@@ -158,13 +163,15 @@ router.post(
 	}),
 	async (req: Request, res: Response) => {
 		if (!SettingsService.getSetting(SettingsKey.ENABLE_REGISTRATION)) {
-			return req.fail(ErrorType.INSUFFICIENT_PERMISSIONS, 403, 'registration is disabled');
+			req.fail(ErrorType.INSUFFICIENT_PERMISSIONS, 403, 'registration is disabled');
+			return;
 		}
 
 		const body = req.body as RT.Static<typeof RegisterSchema>;
 
 		if (await database.user.findFirst({ where: { username: body.username } })) {
-			return req.fail(ErrorType.USERNAME_TAKEN, 409, 'username already taken');
+			req.fail(ErrorType.USERNAME_TAKEN, 409, 'username already taken');
+			return;
 		}
 
 		const totalUsers = await database.user.count();
@@ -192,7 +199,7 @@ router.post(
 			path: '/',
 		});
 
-		return res.json({
+		res.json({
 			accessToken,
 		});
 	}
@@ -203,7 +210,8 @@ router.delete(
 	AuthenticationService.isAuthenticated,
 	async (req: Request, res: Response) => {
 		if (!req.user!.totp_secret) {
-			return req.fail(ErrorType.INSUFFICIENT_PERMISSIONS, 403, 'totp not enabled');
+			req.fail(ErrorType.INSUFFICIENT_PERMISSIONS, 403, 'totp not enabled');
+			return;
 		}
 
 		await database.user.update({
@@ -215,7 +223,7 @@ router.delete(
 			},
 		});
 
-		return res.sendStatus(200);
+		res.sendStatus(200);
 	}
 );
 
@@ -230,7 +238,8 @@ router.post(
 	validateSchema(TotpSchema),
 	async (req: Request, res: Response) => {
 		if (!!req.user!.totp_secret) {
-			return req.fail(ErrorType.INSUFFICIENT_PERMISSIONS, 403, 'totp already enabled');
+			req.fail(ErrorType.INSUFFICIENT_PERMISSIONS, 403, 'totp already enabled');
+			return;
 		}
 
 		const body = req.body as RT.Static<typeof TotpSchema>;
@@ -245,7 +254,8 @@ router.post(
 				window: 2,
 			}) === null
 		) {
-			return req.fail(ErrorType.TOTP_INVALID, 401, 'invalid totp code');
+			req.fail(ErrorType.TOTP_INVALID, 401, 'invalid totp code');
+			return;
 		}
 
 		await database.user.update({
@@ -257,6 +267,6 @@ router.post(
 			},
 		});
 
-		return res.sendStatus(200);
+		res.sendStatus(200);
 	}
 );

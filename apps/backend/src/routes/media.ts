@@ -15,7 +15,8 @@ router.get('/:mediaId', AuthenticationService.media, async (req: Request, res: R
 	});
 
 	if (!media) {
-		return req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
+		req.fail(ErrorType.MEDIA_NOT_FOUND, 404, 'media not found');
+		return;
 	}
 
 	const fileName = `${media.id}.${media.extension}`;
@@ -27,7 +28,8 @@ router.get('/:mediaId', AuthenticationService.media, async (req: Request, res: R
 	if (ranges === -1 || ranges === -2 || ranges.type !== 'bytes' || ranges.length !== 1) {
 		res.statusCode = 416;
 		res.setHeader('Content-Range', `bytes */${stat.size}`);
-		return res.end();
+		res.end();
+		return;
 	}
 
 	const range = ranges[0];
@@ -42,5 +44,5 @@ router.get('/:mediaId', AuthenticationService.media, async (req: Request, res: R
 		.set('Content-Length', String(chunkSize))
 		.set('Content-Range', `bytes ${start}-${end}/${stat.size}`);
 
-	return readStream.pipe(res);
+	readStream.pipe(res);
 });

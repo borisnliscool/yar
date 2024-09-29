@@ -23,7 +23,7 @@ router.use('/sessions', sessionsRouter);
 router.use('/stats', statsRouter);
 
 router.get('/', async (_: Request, res: Response) => {
-	return res.json({
+	res.json({
 		status: 'ok',
 		uptime: process.uptime(),
 	});
