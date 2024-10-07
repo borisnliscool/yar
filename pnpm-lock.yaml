@@ -316,8 +316,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(eslint@8.57.0)
       eslint-plugin-svelte:
-        specifier: ^2.44.0
-        version: 2.44.0(eslint@8.57.0)(svelte@4.2.19)(ts-node@10.9.2(@types/node@22.7.3)(typescript@5.6.2))
+        specifier: ^2.44.1
+        version: 2.44.1(eslint@8.57.0)(svelte@4.2.19)(ts-node@10.9.2(@types/node@22.7.3)(typescript@5.6.2))
 
   packages/types:
     devDependencies:
@@ -1645,8 +1645,8 @@ packages:
     peerDependencies:
       eslint: '>6.6.0'
 
-  eslint-plugin-svelte@2.44.0:
-    resolution: {integrity: sha512-wav4MOs02vBb1WjvTCYItwJCxMkuk2Z4p+K/eyjL0N/z7ahXLP+0LtQQjiKc2ezuif7GnZLbD1F3o1VHzSvdVg==}
+  eslint-plugin-svelte@2.44.1:
+    resolution: {integrity: sha512-w6wkoJPw1FJKFtM/2oln21rlu5+HTd2CSkkzhm32A+trNoW2EYQqTQAbDTU6k2GI/6Vh64rBHYQejqEgDld7fw==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0-0 || ^9.0.0-0
@@ -1671,6 +1671,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   esm-env@1.0.0:
@@ -4191,7 +4192,7 @@ snapshots:
       eslint: 8.57.0
       eslint-plugin-turbo: 2.1.2(eslint@8.57.0)
 
-  eslint-plugin-svelte@2.44.0(eslint@8.57.0)(svelte@4.2.19)(ts-node@10.9.2(@types/node@22.7.3)(typescript@5.6.2)):
+  eslint-plugin-svelte@2.44.1(eslint@8.57.0)(svelte@4.2.19)(ts-node@10.9.2(@types/node@22.7.3)(typescript@5.6.2)):
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
       '@jridgewell/sourcemap-codec': 1.5.0
