@@ -20,6 +20,6 @@
 		"@types/node": "^22.7.3",
 		"clsx": "^2.1.1",
 		"tailwind-merge": "^2.5.3",
-		"typescript": "^5.6.2"
+		"typescript": "^5.6.3"
 	}
 }
