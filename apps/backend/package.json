@@ -48,7 +48,7 @@
 		"@types/lodash": "^4.17.13",
 		"@types/morgan": "^1.9.9",
 		"@types/multer": "^1.4.12",
-		"@types/node": "^22.8.6",
+		"@types/node": "^22.9.0",
 		"@types/range-parser": "^1.2.7",
 		"@types/request-ip": "^0.0.41",
 		"@types/ua-parser-js": "^0.7.39",
