@@ -20,7 +20,7 @@
 		"@repo/utils": "workspace:*",
 		"clsx": "^2.1.1",
 		"tailwind-merge": "^2.5.4",
-		"tailwind-variants": "^0.2.1"
+		"tailwind-variants": "^0.3.0"
 	},
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",
