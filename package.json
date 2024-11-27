@@ -12,7 +12,7 @@
 	},
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",
-		"@types/node": "^22.9.0",
+		"@types/node": "^22.10.0",
 		"dotenv-cli": "^7.4.2",
 		"eslint": "^8.57.1",
 		"prettier": "^3.3.3",
