@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"@fontsource-variable/inter": "^5.1.0",
-		"@iconify/svelte": "^4.0.2",
+		"@iconify/svelte": "^4.1.0",
 		"@repo/config": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@repo/ui": "workspace:*",

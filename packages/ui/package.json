@@ -14,7 +14,7 @@
 		"lint": "eslint ."
 	},
 	"devDependencies": {
-		"@iconify/svelte": "^4.0.2",
+		"@iconify/svelte": "^4.1.0",
 		"@popperjs/core": "^2.11.8",
 		"@repo/eslint-config": "workspace:*",
 		"@repo/utils": "workspace:*",
