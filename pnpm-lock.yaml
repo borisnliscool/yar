@@ -15,8 +15,8 @@ importers:
         specifier: ^22.10.0
         version: 22.10.0
       dotenv-cli:
-        specifier: ^7.4.2
-        version: 7.4.2
+        specifier: ^8.0.0
+        version: 8.0.0
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
@@ -215,7 +215,7 @@ importers:
         version: 2.6.0
       tailwind-variants:
         specifier: ^0.3.0
-        version: 0.3.0(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.10.0)(typescript@5.7.2)))
+        version: 0.3.0(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.10.0)))
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -288,7 +288,7 @@ importers:
         version: 1.0.0
       tailwindcss:
         specifier: ^3.4.14
-        version: 3.4.14(ts-node@10.9.2(@types/node@22.10.0)(typescript@5.7.2))
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.10.0))
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -364,10 +364,10 @@ importers:
         version: 4.2.19
       tailwind-variants:
         specifier: ^0.3.0
-        version: 0.3.0(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.10.0)(typescript@5.7.2)))
+        version: 0.3.0(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.10.0)))
       tailwindcss:
         specifier: ^3.4.14
-        version: 3.4.14(ts-node@10.9.2(@types/node@22.10.0)(typescript@5.7.2))
+        version: 3.4.14(ts-node@10.9.2(@types/node@22.10.0))
 
   packages/utils:
     devDependencies:
@@ -1536,6 +1536,10 @@ packages:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
 
+  cross-spawn@7.0.6:
+    resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
+    engines: {node: '>= 8'}
+
   css-tree@2.3.1:
     resolution: {integrity: sha512-6Fv1DV/TYw//QF5IzQdqsNDjx/wc8TrMBZsqjL9eW01tWb7R7k/mq+/VXfJCl7SoD5emsJop9cOByJZfs8hYIw==}
     engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0}
@@ -1637,8 +1641,8 @@ packages:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
 
-  dotenv-cli@7.4.2:
-    resolution: {integrity: sha512-SbUj8l61zIbzyhIbg0FwPJq6+wjbzdn9oEtozQpZ6kW2ihCcapKVZj49oCT3oPM+mgQm+itgvUQcG5szxVrZTA==}
+  dotenv-cli@8.0.0:
+    resolution: {integrity: sha512-aLqYbK7xKOiTMIRf1lDPbI+Y+Ip/wo5k3eyp6ePysVaSqbyxjyK3dK35BTxG+rmd7djf5q2UPs4noPNH+cj0Qw==}
     hasBin: true
 
   dotenv-expand@10.0.0:
@@ -4223,6 +4227,12 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
+  cross-spawn@7.0.6:
+    dependencies:
+      path-key: 3.1.1
+      shebang-command: 2.0.0
+      which: 2.0.2
+
   css-tree@2.3.1:
     dependencies:
       mdn-data: 2.0.30
@@ -4287,9 +4297,9 @@ snapshots:
     dependencies:
       esutils: 2.0.3
 
-  dotenv-cli@7.4.2:
+  dotenv-cli@8.0.0:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       dotenv: 16.4.5
       dotenv-expand: 10.0.0
       minimist: 1.2.8
@@ -5124,7 +5134,7 @@ snapshots:
       postcss: 8.4.47
       ts-node: 10.9.2(@types/node@22.10.0)(typescript@5.7.2)
 
-  postcss-load-config@4.0.2(postcss@8.4.47)(ts-node@10.9.2(@types/node@22.10.0)(typescript@5.7.2)):
+  postcss-load-config@4.0.2(postcss@8.4.47)(ts-node@10.9.2(@types/node@22.10.0)):
     dependencies:
       lilconfig: 3.1.2
       yaml: 2.6.0
@@ -5529,12 +5539,12 @@ snapshots:
 
   tailwind-merge@2.6.0: {}
 
-  tailwind-variants@0.3.0(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.10.0)(typescript@5.7.2))):
+  tailwind-variants@0.3.0(tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.10.0))):
     dependencies:
       tailwind-merge: 2.5.4
-      tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@22.10.0)(typescript@5.7.2))
+      tailwindcss: 3.4.14(ts-node@10.9.2(@types/node@22.10.0))
 
-  tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.10.0)(typescript@5.7.2)):
+  tailwindcss@3.4.14(ts-node@10.9.2(@types/node@22.10.0)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -5553,7 +5563,7 @@ snapshots:
       postcss: 8.4.47
       postcss-import: 15.1.0(postcss@8.4.47)
       postcss-js: 4.0.1(postcss@8.4.47)
-      postcss-load-config: 4.0.2(postcss@8.4.47)(ts-node@10.9.2(@types/node@22.10.0)(typescript@5.7.2))
+      postcss-load-config: 4.0.2(postcss@8.4.47)(ts-node@10.9.2(@types/node@22.10.0))
       postcss-nested: 6.2.0(postcss@8.4.47)
       postcss-selector-parser: 6.1.2
       resolve: 1.22.8
