@@ -29,7 +29,7 @@
 		"@sveltejs/kit": "^2.15.0",
 		"@sveltejs/vite-plugin-svelte": "^3.1.2",
 		"@types/ms": "^0.7.34",
-		"@typescript-eslint/eslint-plugin": "^8.19.0",
+		"@typescript-eslint/eslint-plugin": "^8.20.0",
 		"@typescript-eslint/parser": "^8.20.0",
 		"autoprefixer": "^10.4.20",
 		"dayjs": "^1.11.13",
