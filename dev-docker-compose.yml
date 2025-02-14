@@ -1,7 +1,6 @@
 services:
   database:
     image: mariadb
-    restart: unless-stopped
     env_file:
       - .env.dev
     volumes:
