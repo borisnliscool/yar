@@ -42,7 +42,7 @@
 		"prettier-plugin-svelte": "^3.3.1",
 		"prettier-plugin-tailwindcss": "^0.6.8",
 		"pretty-ms": "^9.2.0",
-		"sass": "^1.83.0",
+		"sass": "^1.85.0",
 		"svelte": "^4.2.19",
 		"svelte-check": "^4.1.0",
 		"svelte-qrcode": "^1.0.0",
