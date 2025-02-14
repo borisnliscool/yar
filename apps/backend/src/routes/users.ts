@@ -1,6 +1,6 @@
 import type { user } from '@prisma/client';
 import { ErrorType, UserRole } from '@repo/types';
-import { compareSync, hashSync } from 'bcrypt';
+import { compareSync, hashSync } from 'bcryptjs';
 import { Request, Response, Router } from 'express';
 import * as RT from 'runtypes';
 import userConverter from '../converters/userConverter';

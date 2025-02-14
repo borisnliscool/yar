@@ -1,5 +1,5 @@
 import { DeviceType, ErrorType, SettingsKey, UserRole } from '@repo/types';
-import { compareSync, hashSync } from 'bcrypt';
+import { compareSync, hashSync } from 'bcryptjs';
 import { Request, Response, Router } from 'express';
 import * as OTPAuth from 'otpauth';
 import * as RT from 'runtypes';
