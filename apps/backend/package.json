@@ -58,7 +58,7 @@
 		"multer": "1.4.5-lts.1",
 		"nodemon": "^3.1.7",
 		"prettier": "^3.5.1",
-		"prisma": "^6.2.1",
+		"prisma": "^6.3.1",
 		"range-parser": "^1.2.1",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.7.2",
