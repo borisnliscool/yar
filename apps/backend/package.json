@@ -11,7 +11,7 @@
 		"db:migrate": "dotenv -e ../../.env.dev -- prisma migrate dev"
 	},
 	"dependencies": {
-		"@prisma/client": "^6.2.1",
+		"@prisma/client": "^6.4.0",
 		"@repo/utils": "workspace:*",
 		"@types/ms": "^0.7.34",
 		"bcryptjs": "^3.0.0",
