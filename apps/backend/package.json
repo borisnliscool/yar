@@ -61,7 +61,7 @@
 		"prisma": "^6.4.0",
 		"range-parser": "^1.2.1",
 		"ts-node": "^10.9.2",
-		"typescript": "^5.7.2",
+		"typescript": "^5.8.2",
 		"ua-parser-js": "^2.0.0"
 	},
 	"nodemonConfig": {
