@@ -6,7 +6,7 @@
 		"@typescript-eslint/parser": "^8.25.0",
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-config-turbo": "^2.4.2",
-		"eslint-plugin-svelte": "^2.46.0"
+		"eslint-plugin-svelte": "^3.3.3"
 	},
 	"publishConfig": {
 		"access": "public"
