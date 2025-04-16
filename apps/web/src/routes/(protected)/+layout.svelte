@@ -15,7 +15,7 @@
 
 			const data = await response.json();
 			userStore.set(data);
-		} catch (error) {
+		} catch {
 			return goto('/login');
 		}
 	};
@@ -30,6 +30,7 @@
 	>
 		<Spinner size={32} />
 	</div>
+	<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 {:then _}
 	<div transition:fade={{ duration: 150, delay: 150 }}>
 		<slot />

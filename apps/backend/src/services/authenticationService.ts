@@ -11,6 +11,7 @@ export default class AuthenticationService {
 			return next();
 		}
 
+		//eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let decodedToken!: Record<string, any>;
 		try {
 			decodedToken = JwtService.decodeToken(authorizationToken);
@@ -59,6 +60,7 @@ export default class AuthenticationService {
 			return req.fail(ErrorType.INVALID_CREDENTIALS, 403, 'media token not found');
 		}
 
+		//eslint-disable-next-line @typescript-eslint/no-explicit-any
 		let decodedToken!: Record<string, any>;
 		try {
 			decodedToken = JwtService.decodeToken(mediaToken as string);

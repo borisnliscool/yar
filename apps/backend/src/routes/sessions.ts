@@ -40,7 +40,7 @@ router.get('/', AuthenticationService.isAuthenticated, async (req: Request, res:
 					}) as SessionDisplay
 			)
 		);
-	} catch (error) {
+	} catch {
 		req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'invalid refresh token');
 	}
 });

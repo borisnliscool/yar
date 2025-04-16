@@ -122,7 +122,7 @@
 			<div class="flex flex-col gap-2 text-center text-neutral-500 dark:text-neutral-400">
 				{#if files}
 					<p class="font-semibold">Selected:</p>
-					{#each Array.from(files) as file}
+					{#each Array.from(files) as file (file.name)}
 						<p>{file.name}</p>
 					{/each}
 				{:else}

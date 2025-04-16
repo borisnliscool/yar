@@ -22,6 +22,7 @@ const createModalStore = () => {
 	};
 
 	const remove = (key: string) => {
+		//eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { [key]: removed, ...rest } = get(store);
 		update(() => rest);
 	};

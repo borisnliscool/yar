@@ -55,7 +55,7 @@
 				class="absolute left-0 top-full z-50 max-h-48 w-full select-none overflow-y-auto rounded-lg border bg-white p-2 text-sm text-black shadow-lg dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
 				tabindex="-1"
 			>
-				{#each filteredTags as tag}
+				{#each filteredTags as tag (tag)}
 					<Button
 						tabindex={0}
 						variant="ghost"
@@ -74,7 +74,7 @@
 	</div>
 
 	<div class="flex flex-wrap gap-1 text-sm">
-		{#each tags as tag}
+		{#each tags as tag (tag)}
 			<div
 				class="flex items-center gap-1 rounded border border-neutral-200 px-2 py-1 dark:border-neutral-700"
 			>

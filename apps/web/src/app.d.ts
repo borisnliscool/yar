@@ -10,7 +10,7 @@ declare global {
 	}
 
 	namespace svelteHTML {
-		interface HTMLAttributes<T> {
+		interface HTMLAttributes {
 			'on:intersection'?: (event: CustomEvent) => void;
 		}
 	}

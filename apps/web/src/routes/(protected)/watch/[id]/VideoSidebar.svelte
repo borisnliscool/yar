@@ -10,6 +10,7 @@
 	let videosPromise: Promise<Video[]>;
 
 	onMount(() => {
+		//eslint-disable-next-line no-async-promise-executor
 		videosPromise = new Promise<Video[]>(async (resolve) => {
 			const response = await API.get('/videos');
 			const data: { videos: Video[] } = await response.json();
@@ -21,13 +22,12 @@
 </script>
 
 {#await videosPromise}
-	<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
-	{#each Array(6) as _}
+	{#each Array(6) as id (id)}
 		<Skeleton class="aspect-video w-full" />
 	{/each}
 {:then videos}
 	{#if videos}
-		{#each videos as video}
+		{#each videos as video (video.id)}
 			<a href="/watch/{video.id}">
 				<VideoThumbnailMain {video} />
 			</a>

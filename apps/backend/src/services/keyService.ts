@@ -44,7 +44,7 @@ export default class KeyService {
 		try {
 			const key = FileService.readFile('keys', keyPath).toString();
 			return key;
-		} catch (error) {
+		} catch {
 			return undefined;
 		}
 	}

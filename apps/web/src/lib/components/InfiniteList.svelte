@@ -2,7 +2,7 @@
 	import { intersection } from '$actions';
 	import { createEventDispatcher } from 'svelte';
 
-	//eslint-disable-next-line @typescript-eslint/no-unused-vars
+	//eslint-disable-next-line no-undef
 	type T = $$Generic;
 
 	//eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,13 +20,15 @@
 		lastItem = items[items.length - 1];
 	}
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{
+		loadmore: void;
+	}>();
 	const handleIntersection = () => dispatch('loadmore');
 
 	export let items: T[] = [];
 </script>
 
-{#each rest as item}
+{#each rest as item (item)}
 	<slot {item} />
 {/each}
 

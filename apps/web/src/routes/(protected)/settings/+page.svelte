@@ -128,10 +128,11 @@
 				<Skeleton class="h-10 w-full" />
 				<Skeleton class="h-10 w-full" />
 				<Skeleton class="h-10 w-full" />
+				<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 			{:then _}
 				{#if settings}
 					<div class="flex w-full flex-col gap-4">
-						{#each settings as s}
+						{#each settings as s (s.key)}
 							{#if s.setting.type == 'BOOLEAN'}
 								<div class="flex items-center gap-4">
 									<svelte:component
@@ -225,6 +226,7 @@
 				<Skeleton class="h-10 w-full" />
 				<Skeleton class="h-10 w-full" />
 				<Skeleton class="h-10 w-full" />
+				<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 			{:then _}
 				{#if users && users.length}
 					<div class="w-full rounded-md border border-neutral-100 text-sm dark:border-neutral-800">
@@ -234,7 +236,7 @@
 							<p class="col-span-1">Created at</p>
 						</div>
 
-						{#each users as user}
+						{#each users as user (user.id)}
 							<div
 								class="group grid grid-cols-7 place-items-center px-4 py-1 text-neutral-900 hover:bg-neutral-50 dark:text-neutral-100 dark:hover:bg-neutral-800/50"
 							>

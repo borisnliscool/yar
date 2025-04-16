@@ -2,6 +2,7 @@ import type { user } from '@prisma/client';
 import { ErrorType } from '@repo/types';
 
 declare global {
+	//eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace Express {
 		interface Request {
 			user?: user;
@@ -21,6 +22,7 @@ declare global {
 		}
 	}
 
+	//eslint-disable-next-line @typescript-eslint/no-namespace
 	namespace NodeJS {
 		interface ProcessEnv {
 			NODE_ENV?: string;

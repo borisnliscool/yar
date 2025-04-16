@@ -25,6 +25,7 @@
 	};
 
 	const loadVideo = (videoId: string) => {
+		// eslint-disable-next-line no-async-promise-executor
 		videoPromise = new Promise<Video>(async (resolve, reject) => {
 			const response = await API.get('/videos/' + videoId);
 			const data: Video = await response.json();
@@ -110,7 +111,7 @@
 	};
 
 	$: loadVideo($page.params.id);
-	$: $userStore && loadedVideo && loadedVideo.author.id !== $userStore.id && redirect();
+	$: if ($userStore && loadedVideo && loadedVideo.author.id !== $userStore.id) redirect();
 </script>
 
 <svelte:head>

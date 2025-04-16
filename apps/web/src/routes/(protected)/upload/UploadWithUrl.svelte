@@ -31,10 +31,11 @@
 		let url: URL;
 		try {
 			url = new URL(input);
-		} catch (err) {
+		} catch {
 			return;
 		}
 
+		// eslint-disable-next-line no-async-promise-executor
 		videoInfo = new Promise(async (resolve, reject) => {
 			searching = true;
 
@@ -83,7 +84,6 @@
 			const reader = response.body?.getReader();
 			if (!reader) return;
 
-			//eslint-disable-next-line no-constant-condition
 			while (true) {
 				const data = await reader.read();
 				if (data.done) break;
@@ -206,7 +206,7 @@
 					<div class="flex flex-col gap-2">
 						<p class="font-semibold">Formats</p>
 						<div class="flex max-h-96 flex-col gap-1 overflow-y-auto pr-1">
-							{#each videoData.formats as format}
+							{#each videoData.formats as format (format.format_id)}
 								<VideoFormat
 									{format}
 									selected={format == selectedFormat}
@@ -230,7 +230,7 @@
 		<div class="text-md">Progress logs</div>
 
 		<div class="h-full overflow-y-auto font-mono">
-			{#each uploadLog as log}
+			{#each uploadLog as log (log)}
 				<p>{JSON.stringify(log)}</p>
 			{/each}
 		</div>

@@ -74,6 +74,7 @@ router.post(
 
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
+			//eslint-disable-next-line turbo/no-undeclared-env-vars
 			secure: process.env.NODE_ENV === 'production',
 			maxAge: await TokenService.getRefreshTokenExpiration(),
 			path: '/',
@@ -116,6 +117,7 @@ router.post('/refresh', async (req: Request, res: Response) => {
 
 		res.cookie('refreshToken', newRefreshToken, {
 			httpOnly: true,
+			//eslint-disable-next-line turbo/no-undeclared-env-vars
 			secure: process.env.NODE_ENV === 'production',
 			maxAge: await TokenService.getRefreshTokenExpiration(),
 			path: '/',
@@ -124,7 +126,7 @@ router.post('/refresh', async (req: Request, res: Response) => {
 		res.json({
 			accessToken,
 		});
-	} catch (error) {
+	} catch {
 		req.fail(ErrorType.INVALID_CREDENTIALS, 401, 'failed to verify refresh token');
 	}
 });
@@ -194,6 +196,7 @@ router.post(
 
 		res.cookie('refreshToken', refreshToken, {
 			httpOnly: true,
+			//eslint-disable-next-line turbo/no-undeclared-env-vars
 			secure: process.env.NODE_ENV === 'production',
 			maxAge: await TokenService.getRefreshTokenExpiration(),
 			path: '/',
@@ -237,7 +240,7 @@ router.post(
 	AuthenticationService.isAuthenticated,
 	validateSchema(TotpSchema),
 	async (req: Request, res: Response) => {
-		if (!!req.user!.totp_secret) {
+		if (req.user!.totp_secret) {
 			req.fail(ErrorType.INSUFFICIENT_PERMISSIONS, 403, 'totp already enabled');
 			return;
 		}

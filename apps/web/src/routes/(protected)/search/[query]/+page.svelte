@@ -23,6 +23,7 @@
 
 		if (total && videos.length >= total) return;
 
+		//eslint-disable-next-line no-async-promise-executor
 		videosPromise = new Promise<Video[]>(async (resolve) => {
 			const response = await API.get('/videos/search', {
 				params: {
@@ -58,8 +59,7 @@
 	</InfiniteList>
 
 	{#await videosPromise}
-		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
-		{#each Array(6) as _}
+		{#each Array(6) as id (id)}
 			<div class="grid grid-cols-7 gap-4">
 				<Skeleton class="col-span-3 aspect-video h-full" />
 
@@ -69,6 +69,7 @@
 				</div>
 			</div>
 		{/each}
+		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 	{:then _}
 		{#if !videos.length}
 			<div class="grid h-48 place-items-center">

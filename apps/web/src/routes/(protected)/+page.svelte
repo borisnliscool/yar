@@ -18,6 +18,7 @@
 	const loadVideos = async () => {
 		if (total && videos.length >= total) return;
 
+		//eslint-disable-next-line no-async-promise-executor
 		videoPromise = new Promise(async (resolve) => {
 			const response = await API.get(`/videos`, {
 				params: {
@@ -54,8 +55,7 @@
 	</InfiniteList>
 
 	{#await videoPromise}
-		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
-		{#each { length: Math.min(count, (total ?? 100) - count * Math.max(page, 1)) } as _}
+		{#each { length: Math.min(count, (total ?? 100) - count * Math.max(page, 1)) } as id (id)}
 			<div class="flex flex-col gap-2">
 				<Skeleton class="aspect-video w-full" />
 			</div>

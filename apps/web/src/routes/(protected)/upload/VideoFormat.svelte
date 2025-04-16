@@ -10,7 +10,9 @@
 	export let format: YtdlpFormat;
 	export let selected = false;
 
-	const dispatcher = createEventDispatcher();
+	const dispatcher = createEventDispatcher<{
+		click: boolean;
+	}>();
 
 	const click = () => {
 		selected = !selected;

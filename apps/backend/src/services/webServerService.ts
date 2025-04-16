@@ -25,6 +25,7 @@ export default class WebServerService {
 		this.app.use(helmet());
 		this.app.use(
 			cors({
+				// eslint-disable-next-line turbo/no-undeclared-env-vars
 				origin: [process.env.DOMAIN],
 				credentials: true,
 			})

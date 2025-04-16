@@ -1,5 +1,3 @@
-export default class Converter<T, U> {
-	convert(input: T): U {
-		return {} as U;
-	}
+export default abstract class Converter<T, U> {
+	abstract convert(input: T): U;
 }

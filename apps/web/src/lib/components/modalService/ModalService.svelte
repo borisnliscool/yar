@@ -4,7 +4,7 @@
 	import { modals } from '.';
 </script>
 
-{#each Object.entries($modals) as [key, modal]}
+{#each Object.entries($modals) as [key, modal] (key)}
 	<Modal
 		title={modal.title}
 		closable={modal.closable}
@@ -14,6 +14,7 @@
 		<svelte:fragment slot="trigger" />
 
 		{#if modal.raw}
+			<!--eslint-disable-next-line svelte/no-at-html-tags-->
 			{@html modal.contents}
 		{:else}
 			<p class="text-sm text-neutral-700 dark:text-neutral-400">{modal.contents}</p>
@@ -24,7 +25,7 @@
 
 			<div class="flex w-full items-center justify-end gap-2">
 				{#if modal.buttons}
-					{#each modal.buttons as button}
+					{#each modal.buttons as button (button.label)}
 						<Button
 							variant={button.variant ?? 'default'}
 							class={cn(
@@ -43,7 +44,7 @@
 				{:else}
 					<Button
 						variant="outline"
-						class={'h-fit px-4 py-2 dark:border-neutral-700'}
+						class="h-fit px-4 py-2 dark:border-neutral-700"
 						size="sm"
 						on:click={() => hideModal()}
 					>

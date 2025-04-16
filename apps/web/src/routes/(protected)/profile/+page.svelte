@@ -10,7 +10,7 @@
 	import { Button, Input, Modal, Skeleton, Tooltip } from '@repo/ui';
 	import { randomstring } from '@repo/utils';
 	import { onMount } from 'svelte';
-	//@ts-ignore svelte-qrcode is not typed, so we have to do this
+	//@ts-expect-error svelte-qrcode is not typed, so we have to do this
 	import QrCode from 'svelte-qrcode';
 
 	let MIN_PASSWORD_LENGTH = 0;
@@ -341,7 +341,7 @@
 
 			<div class="flex flex-col gap-2">
 				{#if sessions}
-					{#each sessions as session}
+					{#each sessions as session (session.id)}
 						<div
 							class="flex items-center gap-4 rounded-lg border py-3 pl-5 pr-4 dark:border-neutral-700"
 						>

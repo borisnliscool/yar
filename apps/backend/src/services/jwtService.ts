@@ -8,6 +8,7 @@ export default class JwtService {
 	private static publicKey = KeyService.getPublicKey();
 
 	static encodeToken(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		payload: Record<string, any>,
 		type: JwtTokenType,
 		options: SignOptions = { expiresIn: ms('1d') }
@@ -18,7 +19,9 @@ export default class JwtService {
 		});
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static decodeToken(token: string): Record<string, any> {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		return jwt.verify(token, this.publicKey) as Record<string, any>;
 	}
 }

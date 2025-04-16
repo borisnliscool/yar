@@ -37,7 +37,7 @@ router.post(
 			const videoInfo = await VideoDownloadService.getVideoInformation(body.url);
 			res.setHeader('Cache-Control', 'max-age=3600');
 			res.send(videoInfo);
-		} catch (error) {
+		} catch {
 			req.fail(ErrorType.INVALID_URL, 400, 'invalid url');
 		}
 	}

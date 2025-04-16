@@ -12,7 +12,9 @@
 	let className: string = '';
 	export { className as class };
 
-	const dispatcher = createEventDispatcher();
+	const dispatcher = createEventDispatcher<{
+		dismiss: void;
+	}>();
 	const dismiss = () => dispatcher('dismiss');
 
 	const variants = tv({

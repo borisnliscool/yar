@@ -15,6 +15,7 @@
 	const volumeStore = createVolumeStore();
 
 	const loadVideo = (videoId: string) => {
+		// eslint-disable-next-line no-async-promise-executor
 		videoPromise = new Promise<Video>(async (resolve) => {
 			const response = await API.get('/videos/' + videoId);
 			const data: Video = await response.json();
@@ -71,7 +72,7 @@
 
 					{#if video.tags.length}
 						<div class="flex flex-wrap gap-1.5">
-							{#each video.tags as tag}
+							{#each video.tags as tag (tag)}
 								<div
 									class="rounded-full border bg-neutral-50 px-2 py-1 text-xs dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400"
 								>

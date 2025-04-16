@@ -12,6 +12,7 @@ export default class MediaService {
 			JwtTokenType.MEDIA
 		);
 
+		// eslint-disable-next-line turbo/no-undeclared-env-vars
 		return `${process.env.DOMAIN}/api/media/${mediaId}?token=${token}`;
 	}
 

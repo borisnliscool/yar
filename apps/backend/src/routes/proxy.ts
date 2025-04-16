@@ -10,7 +10,7 @@ router.get('/image/:url', async (req: Request, res: Response) => {
 	const url = atob(req.params.url);
 	try {
 		new URL(url);
-	} catch (err) {
+	} catch {
 		req.fail(ErrorType.INVALID_URL, 400, 'invalid url');
 		return;
 	}

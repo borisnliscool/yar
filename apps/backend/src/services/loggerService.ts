@@ -9,6 +9,7 @@ class LoggerStream extends Writable {
 	}
 
 	_write(
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		chunk: any,
 		_encoding: BufferEncoding,
 		callback: (error?: Error | null | undefined) => void
@@ -20,12 +21,14 @@ class LoggerStream extends Writable {
 }
 
 export default class LoggerService {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static log(resource: string, ...args: any[]) {
 		const name = resource.slice(0, 10).padEnd(10, ' ');
 		console.log(`[${name}]`, ...args);
 	}
 
 	static createLogger(resource: string) {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		return (...args: any[]) => this.log(resource, ...args);
 	}
 
