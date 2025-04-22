@@ -5,7 +5,7 @@
 	import VideoThumbnailSearch from '$components/videoCards/VideoThumbnailSearch.svelte';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
-	import { Button, Skeleton } from '@repo/ui';
+	import { Button, Repeat, Skeleton } from '@repo/ui';
 
 	let videos: Video[] = [];
 	let videosPromise: Promise<Video[]> | null = null;
@@ -59,7 +59,7 @@
 	</InfiniteList>
 
 	{#await videosPromise}
-		{#each Array(6) as id (id)}
+		{#each Repeat(6) as id (id)}
 			<div class="grid grid-cols-7 gap-4">
 				<Skeleton class="col-span-3 aspect-video h-full" />
 

@@ -18,15 +18,44 @@ export const router = Router();
 router.use(AuthenticationService.isAuthenticated);
 
 router.get('/', rateLimit(), async (req: Request, res: Response) => {
-	const total = await database.video.count();
+	const allVideoIds = await database.video
+		.findMany({
+			select: {
+				id: true,
+			},
+		})
+		.then((r) => r.map((v) => v.id));
 
-	const { page: _page, count: _count } = req.query;
-	const count = Math.min(+(_count ?? 20), 100);
-	const page = Math.min(Math.max(+(_page ?? 0), 0), Math.ceil(total / count) - 1);
+	const { page: _page, count: _count, seed: _seed } = req.query;
+
+	const count = Math.min(parseInt(_count as string, 10) || 20, 100);
+	const page = Math.min(
+		Math.max(parseInt(_page as string, 10) || 0, 0),
+		Math.ceil(allVideoIds.length / count) - 1
+	);
+
+	const seed = String(_seed || Math.random());
+
+	// Shuffle the array of all video IDs based on the seed
+	const shuffledVideoIds = allVideoIds
+		.map((id) => ({
+			id,
+			sort: crypto
+				.createHash('md5')
+				.update(seed.toString() + id)
+				.digest('hex'),
+		}))
+		.sort((a, b) => a.sort.localeCompare(b.sort))
+		.map(({ id }) => id);
+
+	const slicedVideoIds = shuffledVideoIds.slice(page * count, (page + 1) * count);
 
 	const databaseVideos = await database.video.findMany({
-		take: count,
-		skip: Math.max(count * page, 0),
+		where: {
+			id: {
+				in: slicedVideoIds,
+			},
+		},
 		include: {
 			author: true,
 			thumbnail: true,
@@ -40,7 +69,7 @@ router.get('/', rateLimit(), async (req: Request, res: Response) => {
 	res.json({
 		videos: databaseVideos.map(VideoConverter.convert),
 		page: Math.max(page, 0),
-		total: total,
+		total: allVideoIds.length,
 	});
 });
 

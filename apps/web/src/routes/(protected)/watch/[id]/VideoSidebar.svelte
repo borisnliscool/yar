@@ -2,7 +2,7 @@
 	import VideoThumbnailMain from '$components/videoCards/VideoThumbnailMain.svelte';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
-	import { Skeleton } from '@repo/ui';
+	import { Repeat, Skeleton } from '@repo/ui';
 	import { onMount } from 'svelte';
 
 	export let hiddenVideos: Video[];
@@ -22,11 +22,11 @@
 </script>
 
 {#await videosPromise}
-	{#each Array(6) as id (id)}
+	{#each Repeat(6) as id (id)}
 		<Skeleton class="aspect-video w-full" />
 	{/each}
 {:then videos}
-	{#if videos}
+	{#if videos && videos.length}
 		{#each videos as video (video.id)}
 			<a href="/watch/{video.id}">
 				<VideoThumbnailMain {video} />

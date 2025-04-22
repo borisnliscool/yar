@@ -5,29 +5,37 @@
 	import VideoThumbnailMain from '$components/videoCards/VideoThumbnailMain.svelte';
 	import API from '$lib/api';
 	import type { Video } from '@repo/types';
-	import { Button, Skeleton } from '@repo/ui';
+	import { Button, Repeat, Skeleton } from '@repo/ui';
 	import { onMount } from 'svelte';
 
 	const count = 12;
 
 	let page = 0;
-	let total: number;
+	let seed = Math.random();
+
+	let totalVideoCount: number;
 	let videos: Video[] = [];
 	let videoPromise: Promise<{ videos: Video[] }> | null = null;
 
 	const loadVideos = async () => {
-		if (total && videos.length >= total) return;
+		if (
+			totalVideoCount &&
+			(videos.length >= totalVideoCount || Math.ceil(totalVideoCount / count) <= page)
+		)
+			return;
 
 		//eslint-disable-next-line no-async-promise-executor
 		videoPromise = new Promise(async (resolve) => {
 			const response = await API.get(`/videos`, {
 				params: {
 					page: String(page),
-					count: String(count)
+					count: String(count),
+					seed: String(seed)
 				}
 			});
 			const data: { videos: Video[]; total: number } = await response.json();
-			total = data.total;
+			totalVideoCount = data.total;
+
 			videos = [...videos, ...data.videos];
 			resolve(data);
 		});
@@ -55,12 +63,12 @@
 	</InfiniteList>
 
 	{#await videoPromise}
-		{#each { length: Math.min(count, (total ?? 100) - count * Math.max(page, 1)) } as id (id)}
+		{#each Repeat(Math.min(count, (totalVideoCount ?? 100) - count * Math.max(page, 1))) as id (id)}
 			<div class="flex flex-col gap-2">
 				<Skeleton class="aspect-video w-full" />
 			</div>
+			<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 		{/each}
-		<!--eslint-disable-next-line @typescript-eslint/no-unused-vars-->
 	{:then _}
 		{#if !videos.length}
 			<div class="col-span-full grid h-48 place-items-center">
