@@ -60,7 +60,7 @@
 		"ts-node": "^10.9.2",
 		"typescript": "^5.8.3",
 		"ua-parser-js": "^2.0.0",
-		"@eslint/js": "^9.23.0",
+		"@eslint/js": "^9.25.1",
 		"@repo/eslint-config": "workspace:*",
 		"eslint": "^9.23.0",
 		"typescript-eslint": "^8.17.0",
