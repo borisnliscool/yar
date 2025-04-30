@@ -19,7 +19,7 @@
 		"@repo/ui": "workspace:*",
 		"@repo/utils": "workspace:*",
 		"clsx": "^2.1.1",
-		"tailwind-merge": "^3.0.1",
+		"tailwind-merge": "^3.2.0",
 		"tailwind-variants": "^1.0.0"
 	},
 	"devDependencies": {
